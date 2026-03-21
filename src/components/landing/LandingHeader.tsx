@@ -6,7 +6,7 @@ export function LandingHeader() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/80">
-      <div className="max-w-[1080px] mx-auto px-6 h-14 flex items-center justify-between">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 h-14 flex items-center justify-between">
         <InkLogo size={30} />
         <div className="flex items-center gap-4">
           <a href="#pricing" className="text-[12px] font-semibold text-foreground/75 hover:text-foreground transition-colors hidden sm:block">
