@@ -7,7 +7,7 @@ import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
-import inkLogo from "@/assets/ink-octopus-logo.png";
+import { InkLogo } from "@/components/InkLogo";
 
 const navItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -30,12 +30,11 @@ export function AppSidebar() {
       {/* Brand mark */}
       <div className="flex h-14 items-center px-4 border-b border-sidebar-border">
         {!collapsed ? (
-          <div className="flex items-center gap-2.5">
-            <img src={inkLogo} alt="INK" className="h-9 w-9 object-contain" />
-            <span className="font-extrabold text-foreground tracking-[-0.04em] text-[15px]">INK</span>
-          </div>
+          <InkLogo size={28} textClassName="text-[15px]" />
         ) : (
-          <img src={inkLogo} alt="INK" className="h-7 w-7 object-contain mx-auto" />
+          <div className="mx-auto">
+            <InkLogo size={24} showText={false} />
+          </div>
         )}
       </div>
 
