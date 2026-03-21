@@ -9,12 +9,11 @@ const Dashboard = () => {
   const topOpp = opportunities.find(o => o.fitScore >= 90);
   const priorityOpps = opportunities.filter(o => o.status === 'shortlisted' || o.status === 'new').slice(0, 4);
   const activeWorkflows = workflows.filter(w => w.status === 'active' || w.status === 'at-risk');
-  const urgentTasks = tasks.filter(t => t.status === 'overdue' || t.status === 'in-progress').slice(0, 3);
+  const urgentTasks = tasks.filter(t => t.status === 'blocked' || t.status === 'in-progress').slice(0, 3);
   const recentEvents = agentEvents.slice(0, 4);
 
   return (
     <div className="p-8 max-w-[1200px] mx-auto space-y-12">
-      {/* Editorial header */}
       <div className="flex items-end justify-between border-b border-border pb-6">
         <div>
           <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Funding Operations</p>
@@ -23,7 +22,6 @@ const Dashboard = () => {
         <p className="text-[11px] text-muted-foreground pb-1">Last sync 2 min ago</p>
       </div>
 
-      {/* Hero block — top opportunity callout, asymmetric */}
       {topOpp && (
         <div className="grid md:grid-cols-5 gap-8 items-start">
           <div className="md:col-span-3 ink-accent-border">
@@ -48,8 +46,8 @@ const Dashboard = () => {
             </div>
           </div>
           <div className="md:col-span-2 grid grid-cols-2 gap-x-6 gap-y-0">
-            <MetricCard label="Monitored" value={47} sub="+6 this week" />
-            <MetricCard label="Matched" value={8} sub="2 new" />
+            <MetricCard label="Monitored" value={opportunities.length} sub="+2 this week" />
+            <MetricCard label="Matched" value={opportunities.filter(o => o.fitScore >= 60).length} sub={`${opportunities.filter(o => o.status === 'new').length} new`} />
             <MetricCard label="Workflows" value={activeWorkflows.length} />
             <MetricCard label="At Risk" value={workflows.filter(w => w.status === 'at-risk').length} accent />
           </div>
@@ -58,10 +56,8 @@ const Dashboard = () => {
 
       <div className="ink-rule" />
 
-      {/* Two-column: opportunities + workflows */}
       <div className="grid lg:grid-cols-5 gap-12">
         <div className="lg:col-span-3 space-y-10">
-          {/* Priority list */}
           <section>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-[10px] tracking-[0.15em] uppercase font-semibold text-muted-foreground">Priority Opportunities</h2>
@@ -69,7 +65,7 @@ const Dashboard = () => {
                 All <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
-            {priorityOpps.map((opp, i) => (
+            {priorityOpps.length > 0 ? priorityOpps.map((opp, i) => (
               <Link key={opp.id} to={`/opportunities/${opp.id}`} className="flex items-center justify-between py-3 border-b border-border/60 last:border-0 group">
                 <div className="min-w-0 flex-1 flex items-center gap-4">
                   <span className="text-[11px] font-bold text-muted-foreground/40 w-4" style={{ fontVariantNumeric: 'tabular-nums' }}>{String(i + 1).padStart(2, '0')}</span>
@@ -83,10 +79,11 @@ const Dashboard = () => {
                   <UrgencyIndicator urgency={opp.urgency} />
                 </div>
               </Link>
-            ))}
+            )) : (
+              <p className="py-12 text-center text-[13px] text-muted-foreground">No priority opportunities yet</p>
+            )}
           </section>
 
-          {/* Active workflows */}
           <section>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-[10px] tracking-[0.15em] uppercase font-semibold text-muted-foreground">Active Workflows</h2>
@@ -94,7 +91,7 @@ const Dashboard = () => {
                 All <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
-            {activeWorkflows.map(wf => (
+            {activeWorkflows.length > 0 ? activeWorkflows.map(wf => (
               <Link key={wf.id} to={`/workflows/${wf.id}`} className="block py-4 border-b border-border/60 last:border-0 group">
                 <div className="flex items-center justify-between mb-2.5">
                   <div className="flex items-center gap-2.5 min-w-0">
@@ -112,15 +109,16 @@ const Dashboard = () => {
                   <ReadinessBar score={wf.readinessScore} segments={8} />
                 </div>
               </Link>
-            ))}
+            )) : (
+              <p className="py-12 text-center text-[13px] text-muted-foreground">No active workflows</p>
+            )}
           </section>
         </div>
 
-        {/* Right column */}
         <div className="lg:col-span-2 space-y-10">
           <section>
             <h2 className="text-[10px] tracking-[0.15em] uppercase font-semibold text-muted-foreground mb-5">Deadlines</h2>
-            {urgentTasks.map(task => (
+            {urgentTasks.length > 0 ? urgentTasks.map(task => (
               <div key={task.id} className="py-3 border-b border-border/60 last:border-0">
                 <div className="flex items-start justify-between gap-3">
                   <p className="text-[13px] text-foreground">{task.title}</p>
@@ -128,7 +126,9 @@ const Dashboard = () => {
                 </div>
                 <p className="text-[11px] text-muted-foreground mt-0.5">{task.owner} · {task.dueDate}</p>
               </div>
-            ))}
+            )) : (
+              <p className="py-8 text-[13px] text-muted-foreground">No urgent deadlines</p>
+            )}
           </section>
 
           <section>

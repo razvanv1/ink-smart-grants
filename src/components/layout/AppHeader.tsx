@@ -1,5 +1,6 @@
 import { Search, Bell, ChevronDown } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { currentOrganization } from "@/data/sampleData";
 
 export function AppHeader() {
   return (
@@ -7,7 +8,7 @@ export function AppHeader() {
       <div className="flex items-center gap-4">
         <SidebarTrigger className="text-muted-foreground hover:text-foreground -ml-1" />
         <div className="hidden md:flex items-center gap-1 cursor-pointer group">
-          <span className="text-[13px] font-semibold text-foreground group-hover:text-primary transition-colors">The Unlearning School</span>
+          <span className="text-[13px] font-semibold text-foreground group-hover:text-primary transition-colors">{currentOrganization.name}</span>
           <ChevronDown className="h-3 w-3 text-muted-foreground" />
         </div>
       </div>

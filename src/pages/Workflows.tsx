@@ -1,10 +1,8 @@
-import { workflows } from "@/data/sampleData";
+import { workflows, workflowStages } from "@/data/sampleData";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ReadinessBar } from "@/components/shared/ScoreBadge";
 import { Link } from "react-router-dom";
 import { AlertTriangle } from "lucide-react";
-
-const stageOrder = ['Created', 'Scoping', 'Drafting', 'Inputs Pending', 'Review', 'Compliance Check', 'Ready to Submit', 'Submitted'];
 
 const Workflows = () => {
   return (
@@ -17,10 +15,9 @@ const Workflows = () => {
         <span className="text-[11px] text-muted-foreground pb-1">{workflows.length} active</span>
       </div>
 
-      {/* Workflow rows — more editorial */}
       <div>
         {workflows.map(wf => {
-          const stageIndex = stageOrder.indexOf(wf.stage);
+          const stageIndex = workflowStages.indexOf(wf.stage);
           return (
             <Link key={wf.id} to={`/workflows/${wf.id}`} className="block py-5 border-b border-border/60 hover:bg-secondary/20 -mx-4 px-4 rounded transition-colors group">
               <div className="flex items-start justify-between gap-6">
@@ -36,10 +33,9 @@ const Workflows = () => {
                   <p className="text-[11px] text-muted-foreground">{wf.opportunityName} · {wf.owner} · {wf.deadline}</p>
                 </div>
                 <div className="flex items-center gap-6 shrink-0">
-                  {/* Stage progression — geometric blocks */}
                   <div className="flex items-center gap-3">
                     <div className="flex gap-[2px]">
-                      {stageOrder.map((_, i) => (
+                      {workflowStages.map((_, i) => (
                         <div key={i} className={`h-3 w-[5px] rounded-[1px] ${i <= stageIndex ? 'bg-foreground' : 'bg-border'}`} />
                       ))}
                     </div>

@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { opportunities } from "@/data/sampleData";
+import { opportunities, workflows } from "@/data/sampleData";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator, ReadinessBar } from "@/components/shared/ScoreBadge";
 import { ArrowLeft, ArrowRight } from "lucide-react";
@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 const OpportunityDetail = () => {
   const { id } = useParams();
   const opp = opportunities.find(o => o.id === id);
+  const linkedWorkflow = opp ? workflows.find(w => w.opportunityId === opp.id) : null;
 
   if (!opp) {
     return (
@@ -14,7 +15,7 @@ const OpportunityDetail = () => {
         <Link to="/opportunities" className="text-[11px] text-muted-foreground hover:text-foreground flex items-center gap-1 mb-8">
           <ArrowLeft className="h-3 w-3" /> Back
         </Link>
-        <p className="text-muted-foreground">Not found.</p>
+        <p className="text-muted-foreground">Opportunity not found.</p>
       </div>
     );
   }
@@ -25,7 +26,6 @@ const OpportunityDetail = () => {
         <ArrowLeft className="h-3 w-3" /> Opportunities
       </Link>
 
-      {/* Header — editorial */}
       <div className="border-b border-border pb-8">
         <div className="flex items-center gap-3 mb-3">
           <StatusChip status={opp.status} dot />
@@ -35,7 +35,6 @@ const OpportunityDetail = () => {
         <p className="text-[13px] text-muted-foreground">{opp.programme} · {opp.thematicArea}</p>
       </div>
 
-      {/* Score trio — prominent */}
       <div className="grid grid-cols-3 gap-8 border-b border-border pb-8">
         <div>
           <p className="text-[10px] text-muted-foreground tracking-[0.12em] uppercase mb-2">Fit Score</p>
@@ -57,7 +56,6 @@ const OpportunityDetail = () => {
         </div>
       </div>
 
-      {/* Two-column body */}
       <div className="grid md:grid-cols-5 gap-10">
         <div className="md:col-span-3 space-y-8">
           <p className="text-[14px] text-foreground/75 leading-[1.75] text-pretty">{opp.summary}</p>
@@ -83,12 +81,25 @@ const OpportunityDetail = () => {
           </div>
           <div className="border-t border-border pt-5">
             <p className="text-[10px] text-primary tracking-[0.12em] uppercase font-semibold mb-2">Recommended</p>
-            <Link
-              to={`/workflows/new?opportunity=${opp.id}`}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-foreground text-background text-[12px] font-bold tracking-wide rounded-sm hover:opacity-90 transition-opacity active:scale-[0.97]"
-            >
-              {opp.recommendedAction.toUpperCase()} <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            {linkedWorkflow ? (
+              <Link
+                to={`/workflows/${linkedWorkflow.id}`}
+                className="inline-flex items-center gap-2 px-4 py-2.5 bg-foreground text-background text-[12px] font-bold tracking-wide rounded-sm hover:opacity-90 transition-opacity active:scale-[0.97]"
+              >
+                VIEW WORKFLOW <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            ) : opp.status === 'ignored' || opp.status === 'rejected' ? (
+              <button className="inline-flex items-center gap-2 px-4 py-2.5 border border-border text-foreground text-[12px] font-bold tracking-wide rounded-sm hover:bg-secondary transition-colors active:scale-[0.97]">
+                MOVE TO WATCHLIST
+              </button>
+            ) : (
+              <Link
+                to={`/workflows/new?opportunity=${opp.id}`}
+                className="inline-flex items-center gap-2 px-4 py-2.5 bg-foreground text-background text-[12px] font-bold tracking-wide rounded-sm hover:opacity-90 transition-opacity active:scale-[0.97]"
+              >
+                START WORKFLOW <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            )}
           </div>
         </div>
       </div>

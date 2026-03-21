@@ -1,4 +1,4 @@
-import { opportunities, pipelineStages, getOpportunitiesByStage } from "@/data/sampleData";
+import { pipelineStages, getOpportunitiesByStage, workflows } from "@/data/sampleData";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
 import { Link } from "react-router-dom";
 
@@ -10,7 +10,7 @@ const Pipeline = () => {
           <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Execution Pipeline</p>
           <h1 className="ink-page-title">Pipeline</h1>
         </div>
-        <span className="text-[11px] text-muted-foreground pb-1">{opportunities.length} total</span>
+        <span className="text-[11px] text-muted-foreground pb-1">{workflows.length} active workflows</span>
       </div>
 
       <div className="flex gap-5 overflow-x-auto pb-4">
@@ -19,7 +19,6 @@ const Pipeline = () => {
           const hasItems = opps.length > 0;
           return (
             <div key={stage} className="flex-shrink-0 w-48">
-              {/* Stage header with geometric accent */}
               <div className="flex items-center gap-2 mb-4">
                 <div className={`h-2.5 w-2.5 rounded-[2px] ${hasItems ? 'bg-foreground' : 'bg-border'}`} />
                 <h3 className="text-[10px] font-bold text-foreground tracking-[0.12em] uppercase">{stage}</h3>
