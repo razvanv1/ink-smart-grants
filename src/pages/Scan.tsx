@@ -44,6 +44,7 @@ interface ScanHistoryEntry {
 const tabs = ["New Scan", "Results", "History"];
 
 const ScanPage = () => {
+  const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState("New Scan");
   const [projectIntent, setProjectIntent] = useState("");
   const [organizationType, setOrganizationType] = useState("");
@@ -57,6 +58,42 @@ const ScanPage = () => {
   const [matches, setMatches] = useState<ScanMatch[]>([]);
   const [expandedResult, setExpandedResult] = useState<number | null>(null);
   const [scanHistory, setScanHistory] = useState<ScanHistoryEntry[]>([]);
+
+  // Load pending scan results from public scan funnel
+  useEffect(() => {
+    if (searchParams.get("fromPublic") === "true") {
+      const pending = localStorage.getItem("ink_pending_scan");
+      if (pending) {
+        try {
+          const data = JSON.parse(pending);
+          if (data.matches?.length) {
+            setMatches(data.matches);
+            setProjectIntent(data.projectIntent || "");
+            setOrganizationType(data.organizationType || "");
+            setPrimaryDomain(data.primaryDomain || "");
+            setActiveTab("Results");
+
+            // Add to history
+            const entry: ScanHistoryEntry = {
+              id: `scan-${Date.now()}`,
+              projectIntent: data.projectIntent,
+              organizationType: data.organizationType,
+              primaryDomain: data.primaryDomain,
+              matchCount: data.matches.length,
+              topFitScore: data.matches[0]?.fitScore || 0,
+              timestamp: data.timestamp || new Date().toISOString(),
+              matches: data.matches,
+            };
+            setScanHistory(prev => [entry, ...prev]);
+            toast.success(`Showing all ${data.matches.length} matched calls from your scan`);
+          }
+        } catch (e) {
+          console.error("Failed to load pending scan:", e);
+        }
+        localStorage.removeItem("ink_pending_scan");
+      }
+    }
+  }, [searchParams]);
 
   const handleScan = async (e: React.FormEvent) => {
     e.preventDefault();
