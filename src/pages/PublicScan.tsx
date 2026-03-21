@@ -209,7 +209,7 @@ const PublicScan = () => {
       </section>
 
       {/* ═══ RESULTS + PRICING + FOOTER ═══ */}
-      <div className="max-w-[1080px] mx-auto px-4 sm:px-6">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
         {showResults && (
           <div ref={resultsRef} className="space-y-8 relative z-10 mb-20">
             <div className="flex items-center justify-between opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
