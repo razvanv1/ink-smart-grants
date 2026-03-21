@@ -1,13 +1,13 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, ChevronDown, ChevronUp, Lock, ArrowRight, Loader2, AlertTriangle, Clock, Users, TrendingUp, Sparkles, FileText, Target, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import inkLogo from "@/assets/ink-octopus-logo.png";
 import inkMascot from "@/assets/ink-mascot.png";
 import { LandingHeader } from "@/components/landing/LandingHeader";
 import { TypewriterText } from "@/components/landing/TypewriterText";
 import { PricingSection } from "@/components/landing/PricingSection";
+import { InkLogo } from "@/components/InkLogo";
 
 const orgTypes = ["NGO / Non-profit", "SME / Startup", "Educational institution", "Research / University", "Public Sector"];
 const domains = ["Digital / AI / Tech", "Education / Training", "Innovation / R&D", "Environment / Climate", "Health / Social", "Culture / Creative", "Agriculture / Rural"];
@@ -73,104 +73,56 @@ const PublicScan = () => {
     <div className="min-h-screen bg-background relative overflow-x-hidden">
       <LandingHeader />
 
-      {/* ═══ HERO — light, high-contrast geometry ═══ */}
-      <section className="relative pt-14 overflow-hidden">
+      {/* ═══ HERO — scan-form-first layout ═══ */}
+      <section className="relative pt-14 overflow-hidden min-h-screen">
         {/* Geometric accents */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-          <div className="absolute inset-x-0 top-0 h-[460px] bg-gradient-to-b from-info/[0.10] via-secondary/70 to-transparent" />
-          <div className="absolute top-16 -left-24 w-[520px] h-[520px] rounded-full border-2 border-info/20" />
-          <div className="absolute top-24 -left-2 w-[360px] h-[360px] rounded-full border border-foreground/12" />
-          <div className="absolute -top-10 right-[8%] w-[220px] h-[220px] bg-info/12 rounded-[10px] rotate-[16deg] shadow-xl shadow-info/10" />
-          <div className="absolute top-[38%] right-[5%] w-[160px] h-[160px] border-2 border-info/25 rounded-[8px] rotate-[10deg]" />
-          <div className="absolute bottom-36 left-[14%] w-[120px] h-[4px] bg-foreground/25 rotate-[-22deg]" />
-          <div className="absolute top-[24%] left-[43%] w-[4px] h-[96px] bg-info/25" />
+          <div className="absolute inset-x-0 top-0 h-[600px] bg-gradient-to-b from-info/[0.08] via-secondary/50 to-transparent" />
+          <div className="absolute top-20 -left-32 w-[600px] h-[600px] rounded-full border border-info/15" />
+          <div className="absolute -top-16 right-[6%] w-[240px] h-[240px] bg-info/[0.08] rounded-[12px] rotate-[18deg]" />
+          <div className="absolute top-[50%] right-[3%] w-[100px] h-[100px] border border-info/20 rounded-[6px] rotate-[12deg]" />
         </div>
 
-        <div className="relative max-w-[1080px] mx-auto px-6 pt-24 pb-20">
-          <div className="grid gap-12 lg:grid-cols-[1.3fr_0.7fr] items-center">
-            {/* Left: Text */}
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-[3px] border border-info/30 bg-info/[0.10] px-4 py-2 mb-8 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-                <Sparkles className="h-3.5 w-3.5 text-info" />
-                <span className="text-[11px] font-bold text-info tracking-wide uppercase">Free Funding Scan — No Account Required</span>
-              </div>
-
-              <h1 className="text-[44px] lg:text-[52px] font-extrabold text-foreground tracking-[-0.045em] leading-[1.05] mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.25s" }}>
-                Find funding for<br />
-                <TypewriterText
-                  phrases={["AI training programs", "green energy projects", "digital innovation labs", "research consortiums", "social impact startups"]}
-                  className="text-info"
-                />
-              </h1>
-
-              <p className="text-[16px] text-foreground/80 leading-relaxed max-w-[500px] mb-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-                INK scans 940+ live EU and national funding calls, matches them to your project, and shows you exactly why each one fits — in under 60 seconds.
-              </p>
-
-              {/* Stat blocks */}
-              <div className="grid grid-cols-3 gap-4 max-w-[420px] opacity-0 animate-fade-in-up" style={{ animationDelay: "0.55s" }}>
-                <StatBlock number="940+" label="Active calls" />
-                <StatBlock number="3" label="Free matches" />
-                <StatBlock number="60s" label="To results" />
-              </div>
+        <div className="relative max-w-[1080px] mx-auto px-4 sm:px-6 pt-16 sm:pt-20 pb-12">
+          {/* Centered headline */}
+          <div className="text-center mb-10 sm:mb-14">
+            <div className="inline-flex items-center gap-2 rounded-[3px] border border-info/30 bg-info/[0.10] px-4 py-2 mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
+              <Sparkles className="h-3.5 w-3.5 text-info" />
+              <span className="text-[10px] sm:text-[11px] font-bold text-info tracking-wide uppercase">Free Funding Scan — No Account Required</span>
             </div>
 
-            {/* Right: Octopus logo + How it works */}
-            <div className="relative flex flex-col items-center opacity-0 animate-scale-in" style={{ animationDelay: "0.4s" }}>
-              <div className="animate-float mb-6 relative">
-                <img
-                  src={inkMascot}
-                  alt="INK — I can slap 8 grants at once"
-                  className="w-[260px] lg:w-[340px] h-auto drop-shadow-2xl"
-                />
-              </div>
-              <p className="text-[13px] lg:text-[15px] font-extrabold text-foreground/90 tracking-[-0.02em] italic text-center mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
-                "I can slap 8 grants at once."
-              </p>
+            <h1 className="text-[32px] sm:text-[44px] lg:text-[56px] font-extrabold text-foreground tracking-[-0.045em] leading-[1.05] mb-5 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+              Find funding for<br />
+              <TypewriterText
+                phrases={["AI training programs", "green energy projects", "digital innovation labs", "research consortiums", "social impact startups"]}
+                className="text-info"
+              />
+            </h1>
 
-              {/* How it works — 3 steps */}
-              <div className="w-full max-w-[320px] space-y-3 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.7s" }}>
-                <p className="text-[9px] font-bold tracking-[0.18em] uppercase text-info mb-1">How it works</p>
-                <HowItWorksStep step={1} icon={<FileText className="h-4 w-4" />} title="Describe your project" description="Tell us what you want to fund in one sentence" />
-                <HowItWorksStep step={2} icon={<Target className="h-4 w-4" />} title="Get matched calls" description="AI matches your profile against 940+ live calls" />
-                <HowItWorksStep step={3} icon={<Zap className="h-4 w-4" />} title="Start your application" description="Turn the best match into an active workflow" />
-              </div>
-            </div>
+            <p className="text-[14px] sm:text-[16px] text-foreground/80 leading-relaxed max-w-[560px] mx-auto mb-0 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.35s" }}>
+              Describe your project. Get matched against 940+ live EU & national calls in 60 seconds.
+            </p>
           </div>
-        </div>
-      </section>
 
-      {/* ═══ SCAN FORM + RESULTS ═══ */}
-      <div className="max-w-[1080px] mx-auto px-6">
-        {!showResults && (
-          <section className="relative z-10 mb-20">
-            <div className="max-w-[640px] mx-auto bg-card rounded-[8px] border border-border shadow-xl shadow-foreground/[0.08] p-8 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-8 w-8 rounded-[4px] bg-info/12 flex items-center justify-center">
-                  <Search className="h-4 w-4 text-info" />
-                </div>
-                <div>
-                  <p className="text-[14px] font-bold text-foreground">Start Your Free Scan</p>
-                  <p className="text-[11px] text-foreground/70">Describe your project and we'll match relevant calls</p>
-                </div>
-              </div>
-
+          {/* ═══ SCAN FORM — the hero ═══ */}
+          {!showResults && (
+            <div className="max-w-[780px] mx-auto bg-card rounded-[10px] border border-border shadow-2xl shadow-foreground/[0.06] p-6 sm:p-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
               <form onSubmit={handleScan} className="space-y-5">
                 <div>
                   <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">What do you want to fund?</label>
-                  <input type="text" value={projectIntent} onChange={e => setProjectIntent(e.target.value)} placeholder="e.g. AI training program for professionals" className="w-full px-4 py-3.5 bg-background border border-border rounded-[4px] text-[14px] text-foreground placeholder:text-foreground/45 focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all" />
+                  <input type="text" value={projectIntent} onChange={e => setProjectIntent(e.target.value)} placeholder="e.g. AI training program for professionals" className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all" />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Organization Type</label>
-                    <select value={organizationType} onChange={e => setOrganizationType(e.target.value)} className="w-full px-4 py-3.5 bg-background border border-border rounded-[4px] text-[14px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
+                    <select value={organizationType} onChange={e => setOrganizationType(e.target.value)} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
                       <option value="">Select type</option>
                       {orgTypes.map(t => <option key={t} value={t}>{t}</option>)}
                     </select>
                   </div>
                   <div>
                     <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Primary Domain</label>
-                    <select value={primaryDomain} onChange={e => setPrimaryDomain(e.target.value)} className="w-full px-4 py-3.5 bg-background border border-border rounded-[4px] text-[14px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
+                    <select value={primaryDomain} onChange={e => setPrimaryDomain(e.target.value)} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
                       <option value="">Select domain</option>
                       {domains.map(d => <option key={d} value={d}>{d}</option>)}
                     </select>
@@ -181,17 +133,17 @@ const PublicScan = () => {
                   {showAdvanced ? "Hide" : "Show"} Advanced Filters
                 </button>
                 {showAdvanced && (
-                  <div className="grid grid-cols-2 gap-4 pt-1">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                     <div>
                       <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Budget Range</label>
-                      <select value={budgetRange} onChange={e => setBudgetRange(e.target.value)} className="w-full px-4 py-3.5 bg-background border border-border rounded-[4px] text-[14px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
+                      <select value={budgetRange} onChange={e => setBudgetRange(e.target.value)} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
                         <option value="">Any budget</option>
                         {budgetRanges.map(b => <option key={b} value={b}>{b}</option>)}
                       </select>
                     </div>
                     <div>
                       <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Geography</label>
-                      <select value={geography} onChange={e => setGeography(e.target.value)} className="w-full px-4 py-3.5 bg-background border border-border rounded-[4px] text-[14px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
+                      <select value={geography} onChange={e => setGeography(e.target.value)} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
                         <option value="">Any geography</option>
                         <option value="EU-wide">EU-wide</option>
                         <option value="National">National</option>
@@ -200,16 +152,49 @@ const PublicScan = () => {
                     </div>
                   </div>
                 )}
-                <button type="submit" disabled={isScanning} className="w-full py-4 bg-info text-info-foreground text-[14px] font-bold tracking-wide rounded-[4px] hover:bg-info/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2.5 active:scale-[0.97] shadow-md shadow-info/20">
+                <button type="submit" disabled={isScanning} className="w-full py-4 bg-info text-info-foreground text-[15px] font-bold tracking-wide rounded-[6px] hover:bg-info/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2.5 active:scale-[0.97] shadow-lg shadow-info/25">
                   {isScanning ? <><Loader2 className="h-4 w-4 animate-spin" /> Scanning 940+ calls…</> : <><Search className="h-4 w-4" /> Scan Opportunities</>}
                 </button>
-                <p className="text-[11px] text-foreground/60 text-center">Free · No account required · Real EU data</p>
+                <p className="text-[11px] text-foreground/55 text-center">Free · No account required · Real EU data</p>
               </form>
             </div>
-          </section>
-        )}
+          )}
 
-        {/* ═══ RESULTS ═══ */}
+          {/* Stat blocks + mascot row below form */}
+          {!showResults && (
+            <div className="max-w-[780px] mx-auto mt-10 flex flex-col sm:flex-row items-center justify-between gap-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.7s" }}>
+              <div className="flex items-center gap-5">
+                <StatBlock number="940+" label="Active calls" />
+                <StatBlock number="3" label="Free matches" />
+                <StatBlock number="60s" label="To results" />
+              </div>
+              <div className="flex items-center gap-4">
+                <img src={inkMascot} alt="INK mascot" className="w-16 sm:w-20 h-auto animate-float drop-shadow-lg" />
+                <p className="text-[12px] sm:text-[13px] font-bold text-foreground/80 italic max-w-[180px] leading-snug">
+                  "I can slap 8 grants at once."
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ═══ HOW IT WORKS ═══ */}
+      {!showResults && (
+        <section className="py-16 sm:py-20 border-t border-border/40">
+          <div className="max-w-[780px] mx-auto px-4 sm:px-6">
+            <p className="text-[10px] font-bold tracking-[0.18em] uppercase text-info mb-6 text-center opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s", animationFillMode: "forwards" }}>How it works</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <HowItWorksStep step={1} icon={<FileText className="h-4 w-4" />} title="Describe your project" description="Tell us what you want to fund in one sentence" />
+              <HowItWorksStep step={2} icon={<Target className="h-4 w-4" />} title="Get matched calls" description="AI matches your profile against 940+ live calls" />
+              <HowItWorksStep step={3} icon={<Zap className="h-4 w-4" />} title="Start your application" description="Turn the best match into an active workflow" />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ═══ RESULTS + PRICING + FOOTER ═══ */}
+      <div className="max-w-[1080px] mx-auto px-4 sm:px-6">
         {showResults && (
           <div ref={resultsRef} className="space-y-8 relative z-10 mb-20">
             <div className="flex items-center justify-between opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
@@ -250,8 +235,8 @@ const PublicScan = () => {
 
                 {/* Unlock CTA */}
                 <div className="px-8 py-16 text-center bg-gradient-to-b from-card to-info/[0.08]">
-                  <div className="animate-float inline-block mb-6">
-                    <img src={inkMascot} alt="" className="h-28 w-auto drop-shadow-xl" />
+                  <div className="animate-float inline-block mb-4">
+                    <img src={inkMascot} alt="" className="h-20 w-auto drop-shadow-xl" />
                   </div>
                   <h3 className="text-[24px] font-extrabold text-foreground tracking-[-0.03em] mb-3">
                     Unlock {lockedCount} more matches & full platform
@@ -277,10 +262,7 @@ const PublicScan = () => {
 
         {/* ═══ FOOTER ═══ */}
         <footer className="py-12 border-t border-border/40 text-center">
-          <div className="flex items-center justify-center gap-2.5 mb-4">
-            <img src={inkLogo} alt="INK" className="h-11 w-11 object-contain" />
-            <span className="font-extrabold text-foreground tracking-[-0.04em] text-[15px]">INK</span>
-          </div>
+          <InkLogo size={32} className="justify-center mb-4" />
           <p className="text-[11px] text-foreground/65">© {new Date().getFullYear()} INK. Agentic funding operations platform.</p>
         </footer>
       </div>
