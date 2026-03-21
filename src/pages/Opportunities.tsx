@@ -1,6 +1,7 @@
 import { opportunities } from "@/data/sampleData";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
+import { AgentAction } from "@/components/shared/AgentAction";
 import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
 import { useState } from "react";
@@ -26,7 +27,11 @@ const Opportunities = () => {
           <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Matched Opportunities</p>
           <h1 className="ink-page-title">Opportunities</h1>
         </div>
-        <span className="text-[11px] text-muted-foreground pb-1">{filtered.length} calls</span>
+        <div className="flex items-center gap-4 pb-1">
+          <AgentAction label="Compare shortlisted" variant="strategic" />
+          <AgentAction label="Find partners" variant="coordination" />
+          <span className="text-[11px] text-muted-foreground">{filtered.length} calls</span>
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-5">

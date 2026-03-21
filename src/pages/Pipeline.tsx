@@ -1,5 +1,6 @@
 import { pipelineStages, getOpportunitiesByStage, workflows } from "@/data/sampleData";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
+import { AgentActionPanel } from "@/components/shared/AgentAction";
 import { Link } from "react-router-dom";
 
 const Pipeline = () => {
@@ -12,6 +13,17 @@ const Pipeline = () => {
         </div>
         <span className="text-[11px] text-muted-foreground pb-1">{workflows.length} active workflows</span>
       </div>
+
+      <AgentActionPanel
+        label="Pipeline intelligence"
+        actions={[
+          { label: 'Highlight priorities', variant: 'strategic' },
+          { label: 'Flag at-risk workflows', variant: 'compliance' },
+          { label: 'Detect capacity overload', variant: 'coordination' },
+          { label: 'Recommend this week', variant: 'strategic' },
+          { label: 'Summarize bottlenecks', variant: 'coordination' },
+        ]}
+      />
 
       <div className="flex gap-5 overflow-x-auto pb-4">
         {pipelineStages.map(stage => {

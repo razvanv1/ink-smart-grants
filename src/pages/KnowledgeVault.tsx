@@ -1,4 +1,5 @@
 import { knowledgeAssets } from "@/data/sampleData";
+import { AgentActionPanel, AgentAction } from "@/components/shared/AgentAction";
 import { Search } from "lucide-react";
 import { useState } from "react";
 
@@ -43,9 +44,19 @@ const KnowledgeVault = () => {
         </div>
       </div>
 
+      <AgentActionPanel
+        label="Knowledge actions"
+        actions={[
+          { label: 'Find reusable sections', variant: 'knowledge' },
+          { label: 'Extract proposal assets', variant: 'drafting' },
+          { label: 'Suggest for active workflows', variant: 'strategic' },
+          { label: 'Tag assets for reuse', variant: 'knowledge' },
+        ]}
+      />
+
       <div>
         {filtered.map((asset, i) => (
-          <div key={asset.id} className="flex items-start gap-6 py-5 border-b border-border/50 cursor-pointer hover:bg-secondary/20 -mx-3 px-3 rounded transition-colors">
+          <div key={asset.id} className="flex items-start gap-6 py-5 border-b border-border/50 cursor-pointer hover:bg-secondary/20 -mx-3 px-3 rounded transition-colors group">
             <span className="text-[11px] font-bold text-muted-foreground/30 pt-0.5 w-5 shrink-0" style={{ fontVariantNumeric: 'tabular-nums' }}>{String(i + 1).padStart(2, '0')}</span>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-3 mb-1">
@@ -65,6 +76,9 @@ const KnowledgeVault = () => {
                 {asset.tags.slice(0, 3).map(tag => (
                   <span key={tag}>{tag}</span>
                 ))}
+                <span className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                  <AgentAction label="Summarize" variant="knowledge" compact />
+                </span>
               </div>
             </div>
             <span className="text-[11px] text-muted-foreground shrink-0 pt-0.5" style={{ fontVariantNumeric: 'tabular-nums' }}>{asset.createdAt}</span>
