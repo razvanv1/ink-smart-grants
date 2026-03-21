@@ -118,7 +118,7 @@ Find the most relevant EU and national funding calls for this profile. Return ex
     if (!response.ok) {
       if (response.status === 429) {
         return new Response(
-          JSON.stringify({ error: "Rate limited — please try again shortly." }),
+          JSON.stringify({ error: "Rate limited. Please try again shortly." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }

@@ -96,7 +96,7 @@ function IntRow({ name, connected }: { name: string; connected?: boolean }) {
     <div className="flex items-center justify-between">
       <span className="text-[13px] text-foreground">{name}</span>
       <span className={`text-[10px] tracking-wider uppercase font-semibold ${connected ? 'text-success' : 'text-muted-foreground/40'}`}>
-        {connected ? 'Connected' : '—'}
+        {connected ? 'Connected' : '-'}
       </span>
     </div>
   );

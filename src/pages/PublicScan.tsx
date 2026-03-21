@@ -343,8 +343,8 @@ function FreeResultCard({ match, index }: { match: ScanMatch; index: number }) {
             <MiniStat label="Complexity" value={match.complexity} />
           </div>
           <div className="space-y-2.5">
-            <p className="text-[12px] text-foreground/75 leading-relaxed"><span className="font-semibold text-foreground">Why it fits — </span>{match.whyItFits}</p>
-            <p className="text-[12px] text-foreground/75 leading-relaxed"><span className="font-semibold text-foreground">Key challenge — </span>{match.whyDifficult}</p>
+            <p className="text-[12px] text-foreground/75 leading-relaxed"><span className="font-semibold text-foreground">Why it fits: </span>{match.whyItFits}</p>
+            <p className="text-[12px] text-foreground/75 leading-relaxed"><span className="font-semibold text-foreground">Key challenge: </span>{match.whyDifficult}</p>
           </div>
           <div className="mt-4 pt-3 border-t border-border/20 flex items-center justify-between">
             <p className="text-[11px] text-foreground/70"><span className="font-semibold text-foreground">Next step:</span> {match.recommendedAction}</p>
