@@ -87,7 +87,7 @@ export function AgentActionPanel({ actions, context, className = '' }: AgentActi
       {secondaryActions.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {secondaryActions.map(a => (
-            <AgentAction key={a.label} label={a.label} hint={a.hint} variant={a.variant} />
+            <AgentAction key={a.label} label={a.label} hint={a.hint} variant={a.variant} onClick={a.onClick} disabled={a.disabled} />
           ))}
         </div>
       )}
