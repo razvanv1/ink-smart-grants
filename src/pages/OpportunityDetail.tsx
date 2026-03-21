@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { opportunities, workflows } from "@/data/sampleData";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator, ReadinessBar } from "@/components/shared/ScoreBadge";
+import { AgentActionPanel } from "@/components/shared/AgentAction";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
 const OpportunityDetail = () => {
@@ -68,6 +69,18 @@ const OpportunityDetail = () => {
             <Detail label="Type" value={opp.fundingType} />
             <Detail label="Eligibility" value={opp.eligibility} />
           </div>
+
+          <AgentActionPanel
+            label="Agent actions"
+            actions={[
+              { label: 'Explain fit', variant: 'strategic' },
+              { label: 'Estimate effort', variant: 'strategic' },
+              { label: 'Find partners', variant: 'coordination' },
+              { label: 'Flag risks', variant: 'compliance' },
+              { label: 'Generate brief', variant: 'drafting' },
+              { label: 'Compare similar calls', variant: 'knowledge' },
+            ]}
+          />
         </div>
 
         <div className="md:col-span-2 space-y-8">

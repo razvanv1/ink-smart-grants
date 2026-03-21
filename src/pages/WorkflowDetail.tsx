@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { workflows, tasks as allTasks, agentEvents, workflowStages } from "@/data/sampleData";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ReadinessBar } from "@/components/shared/ScoreBadge";
+import { AgentActionPanel, AgentActionRow } from "@/components/shared/AgentAction";
 import { ArrowLeft, AlertTriangle } from "lucide-react";
 import { useState } from "react";
 
@@ -111,30 +112,52 @@ const WorkflowDetail = () => {
 
       <div>
         {activeTab === 'Overview' && (
-          <div className="grid md:grid-cols-5 gap-10">
-            <div className="md:col-span-3 space-y-6">
-              <p className="text-[14px] text-foreground/75 leading-[1.75] text-pretty">
-                Proposal drafting underway. Impact and objectives drafted from prior KA2 application. Budget and partnership sections pending external inputs. Co-financing letter required within 5 days.
-              </p>
-              <div className="space-y-3">
-                <Signal label="Next" value={wf.nextMilestone} />
-                <Signal label="Blocker" value="Partner budget inputs overdue" highlight />
-                <Signal label="Recommended" value="Follow up with TU Berlin" />
+          <div className="space-y-8">
+            <div className="grid md:grid-cols-5 gap-10">
+              <div className="md:col-span-3 space-y-6">
+                <p className="text-[14px] text-foreground/75 leading-[1.75] text-pretty">
+                  Proposal drafting underway. Impact and objectives drafted from prior KA2 application. Budget and partnership sections pending external inputs. Co-financing letter required within 5 days.
+                </p>
+                <div className="space-y-3">
+                  <Signal label="Next" value={wf.nextMilestone} />
+                  <Signal label="Blocker" value="Partner budget inputs overdue" highlight />
+                  <Signal label="Recommended" value="Follow up with TU Berlin" />
+                </div>
+              </div>
+              <div className="md:col-span-2 border-l border-border pl-8">
+                <div className="grid grid-cols-2 gap-y-5 gap-x-6">
+                  <Stat label="Sections" value="5/8" />
+                  <Stat label="Tasks" value={`${wfTasks.filter(t => t.status === 'done').length}/${wfTasks.length}`} />
+                  <Stat label="Missing" value={String(missingInputs.length)} />
+                  <Stat label="Compliance" value={`${complianceChecks.filter(c => c.status === 'pass').length}/${complianceChecks.length}`} />
+                </div>
               </div>
             </div>
-            <div className="md:col-span-2 border-l border-border pl-8">
-              <div className="grid grid-cols-2 gap-y-5 gap-x-6">
-                <Stat label="Sections" value="5/8" />
-                <Stat label="Tasks" value={`${wfTasks.filter(t => t.status === 'done').length}/${wfTasks.length}`} />
-                <Stat label="Missing" value={String(missingInputs.length)} />
-                <Stat label="Compliance" value={`${complianceChecks.filter(c => c.status === 'pass').length}/${complianceChecks.length}`} />
-              </div>
-            </div>
+
+            <AgentActionPanel
+              label="Workflow actions"
+              actions={[
+                { label: 'Draft missing sections', variant: 'drafting' },
+                { label: 'Generate outline', variant: 'drafting' },
+                { label: 'Identify blockers', variant: 'compliance' },
+                { label: 'Build task list', variant: 'coordination' },
+                { label: 'Check readiness', variant: 'compliance' },
+                { label: 'Summarize missing inputs', variant: 'coordination' },
+                { label: 'Prepare partner summary', variant: 'coordination' },
+              ]}
+            />
           </div>
         )}
 
         {activeTab === 'Draft' && (
           <div>
+            <AgentActionRow
+              actions={[
+                { label: 'Draft missing sections', variant: 'drafting' },
+                { label: 'Reuse from vault', variant: 'knowledge' },
+              ]}
+              className="mb-5"
+            />
             {draftSections.map((s, i) => (
               <div key={i} className="flex items-center justify-between py-3.5 border-b border-border/40">
                 <div className="flex items-center gap-4">
@@ -155,6 +178,13 @@ const WorkflowDetail = () => {
 
         {activeTab === 'Inputs' && (
           <div>
+            <AgentActionRow
+              actions={[
+                { label: 'Summarize gaps', variant: 'coordination' },
+                { label: 'Prepare request email', variant: 'coordination' },
+              ]}
+              className="mb-5"
+            />
             {missingInputs.map((input, i) => (
               <div key={i} className="flex items-center justify-between py-3.5 border-b border-border/40">
                 <p className="text-[13px] text-foreground">{input.item}</p>
@@ -169,6 +199,13 @@ const WorkflowDetail = () => {
 
         {activeTab === 'Tasks' && (
           <div>
+            <AgentActionRow
+              actions={[
+                { label: 'Build task list', variant: 'coordination' },
+                { label: 'Detect dependencies', variant: 'compliance' },
+              ]}
+              className="mb-5"
+            />
             {wfTasks.length > 0 ? wfTasks.map(task => (
               <div key={task.id} className="flex items-center justify-between py-3.5 border-b border-border/40">
                 <div>
@@ -188,6 +225,13 @@ const WorkflowDetail = () => {
 
         {activeTab === 'Compliance' && (
           <div>
+            <AgentActionRow
+              actions={[
+                { label: 'Review compliance gaps', variant: 'compliance' },
+                { label: 'Surface missing annexes', variant: 'compliance' },
+              ]}
+              className="mb-5"
+            />
             {complianceChecks.map((c, i) => (
               <div key={i} className="flex items-center justify-between py-3.5 border-b border-border/40">
                 <div className="flex items-center gap-4">

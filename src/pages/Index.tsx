@@ -1,6 +1,7 @@
 import { MetricCard } from "@/components/shared/MetricCard";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, ReadinessBar, UrgencyIndicator } from "@/components/shared/ScoreBadge";
+import { AgentActionPanel } from "@/components/shared/AgentAction";
 import { opportunities, workflows, agentEvents, tasks } from "@/data/sampleData";
 import { Link } from "react-router-dom";
 import { ArrowRight, AlertTriangle } from "lucide-react";
@@ -53,6 +54,16 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+
+      <AgentActionPanel
+        label="Quick actions"
+        actions={[
+          { label: 'What needs attention?', variant: 'strategic' },
+          { label: 'Surface risks', variant: 'compliance' },
+          { label: 'Best opportunities this week', variant: 'strategic' },
+          { label: 'Summarize blockers', variant: 'coordination' },
+        ]}
+      />
 
       <div className="ink-rule" />
 

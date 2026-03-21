@@ -1,5 +1,6 @@
 import { fundingProfile, currentOrganization } from "@/data/sampleData";
 import { ReadinessBar } from "@/components/shared/ScoreBadge";
+import { AgentActionPanel } from "@/components/shared/AgentAction";
 import { useState } from "react";
 
 const missingFields = ['Staff competency matrix', 'Organizational chart', 'Financial sustainability statement'];
@@ -33,6 +34,17 @@ const FundingProfile = () => {
           ))}
         </div>
       </div>
+
+      <AgentActionPanel
+        label="Profile intelligence"
+        actions={[
+          { label: 'Improve profile quality', variant: 'strategic' },
+          { label: 'Detect eligibility gaps', variant: 'compliance' },
+          { label: 'Suggest better targeting', variant: 'strategic' },
+          { label: 'Expand funding sources', variant: 'knowledge' },
+          { label: 'Highlight weaknesses', variant: 'compliance' },
+        ]}
+      />
 
       <div className="grid md:grid-cols-2 gap-y-6 gap-x-12">
         <Field label="Organization" value={currentOrganization.name} />
