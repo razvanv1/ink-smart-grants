@@ -1,14 +1,16 @@
 import { useParams, Link } from "react-router-dom";
-import { workflows, tasks as allTasks, agentEvents, workflowStages } from "@/data/sampleData";
+import { workflows, tasks as allTasks, agentEvents, workflowStages, opportunities } from "@/data/sampleData";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ReadinessBar } from "@/components/shared/ScoreBadge";
 import { AgentActionPanel, AgentActionRow } from "@/components/shared/AgentAction";
-import { ArrowLeft, AlertTriangle } from "lucide-react";
+import { ArrowLeft, AlertTriangle, Loader2, Sparkles, X } from "lucide-react";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const tabs = ['Overview', 'Draft', 'Inputs', 'Tasks', 'Compliance', 'Docs', 'Activity'];
 
-const draftSections = [
+const defaultDraftSections = [
   { name: 'Problem / Need', status: 'drafted', readiness: 78, source: 'KA2 Application 2024' },
   { name: 'Objectives', status: 'drafted', readiness: 85, source: 'Capability Statement' },
   { name: 'Activities & Work Packages', status: 'in-progress', readiness: 52 },
@@ -42,17 +44,89 @@ const documents = [
   { name: 'Partner Letters of Intent.pdf', meta: 'Partnership · 1.1 MB', date: '2026-03-10', uploadedBy: 'Elena P.' },
 ];
 
+interface GeneratedSection {
+  name: string;
+  status: string;
+  readiness: number;
+  guidance: string;
+  suggestedLength: number;
+  keyPoints: string[];
+  reusableFrom?: string;
+}
+
 const WorkflowDetail = () => {
   const { id } = useParams();
   const wf = workflows.find(w => w.id === id) || workflows[0];
+  const opp = opportunities.find(o => o.id === wf.opportunityId);
   const wfTasks = allTasks.filter(t => t.workflowId === wf.id);
   const wfEvents = agentEvents.filter(e => e.workflowId === wf.id);
   const stageIndex = workflowStages.indexOf(wf.stage);
   const [activeTab, setActiveTab] = useState('Overview');
+  const [draftSections] = useState(defaultDraftSections);
+
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedSections, setGeneratedSections] = useState<GeneratedSection[] | null>(null);
+  const [expandedSection, setExpandedSection] = useState<number | null>(null);
 
   const todoSections = draftSections.filter(s => s.status === 'todo').length;
   const missingCount = missingInputs.filter(i => i.priority === 'high').length;
   const failedChecks = complianceChecks.filter(c => c.status !== 'pass').length;
+
+  const handleBuildFirstDraft = async () => {
+    if (!opp) {
+      toast.error('No linked opportunity found');
+      return;
+    }
+
+    setIsGenerating(true);
+    toast.info('Grant Writer Agent generating proposal structure…');
+
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-draft', {
+        body: {
+          opportunity: {
+            callName: opp.callName,
+            programme: opp.programme,
+            thematicArea: opp.thematicArea,
+            fundingType: opp.fundingType,
+            fundingRange: opp.fundingRange,
+            geography: opp.geography,
+            summary: opp.summary,
+            whyItFits: opp.whyItFits,
+            partnerRequired: opp.partnerRequired,
+            complexity: opp.complexity,
+          },
+          workflow: {
+            name: wf.name,
+            stage: wf.stage,
+            deadline: wf.deadline,
+          },
+          existingSections: draftSections,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.error) {
+        toast.error(data.error);
+        return;
+      }
+
+      setGeneratedSections(data.sections);
+      setActiveTab('Draft');
+      toast.success(`Generated ${data.sections.length} proposal sections`);
+    } catch (err: any) {
+      console.error('Draft generation failed:', err);
+      toast.error(err.message || 'Failed to generate draft structure');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const dismissGenerated = () => {
+    setGeneratedSections(null);
+    setExpandedSection(null);
+  };
 
   return (
     <div className="p-8 max-w-[1060px] mx-auto space-y-8">
@@ -141,7 +215,7 @@ const WorkflowDetail = () => {
             <AgentActionPanel
               context={`${todoSections} sections not started · ${missingCount} high-priority inputs missing · ${failedChecks} compliance gaps`}
               actions={[
-                { label: 'Build first draft', variant: 'drafting', primary: todoSections > 0 },
+                { label: isGenerating ? 'Generating…' : 'Build first draft', variant: 'drafting', primary: todoSections > 0, onClick: handleBuildFirstDraft, disabled: isGenerating },
                 { label: 'Surface missing inputs', variant: 'coordination', primary: missingCount > 0 },
                 { label: 'Review readiness', variant: 'compliance', primary: true },
                 { label: 'Detect blockers', variant: 'compliance' },
@@ -155,11 +229,75 @@ const WorkflowDetail = () => {
           <div>
             <AgentActionRow
               actions={[
-                { label: 'Build missing sections', variant: 'drafting' },
+                { label: isGenerating ? 'Generating…' : 'Build missing sections', variant: 'drafting', onClick: handleBuildFirstDraft, disabled: isGenerating },
                 { label: 'Reuse past proposal content', variant: 'knowledge' },
               ]}
               className="mb-5"
             />
+
+            {isGenerating && (
+              <div className="flex items-center gap-3 py-8 justify-center">
+                <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                <span className="text-[13px] text-muted-foreground">Grant Writer Agent analyzing opportunity and generating structure…</span>
+              </div>
+            )}
+
+            {generatedSections && !isGenerating && (
+              <div className="mb-8 border border-primary/20 rounded-sm bg-primary/[0.02]">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-primary/10">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="h-3.5 w-3.5 text-primary" />
+                    <span className="text-[11px] font-bold tracking-wide uppercase text-primary">AI-generated structure</span>
+                    <span className="text-[11px] text-muted-foreground">· {generatedSections.length} sections</span>
+                  </div>
+                  <button onClick={dismissGenerated} className="text-muted-foreground hover:text-foreground transition-colors">
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+                {generatedSections.map((s, i) => (
+                  <div key={i} className="border-b border-border/30 last:border-b-0">
+                    <button
+                      onClick={() => setExpandedSection(expandedSection === i ? null : i)}
+                      className="w-full flex items-center justify-between px-4 py-3 hover:bg-primary/[0.02] transition-colors text-left"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-[11px] text-muted-foreground/40 font-bold w-5" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                          {String(i + 1).padStart(2, '0')}
+                        </span>
+                        <div>
+                          <p className="text-[13px] font-semibold text-foreground">{s.name}</p>
+                          {s.reusableFrom && (
+                            <p className="text-[11px] text-success mt-0.5">Reusable from: {s.reusableFrom}</p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className="text-[11px] text-muted-foreground">{s.suggestedLength} words</span>
+                        <StatusChip status={s.status} />
+                        <ReadinessBar score={s.readiness} segments={8} />
+                      </div>
+                    </button>
+                    {expandedSection === i && (
+                      <div className="px-4 pb-4 pl-12 space-y-3">
+                        <p className="text-[13px] text-foreground/75 leading-relaxed">{s.guidance}</p>
+                        <div>
+                          <p className="text-[10px] text-muted-foreground tracking-[0.12em] uppercase font-semibold mb-1.5">Key points</p>
+                          <ul className="space-y-1">
+                            {s.keyPoints.map((point, pi) => (
+                              <li key={pi} className="text-[12px] text-foreground/70 flex items-start gap-2">
+                                <span className="text-muted-foreground/40 mt-0.5">–</span>
+                                {point}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
             {draftSections.map((s, i) => (
               <div key={i} className="flex items-center justify-between py-3.5 border-b border-border/40">
                 <div className="flex items-center gap-4">

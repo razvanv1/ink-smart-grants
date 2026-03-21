@@ -9,6 +9,8 @@ interface AgentActionProps {
   variant?: AgentActionVariant;
   primary?: boolean;
   className?: string;
+  onClick?: () => void;
+  disabled?: boolean;
 }
 
 const variantConfig: Record<AgentActionVariant, { icon: typeof Target; accent: string; bg: string }> = {
@@ -20,15 +22,16 @@ const variantConfig: Record<AgentActionVariant, { icon: typeof Target; accent: s
   default: { icon: Target, accent: 'text-primary', bg: 'hover:bg-primary/5' },
 };
 
-export function AgentAction({ label, hint, variant = 'default', primary, className = '' }: AgentActionProps) {
+export function AgentAction({ label, hint, variant = 'default', primary, className = '', onClick, disabled }: AgentActionProps) {
   const config = variantConfig[variant];
   const Icon = config.icon;
 
   if (primary) {
     return (
       <button
-        onClick={() => toast.info(label, { description: 'Agent processing — available in production' })}
-        className={`group inline-flex items-center gap-2 px-3.5 py-2 rounded-sm border border-primary/20 bg-primary/[0.03] text-[11px] font-bold tracking-wide text-foreground hover:border-primary/40 hover:bg-primary/[0.06] transition-all active:scale-[0.97] ${className}`}
+        onClick={onClick || (() => toast.info(label, { description: 'Agent processing — available in production' }))}
+        disabled={disabled}
+        className={`group inline-flex items-center gap-2 px-3.5 py-2 rounded-sm border border-primary/20 bg-primary/[0.03] text-[11px] font-bold tracking-wide text-foreground hover:border-primary/40 hover:bg-primary/[0.06] transition-all active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none ${className}`}
       >
         <Icon className={`h-3.5 w-3.5 ${config.accent} opacity-70 group-hover:opacity-100 transition-opacity`} />
         <span>{label}</span>
@@ -39,8 +42,9 @@ export function AgentAction({ label, hint, variant = 'default', primary, classNa
 
   return (
     <button
-      onClick={() => toast.info(label, { description: 'Agent processing — available in production' })}
-      className={`group inline-flex items-center gap-1.5 px-2 py-1 rounded-sm text-[11px] font-semibold tracking-wide text-muted-foreground hover:text-foreground ${config.bg} transition-all active:scale-[0.97] ${className}`}
+      onClick={onClick || (() => toast.info(label, { description: 'Agent processing — available in production' }))}
+      disabled={disabled}
+      className={`group inline-flex items-center gap-1.5 px-2 py-1 rounded-sm text-[11px] font-semibold tracking-wide text-muted-foreground hover:text-foreground ${config.bg} transition-all active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none ${className}`}
       title={hint}
     >
       <Icon className={`h-3 w-3 ${config.accent} opacity-50 group-hover:opacity-100 transition-opacity`} />
@@ -49,8 +53,17 @@ export function AgentAction({ label, hint, variant = 'default', primary, classNa
   );
 }
 
+interface AgentActionItem {
+  label: string;
+  hint?: string;
+  variant?: AgentActionVariant;
+  primary?: boolean;
+  onClick?: () => void;
+  disabled?: boolean;
+}
+
 interface AgentActionPanelProps {
-  actions: { label: string; hint?: string; variant?: AgentActionVariant; primary?: boolean }[];
+  actions: AgentActionItem[];
   context?: string;
   className?: string;
 }
@@ -67,14 +80,14 @@ export function AgentActionPanel({ actions, context, className = '' }: AgentActi
       {primaryActions.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-2">
           {primaryActions.map(a => (
-            <AgentAction key={a.label} label={a.label} hint={a.hint} variant={a.variant} primary />
+            <AgentAction key={a.label} label={a.label} hint={a.hint} variant={a.variant} primary onClick={a.onClick} disabled={a.disabled} />
           ))}
         </div>
       )}
       {secondaryActions.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {secondaryActions.map(a => (
-            <AgentAction key={a.label} label={a.label} hint={a.hint} variant={a.variant} />
+            <AgentAction key={a.label} label={a.label} hint={a.hint} variant={a.variant} onClick={a.onClick} disabled={a.disabled} />
           ))}
         </div>
       )}
@@ -83,7 +96,7 @@ export function AgentActionPanel({ actions, context, className = '' }: AgentActi
 }
 
 interface AgentActionRowProps {
-  actions: { label: string; hint?: string; variant?: AgentActionVariant }[];
+  actions: AgentActionItem[];
   className?: string;
 }
 
@@ -91,7 +104,7 @@ export function AgentActionRow({ actions, className = '' }: AgentActionRowProps)
   return (
     <div className={`flex items-center gap-1 ${className}`}>
       {actions.map(a => (
-        <AgentAction key={a.label} label={a.label} hint={a.hint} variant={a.variant} />
+        <AgentAction key={a.label} label={a.label} hint={a.hint} variant={a.variant} onClick={a.onClick} disabled={a.disabled} />
       ))}
     </div>
   );
