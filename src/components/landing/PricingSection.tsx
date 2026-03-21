@@ -57,11 +57,11 @@ export function PricingSection() {
   return (
     <section id="pricing" className="py-24">
       <div className="text-center mb-16 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s", animationFillMode: "forwards" }}>
-        <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary mb-3">Pricing</p>
+        <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info mb-3">Pricing</p>
         <h2 className="text-[32px] font-extrabold text-foreground tracking-[-0.035em] leading-[1.1] mb-4">
           Simple pricing. No long-term contracts.
         </h2>
-        <p className="text-[15px] text-muted-foreground max-w-[500px] mx-auto leading-relaxed">
+        <p className="text-[15px] text-foreground/75 max-w-[500px] mx-auto leading-relaxed">
           Start free for 14 days. Full platform access, no credit card required.
         </p>
       </div>
@@ -72,14 +72,14 @@ export function PricingSection() {
             key={plan.name}
             className={`relative rounded-[6px] border p-6 flex flex-col opacity-0 animate-fade-in-up ${
               plan.popular
-                ? "border-primary bg-primary/[0.02] shadow-lg shadow-primary/[0.06]"
-                : "border-border bg-card"
+                ? "border-info/70 bg-info/[0.06] shadow-lg shadow-info/[0.15]"
+                : "border-border bg-card shadow-sm"
             }`}
             style={{ animationDelay: `${0.2 + i * 0.1}s`, animationFillMode: "forwards" }}
           >
             {plan.popular && (
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="text-[10px] font-bold tracking-[0.12em] uppercase bg-primary text-primary-foreground px-3 py-1 rounded-[3px]">
+                <span className="text-[10px] font-bold tracking-[0.12em] uppercase bg-info text-info-foreground px-3 py-1 rounded-[3px]">
                   Most popular
                 </span>
               </div>
@@ -90,19 +90,19 @@ export function PricingSection() {
               <div className="flex items-baseline gap-1.5">
                 <span className="text-[36px] font-extrabold text-foreground tracking-[-0.04em] leading-none">{plan.price}</span>
                 {plan.price !== "Custom" && (
-                  <span className="text-[12px] text-muted-foreground">{plan.period}</span>
+                  <span className="text-[12px] text-foreground/70">{plan.period}</span>
                 )}
               </div>
               {plan.price === "Custom" && (
-                <span className="text-[12px] text-muted-foreground">{plan.period}</span>
+                <span className="text-[12px] text-foreground/70">{plan.period}</span>
               )}
-              <p className="text-[12px] text-muted-foreground mt-3 leading-relaxed">{plan.description}</p>
+              <p className="text-[12px] text-foreground/70 mt-3 leading-relaxed">{plan.description}</p>
             </div>
 
             <ul className="space-y-2.5 mb-8 flex-1">
               {plan.features.map((f) => (
-                <li key={f} className="flex items-start gap-2.5 text-[12px] text-foreground/80">
-                  <Check className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+                <li key={f} className="flex items-start gap-2.5 text-[12px] text-foreground/90">
+                  <Check className="h-3.5 w-3.5 text-info mt-0.5 shrink-0" />
                   <span>{f}</span>
                 </li>
               ))}
@@ -112,7 +112,7 @@ export function PricingSection() {
               onClick={() => navigate("/auth")}
               className={`w-full py-3 text-[13px] font-bold tracking-wide rounded-[3px] flex items-center justify-center gap-2 active:scale-[0.97] transition-all ${
                 plan.popular
-                  ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm shadow-primary/20"
+                  ? "bg-info text-info-foreground hover:bg-info/90 shadow-sm shadow-info/20"
                   : "bg-foreground text-background hover:bg-foreground/90"
               }`}
             >
