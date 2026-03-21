@@ -28,7 +28,7 @@ const queryClient = new QueryClient();
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
-  if (!user) return <Navigate to="/auth" replace />;
+  if (!user) return <Navigate to="/landing" replace />;
   return <>{children}</>;
 }
 
@@ -41,7 +41,8 @@ function AppRoutes() {
     <Routes>
       <Route path="/auth" element={user ? <Navigate to="/" replace /> : <Auth />} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/scan-public" element={<PublicScan />} />
+      <Route path="/scan-public" element={user ? <Navigate to="/" replace /> : <PublicScan />} />
+      <Route path="/landing" element={user ? <Navigate to="/" replace /> : <PublicScan />} />
       <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
       <Route
         path="/*"
