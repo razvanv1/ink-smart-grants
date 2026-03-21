@@ -67,11 +67,11 @@ export function PricingSection() {
         </p>
       </ScrollReveal>
 
-      <div className="grid md:grid-cols-3 gap-5 max-w-[960px] mx-auto">
+      <div className="grid md:grid-cols-3 gap-5 max-w-[960px] mx-auto items-stretch">
         {plans.map((plan, i) => (
-          <ScrollReveal key={plan.name} delay={140 + i * 90}>
+          <ScrollReveal key={plan.name} delay={140 + i * 90} className="flex">
           <div
-            className={`relative rounded-[6px] border p-6 flex flex-col ${
+            className={`relative rounded-[6px] border p-6 flex flex-col w-full ${
               plan.popular
                 ? "border-info/70 bg-info/[0.06] shadow-lg shadow-info/[0.15]"
                 : "border-border bg-card shadow-sm"
@@ -110,7 +110,7 @@ export function PricingSection() {
 
             <button
               onClick={() => navigate("/auth")}
-              className={`w-full py-3 text-[13px] font-bold tracking-wide rounded-[3px] flex items-center justify-center gap-2 active:scale-[0.97] transition-all ${
+              className={`w-full py-3 text-[13px] font-bold tracking-wide rounded-[3px] flex items-center justify-center gap-2 active:scale-[0.97] transition-all mt-auto ${
                 plan.popular
                   ? "bg-info text-info-foreground hover:bg-info/90 shadow-sm shadow-info/20"
                   : "bg-foreground text-background hover:bg-foreground/90"

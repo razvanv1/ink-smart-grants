@@ -262,17 +262,19 @@ const PublicScan = () => {
 };
 
 /* ── How It Works step ── */
-function HowItWorksStep({ step, icon, title, description }: { step: number; icon: React.ReactNode; title: string; description: string }) {
+function HowItWorksStep({ step, title, description }: { step: number; title: string; description: string }) {
+  const colors = [
+    "from-info/20 to-info/5 text-info border-info/30",
+    "from-warning/20 to-warning/5 text-warning border-warning/30",
+    "from-success/20 to-success/5 text-success border-success/30",
+  ];
   return (
-    <div className="flex items-start gap-3 p-3.5 rounded-[6px] border border-border bg-card hover:border-info/40 hover:shadow-sm hover:shadow-info/10 transition-all duration-200">
-      <div className="h-8 w-8 rounded-[4px] bg-info/12 flex items-center justify-center shrink-0 text-info">
-        {icon}
+    <div className="relative flex flex-col items-center text-center p-5 rounded-[8px] border border-border bg-card hover:shadow-md hover:shadow-info/[0.08] transition-all duration-300 group">
+      <div className={`h-12 w-12 rounded-full bg-gradient-to-br ${colors[step - 1]} border flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+        <span className="text-[20px] font-extrabold leading-none">{step}</span>
       </div>
-      <div className="min-w-0">
-        <p className="text-[12px] font-bold text-foreground leading-snug">{title}</p>
-        <p className="text-[11px] text-foreground/70 leading-relaxed mt-0.5">{description}</p>
-      </div>
-      <span className="text-[10px] font-extrabold text-info/55 shrink-0 pt-0.5">{step}</span>
+      <p className="text-[14px] font-bold text-foreground leading-snug mb-1.5">{title}</p>
+      <p className="text-[12px] text-foreground/70 leading-relaxed">{description}</p>
     </div>
   );
 }
