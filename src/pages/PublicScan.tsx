@@ -272,10 +272,7 @@ const PublicScan = () => {
         <PricingSection />
 
         {/* ═══ FOOTER ═══ */}
-        <footer className="py-12 border-t border-border/40 text-center">
-          <InkLogo size={32} className="justify-center mb-4" />
-          <p className="text-[11px] text-foreground/65">© {new Date().getFullYear()} INK. Agentic funding operations platform.</p>
-        </footer>
+        <Footer variant="landing" />
       </div>
     </div>
   );
