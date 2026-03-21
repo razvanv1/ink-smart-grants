@@ -77,15 +77,13 @@ const PublicScan = () => {
 
       {/* ═══ HERO ═══ */}
       <section className="relative pt-14 overflow-hidden">
-        {/* Subtle geometric background */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-          <div className="absolute inset-x-0 top-0 h-[500px] bg-gradient-to-b from-muted/60 to-transparent" />
+        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+          <div className="absolute inset-x-0 top-0 h-[600px] bg-gradient-to-b from-muted/50 to-transparent" />
         </div>
 
-        <div className="relative w-full max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pt-20 sm:pt-28 pb-16">
-          {/* Two-column hero: left text, right mascot */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-20 items-center">
-            <div className="max-w-[720px]">
+        <div className="relative w-full px-6 sm:px-10 lg:px-20 xl:px-28 pt-20 sm:pt-28 pb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_440px] gap-10 lg:gap-16 items-center max-w-[1600px] mx-auto">
+            <div>
               <button
                 onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-info/30 bg-info/[0.06] text-[11px] font-bold tracking-wide uppercase text-info hover:bg-info/[0.12] active:scale-[0.97] transition-all mb-6 opacity-0 animate-fade-in-up"
@@ -95,7 +93,7 @@ const PublicScan = () => {
                 <ChevronDown className="h-3 w-3" />
               </button>
 
-              <h1 className="text-[36px] sm:text-[48px] lg:text-[60px] font-extrabold text-foreground tracking-[-0.045em] leading-[1.02] mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.2s", lineHeight: "1.05" }}>
+              <h1 className="text-[38px] sm:text-[52px] lg:text-[62px] xl:text-[72px] font-extrabold text-foreground tracking-[-0.045em] mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.2s", lineHeight: "1.04" }}>
                 Find funding for<br />
                 <TypewriterText
                   phrases={["AI training programs", "green energy projects", "digital innovation labs", "research consortiums", "social impact startups"]}
@@ -103,39 +101,39 @@ const PublicScan = () => {
                 />
               </h1>
 
-              <p className="text-[15px] sm:text-[17px] text-foreground/75 leading-[1.7] max-w-[560px] mb-8 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.35s" }}>
+              <p className="text-[16px] sm:text-[18px] lg:text-[19px] text-foreground/70 leading-[1.7] max-w-[620px] mb-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.35s" }}>
                 A funding operations platform that monitors opportunities, decides what's worth pursuing, builds applications faster and pushes execution all the way to submission.
               </p>
 
               <div className="flex items-center gap-4 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
                 <button
                   onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                  className="px-7 py-3.5 bg-foreground text-background text-[14px] font-bold rounded-[4px] hover:bg-foreground/90 active:scale-[0.97] transition-all shadow-sm"
+                  className="px-8 py-4 bg-foreground text-background text-[15px] font-bold rounded-[4px] hover:bg-foreground/90 active:scale-[0.97] transition-all shadow-sm"
                 >
                   Start Scanning
                 </button>
                 <button
                   onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="px-7 py-3.5 text-[14px] font-semibold text-foreground/80 hover:text-foreground transition-colors"
+                  className="px-8 py-4 text-[15px] font-semibold text-foreground/70 hover:text-foreground transition-colors"
                 >
                   View Pricing
                 </button>
               </div>
             </div>
 
-            {/* Mascot block */}
-            <div className="hidden lg:flex flex-col items-center gap-4 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-              <img src={octopusImg} alt="INK octopus mascot" className="w-[220px] h-auto drop-shadow-lg" />
-              <p className="text-[16px] font-extrabold text-foreground/70 tracking-[-0.01em] italic leading-snug text-center">
+            {/* Mascot — large and prominent */}
+            <div className="hidden lg:flex flex-col items-center gap-5 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+              <img src={octopusImg} alt="INK octopus mascot" className="w-full max-w-[380px] xl:max-w-[440px] h-auto drop-shadow-2xl" />
+              <p className="text-[18px] xl:text-[20px] font-extrabold text-foreground/65 tracking-[-0.01em] italic leading-snug text-center">
                 "I can slap<br />8 grants at once."
               </p>
             </div>
           </div>
 
           {/* Mobile mascot */}
-          <div className="flex lg:hidden items-center justify-center gap-3 mt-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-            <img src={octopusImg} alt="INK octopus" className="h-20 w-auto" />
-            <p className="text-[15px] font-extrabold text-foreground/70 italic leading-snug text-left">
+          <div className="flex lg:hidden items-center justify-center gap-4 mt-12 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+            <img src={octopusImg} alt="INK octopus" className="h-24 w-auto" />
+            <p className="text-[16px] font-extrabold text-foreground/65 italic leading-snug text-left">
               "I can slap<br />8 grants at once."
             </p>
           </div>
@@ -143,16 +141,17 @@ const PublicScan = () => {
       </section>
 
       {/* ═══ HOW IT WORKS + SCAN FORM ═══ */}
-      <div className="w-full max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pb-16">
+      <div className="w-full px-6 sm:px-10 lg:px-20 xl:px-28 pb-20">
+        <div className="max-w-[1600px] mx-auto">
           {/* ═══ HOW IT WORKS ═══ */}
           {!showResults && (
-            <ScrollReveal delay={120} className="max-w-[960px] mx-auto mb-14">
+            <ScrollReveal delay={120} className="mb-16">
               <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info text-center mb-2">How It Works</p>
-              <h2 className="text-[22px] sm:text-[26px] font-extrabold text-foreground tracking-[-0.03em] text-center mb-2">Get matched in 3 simple steps</h2>
-              <p className="text-[13px] text-foreground/70 text-center mb-8 max-w-[480px] mx-auto leading-relaxed">
+              <h2 className="text-[24px] sm:text-[30px] font-extrabold text-foreground tracking-[-0.03em] text-center mb-3">Get matched in 3 simple steps</h2>
+              <p className="text-[14px] text-foreground/65 text-center mb-10 max-w-[520px] mx-auto leading-relaxed">
                 Our AI scans 940+ live EU & national funding calls and matches them to your project profile. No expertise needed.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <ScrollReveal delay={180}><HowItWorksStep step={1} title="Describe your project" description="Tell us what you want to fund: a training program, research project, or innovation idea. One sentence is enough." /></ScrollReveal>
                 <ScrollReveal delay={260}><HowItWorksStep step={2} title="Get matched calls" description="Our AI instantly compares your profile against all active calls and ranks them by fit score, deadline & budget." /></ScrollReveal>
                 <ScrollReveal delay={340}><HowItWorksStep step={3} title="Start your application" description="Pick your best match and turn it into an active workflow with checklists, AI drafting, and deadline tracking." /></ScrollReveal>
@@ -162,36 +161,36 @@ const PublicScan = () => {
 
           {/* ═══ SCAN FORM ═══ */}
           {!showResults && (
-            <ScrollReveal delay={220} id="scan-form" className="max-w-[960px] mx-auto bg-card rounded-[14px] border-2 border-info/40 shadow-[0_8px_60px_-12px_hsl(var(--info)/0.25),0_2px_12px_-4px_hsl(var(--info)/0.10)] p-6 sm:p-10 relative overflow-hidden">
+            <ScrollReveal delay={220} id="scan-form" className="max-w-[1100px] mx-auto bg-card rounded-[14px] border-2 border-info/40 shadow-[0_8px_60px_-12px_hsl(var(--info)/0.25),0_2px_12px_-4px_hsl(var(--info)/0.10)] p-7 sm:p-12 relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-info/60 via-info to-info/60" />
-              <h2 className="text-[22px] sm:text-[28px] font-extrabold text-foreground tracking-[-0.03em] leading-tight mb-2">
+              <h2 className="text-[24px] sm:text-[32px] font-extrabold text-foreground tracking-[-0.03em] leading-tight mb-2">
                 What do you want to fund?
               </h2>
-              <p className="text-[13px] text-foreground/65 leading-relaxed mb-6">
+              <p className="text-[14px] text-foreground/60 leading-relaxed mb-7">
                 Describe your project, idea, or funding need in as much detail as possible. The more you tell us about your objectives, target group, and domain, the more precise our AI matchmaking will be against active calls.
               </p>
               <form onSubmit={handleScan} className="space-y-5">
                 <div>
                   <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Project Description</label>
-                  <textarea value={projectIntent} onChange={e => setProjectIntent(e.target.value)} placeholder="e.g. We want to build an AI-powered training platform for healthcare professionals across 3 EU countries, targeting upskilling in digital health tools..." rows={3} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all resize-none" />
+                  <textarea value={projectIntent} onChange={e => setProjectIntent(e.target.value)} placeholder="e.g. We want to build an AI-powered training platform for healthcare professionals across 3 EU countries, targeting upskilling in digital health tools..." rows={4} className="w-full px-5 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all resize-none" />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Organization Type</label>
-                    <select value={organizationType} onChange={e => setOrganizationType(e.target.value)} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
+                    <select value={organizationType} onChange={e => setOrganizationType(e.target.value)} className="w-full px-5 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
                       <option value="">Select type</option>
                       {orgTypes.map(t => <option key={t} value={t}>{t}</option>)}
                     </select>
                   </div>
                   <div>
                     <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Primary Domain</label>
-                    <select value={primaryDomain} onChange={e => setPrimaryDomain(e.target.value)} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
+                    <select value={primaryDomain} onChange={e => setPrimaryDomain(e.target.value)} className="w-full px-5 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
                       <option value="">Select domain</option>
                       {domains.map(d => <option key={d} value={d}>{d}</option>)}
                     </select>
                   </div>
                 </div>
-                <button type="button" onClick={() => setShowAdvanced(!showAdvanced)} className="w-full flex items-center justify-center gap-2 py-3 rounded-[6px] border border-dashed border-info/40 bg-info/[0.04] text-[12px] font-bold text-info hover:bg-info/[0.08] hover:border-info/60 transition-all active:scale-[0.98]">
+                <button type="button" onClick={() => setShowAdvanced(!showAdvanced)} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-[6px] border border-dashed border-info/40 bg-info/[0.04] text-[13px] font-bold text-info hover:bg-info/[0.08] hover:border-info/60 transition-all active:scale-[0.98]">
                   {showAdvanced ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
                   {showAdvanced ? "Hide Advanced Filters" : "Show Advanced Filters (Grant Type, Status, Budget, Geography)"}
                 </button>
@@ -199,50 +198,51 @@ const PublicScan = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                     <div>
                       <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Grant Type</label>
-                      <select value={grantType} onChange={e => setGrantType(e.target.value)} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
+                      <select value={grantType} onChange={e => setGrantType(e.target.value)} className="w-full px-5 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
                         <option value="">All types</option>
                         {grantTypes.map(t => <option key={t} value={t}>{t}</option>)}
                       </select>
                     </div>
                     <div>
                       <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Funding Status</label>
-                      <select value={fundingStatus} onChange={e => setFundingStatus(e.target.value)} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
+                      <select value={fundingStatus} onChange={e => setFundingStatus(e.target.value)} className="w-full px-5 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
                         <option value="">All statuses</option>
                         {fundingStatuses.map(s => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </div>
                     <div>
                       <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Budget Range</label>
-                      <select value={budgetRange} onChange={e => setBudgetRange(e.target.value)} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
+                      <select value={budgetRange} onChange={e => setBudgetRange(e.target.value)} className="w-full px-5 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
                         <option value="">Any budget</option>
                         {budgetRanges.map(b => <option key={b} value={b}>{b}</option>)}
                       </select>
                     </div>
                     <div>
                       <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Geography</label>
-                      <select value={geography} onChange={e => setGeography(e.target.value)} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
+                      <select value={geography} onChange={e => setGeography(e.target.value)} className="w-full px-5 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
                         <option value="">Any geography</option>
                         {geographies.map(g => <option key={g} value={g}>{g}</option>)}
                       </select>
                     </div>
                   </div>
                 )}
-                <button type="submit" disabled={isScanning} className="w-full py-4 bg-info text-info-foreground text-[15px] font-bold tracking-wide rounded-[6px] hover:bg-info/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2.5 active:scale-[0.97] shadow-lg shadow-info/25">
-                  {isScanning ? <><Loader2 className="h-4 w-4 animate-spin" /> Scanning 940+ calls…</> : <><Search className="h-4 w-4" /> Scan Opportunities</>}
+                <button type="submit" disabled={isScanning} className="w-full py-4.5 bg-info text-info-foreground text-[16px] font-bold tracking-wide rounded-[6px] hover:bg-info/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2.5 active:scale-[0.97] shadow-lg shadow-info/25">
+                  {isScanning ? <><Loader2 className="h-4.5 w-4.5 animate-spin" /> Scanning 940+ calls…</> : <><Search className="h-4.5 w-4.5" /> Scan Opportunities</>}
                 </button>
-                <p className="text-[11px] text-foreground/55 text-center">Free · No account required · Real EU data</p>
+                <p className="text-[12px] text-foreground/50 text-center">Free · No account required · Real EU data</p>
               </form>
             </ScrollReveal>
           )}
 
           {/* Stat blocks */}
           {!showResults && (
-            <ScrollReveal delay={300} className="max-w-[960px] mx-auto mt-10 flex items-center justify-center gap-5">
+            <ScrollReveal delay={300} className="max-w-[1100px] mx-auto mt-12 flex items-center justify-center gap-6">
                 <StatBlock number="940+" label="Active calls" />
                 <StatBlock number="3" label="Free matches" />
                 <StatBlock number="60s" label="To results" />
             </ScrollReveal>
           )}
+        </div>
       </div>
 
       {/* ═══ RESULTS + PRICING + FOOTER ═══ */}
