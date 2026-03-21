@@ -10,6 +10,8 @@ const Dashboard = () => {
   const topOpp = opportunities.find(o => o.fitScore >= 90);
   const priorityOpps = opportunities.filter(o => o.status === 'shortlisted' || o.status === 'new').slice(0, 4);
   const activeWorkflows = workflows.filter(w => w.status === 'active' || w.status === 'at-risk');
+  const atRiskCount = workflows.filter(w => w.status === 'at-risk').length;
+  const blockedTasks = tasks.filter(t => t.status === 'blocked').length;
   const urgentTasks = tasks.filter(t => t.status === 'blocked' || t.status === 'in-progress').slice(0, 3);
   const recentEvents = agentEvents.slice(0, 4);
 
@@ -50,18 +52,17 @@ const Dashboard = () => {
             <MetricCard label="Monitored" value={opportunities.length} sub="+2 this week" />
             <MetricCard label="Matched" value={opportunities.filter(o => o.fitScore >= 60).length} sub={`${opportunities.filter(o => o.status === 'new').length} new`} />
             <MetricCard label="Workflows" value={activeWorkflows.length} />
-            <MetricCard label="At Risk" value={workflows.filter(w => w.status === 'at-risk').length} accent />
+            <MetricCard label="At Risk" value={atRiskCount} accent />
           </div>
         </div>
       )}
 
       <AgentActionPanel
-        label="Quick actions"
+        context={`${atRiskCount} workflow${atRiskCount !== 1 ? 's' : ''} at risk · ${blockedTasks} blocked task${blockedTasks !== 1 ? 's' : ''} · ${opportunities.filter(o => o.status === 'new').length} new opportunities`}
         actions={[
-          { label: 'What needs attention?', variant: 'strategic' },
-          { label: 'Surface risks', variant: 'compliance' },
-          { label: 'Best opportunities this week', variant: 'strategic' },
-          { label: 'Summarize blockers', variant: 'coordination' },
+          { label: 'Prioritize this week', variant: 'strategic', primary: true },
+          { label: 'Flag submission risks', variant: 'compliance', primary: atRiskCount > 0 },
+          { label: 'Surface blockers', variant: 'coordination' },
         ]}
       />
 

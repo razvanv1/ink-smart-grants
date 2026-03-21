@@ -4,6 +4,9 @@ import { AgentActionPanel } from "@/components/shared/AgentAction";
 import { Link } from "react-router-dom";
 
 const Pipeline = () => {
+  const atRisk = workflows.filter(w => w.status === 'at-risk').length;
+  const totalBlockers = workflows.reduce((sum, w) => sum + w.blockers, 0);
+
   return (
     <div className="p-8 space-y-8">
       <div className="flex items-end justify-between border-b border-border pb-6">
@@ -15,12 +18,11 @@ const Pipeline = () => {
       </div>
 
       <AgentActionPanel
-        label="Pipeline intelligence"
+        context={`${atRisk} at risk · ${totalBlockers} total blockers across ${workflows.length} workflows`}
         actions={[
-          { label: 'Highlight priorities', variant: 'strategic' },
-          { label: 'Flag at-risk workflows', variant: 'compliance' },
+          { label: 'Prioritize this week', variant: 'strategic', primary: true },
+          { label: 'Flag at-risk workflows', variant: 'compliance', primary: atRisk > 0 },
           { label: 'Detect capacity overload', variant: 'coordination' },
-          { label: 'Recommend this week', variant: 'strategic' },
           { label: 'Summarize bottlenecks', variant: 'coordination' },
         ]}
       />

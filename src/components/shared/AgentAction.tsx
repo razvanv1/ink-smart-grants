@@ -1,72 +1,97 @@
-import { Zap, FileText, Shield, Users, Search, Brain, BarChart3, Target } from "lucide-react";
+import { FileText, Shield, Users, Search, Target, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
 type AgentActionVariant = 'strategic' | 'drafting' | 'compliance' | 'coordination' | 'knowledge' | 'default';
 
 interface AgentActionProps {
   label: string;
+  hint?: string;
   variant?: AgentActionVariant;
-  compact?: boolean;
+  primary?: boolean;
   className?: string;
 }
 
-const variantConfig: Record<AgentActionVariant, { icon: typeof Zap; accent: string }> = {
-  strategic: { icon: Target, accent: 'text-primary' },
-  drafting: { icon: FileText, accent: 'text-foreground' },
-  compliance: { icon: Shield, accent: 'text-warning' },
-  coordination: { icon: Users, accent: 'text-info' },
-  knowledge: { icon: Search, accent: 'text-success' },
-  default: { icon: Zap, accent: 'text-primary' },
+const variantConfig: Record<AgentActionVariant, { icon: typeof Target; accent: string; bg: string }> = {
+  strategic: { icon: Target, accent: 'text-primary', bg: 'hover:bg-primary/5' },
+  drafting: { icon: FileText, accent: 'text-foreground', bg: 'hover:bg-secondary' },
+  compliance: { icon: Shield, accent: 'text-warning', bg: 'hover:bg-warning/5' },
+  coordination: { icon: Users, accent: 'text-info', bg: 'hover:bg-info/5' },
+  knowledge: { icon: Search, accent: 'text-success', bg: 'hover:bg-success/5' },
+  default: { icon: Target, accent: 'text-primary', bg: 'hover:bg-primary/5' },
 };
 
-export function AgentAction({ label, variant = 'default', compact, className = '' }: AgentActionProps) {
+export function AgentAction({ label, hint, variant = 'default', primary, className = '' }: AgentActionProps) {
   const config = variantConfig[variant];
   const Icon = config.icon;
 
+  if (primary) {
+    return (
+      <button
+        onClick={() => toast.info(label, { description: 'Agent processing — available in production' })}
+        className={`group inline-flex items-center gap-2 px-3.5 py-2 rounded-sm border border-primary/20 bg-primary/[0.03] text-[11px] font-bold tracking-wide text-foreground hover:border-primary/40 hover:bg-primary/[0.06] transition-all active:scale-[0.97] ${className}`}
+      >
+        <Icon className={`h-3.5 w-3.5 ${config.accent} opacity-70 group-hover:opacity-100 transition-opacity`} />
+        <span>{label}</span>
+        <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 -ml-1 group-hover:opacity-60 group-hover:ml-0 transition-all" />
+      </button>
+    );
+  }
+
   return (
     <button
-      onClick={() => toast.info(`${label}`, { description: 'Agent processing — available in production' })}
-      className={`group inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wide text-muted-foreground hover:text-foreground transition-colors active:scale-[0.97] ${compact ? '' : 'py-1'} ${className}`}
+      onClick={() => toast.info(label, { description: 'Agent processing — available in production' })}
+      className={`group inline-flex items-center gap-1.5 px-2 py-1 rounded-sm text-[11px] font-semibold tracking-wide text-muted-foreground hover:text-foreground ${config.bg} transition-all active:scale-[0.97] ${className}`}
+      title={hint}
     >
-      <Icon className={`h-3 w-3 ${config.accent} opacity-60 group-hover:opacity-100 transition-opacity`} />
+      <Icon className={`h-3 w-3 ${config.accent} opacity-50 group-hover:opacity-100 transition-opacity`} />
       {label}
     </button>
   );
 }
 
 interface AgentActionPanelProps {
-  actions: { label: string; variant?: AgentActionVariant }[];
-  label?: string;
+  actions: { label: string; hint?: string; variant?: AgentActionVariant; primary?: boolean }[];
+  context?: string;
   className?: string;
 }
 
-export function AgentActionPanel({ actions, label, className = '' }: AgentActionPanelProps) {
+export function AgentActionPanel({ actions, context, className = '' }: AgentActionPanelProps) {
+  const primaryActions = actions.filter(a => a.primary);
+  const secondaryActions = actions.filter(a => !a.primary);
+
   return (
-    <div className={`border-l-2 border-primary/20 pl-4 ${className}`}>
-      {label && (
-        <p className="text-[9px] text-primary/60 tracking-[0.18em] uppercase font-bold mb-2.5">{label}</p>
+    <div className={`${className}`}>
+      {context && (
+        <p className="text-[11px] text-muted-foreground mb-3">{context}</p>
       )}
-      <div className="flex flex-wrap gap-x-4 gap-y-1.5">
-        {actions.map(a => (
-          <AgentAction key={a.label} label={a.label} variant={a.variant} compact />
-        ))}
-      </div>
+      {primaryActions.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-2">
+          {primaryActions.map(a => (
+            <AgentAction key={a.label} label={a.label} hint={a.hint} variant={a.variant} primary />
+          ))}
+        </div>
+      )}
+      {secondaryActions.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {secondaryActions.map(a => (
+            <AgentAction key={a.label} label={a.label} hint={a.hint} variant={a.variant} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
 
 interface AgentActionRowProps {
-  actions: { label: string; variant?: AgentActionVariant }[];
+  actions: { label: string; hint?: string; variant?: AgentActionVariant }[];
   className?: string;
 }
 
 export function AgentActionRow({ actions, className = '' }: AgentActionRowProps) {
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      <span className="text-[9px] text-primary/50 tracking-[0.15em] uppercase font-bold">Agent</span>
-      <span className="text-border">·</span>
+    <div className={`flex items-center gap-1 ${className}`}>
       {actions.map(a => (
-        <AgentAction key={a.label} label={a.label} variant={a.variant} compact />
+        <AgentAction key={a.label} label={a.label} hint={a.hint} variant={a.variant} />
       ))}
     </div>
   );

@@ -36,13 +36,12 @@ const FundingProfile = () => {
       </div>
 
       <AgentActionPanel
-        label="Profile intelligence"
+        context={`${100 - fundingProfile.completeness}% incomplete · ${missingFields.length} missing fields affect opportunity matching`}
         actions={[
-          { label: 'Improve profile quality', variant: 'strategic' },
-          { label: 'Detect eligibility gaps', variant: 'compliance' },
-          { label: 'Suggest better targeting', variant: 'strategic' },
+          { label: 'Strengthen profile completeness', variant: 'strategic', primary: true },
+          { label: 'Detect eligibility gaps', variant: 'compliance', primary: true },
+          { label: 'Improve targeting', variant: 'strategic' },
           { label: 'Expand funding sources', variant: 'knowledge' },
-          { label: 'Highlight weaknesses', variant: 'compliance' },
         ]}
       />
 
