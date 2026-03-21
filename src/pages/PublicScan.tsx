@@ -104,15 +104,70 @@ const PublicScan = () => {
 
       <div className="max-w-[960px] mx-auto px-6 py-16">
         {/* Hero */}
-        <div className="mb-14">
-          <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-4">Free Funding Scan</p>
-          <h1 className="text-[36px] font-extrabold text-foreground tracking-[-0.035em] leading-[1.1] mb-4">
-            Check your funding<br />opportunities in 60 seconds.
-          </h1>
-          <p className="text-[15px] text-muted-foreground leading-relaxed max-w-[480px]">
-            INK scans 940+ active EU and national funding calls and surfaces the ones that match your project. No account required.
-          </p>
-        </div>
+        <section className="mb-14">
+          <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:gap-8 items-stretch">
+            <div>
+              <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-4">Free Funding Scan</p>
+              <h1 className="text-[36px] font-extrabold text-foreground tracking-[-0.035em] leading-[1.08] mb-4 text-balance">
+                Find the right funding calls<br />before your next deadline slips.
+              </h1>
+              <p className="text-[15px] text-muted-foreground leading-relaxed max-w-[560px] mb-5">
+                INK scans live EU and national opportunities, ranks the best matches for your project intent,
+                and gives you clear next steps before you create an account.
+              </p>
+
+              <div className="flex flex-wrap gap-2.5 mb-4">
+                <span className="inline-flex items-center rounded-[4px] border border-border bg-secondary/40 px-3 py-1.5 text-[11px] font-semibold text-foreground">
+                  940+ active calls indexed
+                </span>
+                <span className="inline-flex items-center rounded-[4px] border border-border bg-secondary/40 px-3 py-1.5 text-[11px] font-semibold text-foreground">
+                  3 free matched calls
+                </span>
+                <span className="inline-flex items-center rounded-[4px] border border-border bg-secondary/40 px-3 py-1.5 text-[11px] font-semibold text-foreground">
+                  Real EU data
+                </span>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5">
+                  <Shield className="h-3.5 w-3.5" />
+                  No card required
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <Users className="h-3.5 w-3.5" />
+                  Used by early-access funding teams
+                </span>
+              </div>
+            </div>
+
+            <div className="relative overflow-hidden rounded-[8px] border border-border bg-card p-5">
+              <div className="absolute -right-14 -top-14 h-40 w-40 rounded-full bg-secondary/60 blur-2xl" aria-hidden="true" />
+              <p className="relative text-[10px] font-bold tracking-[0.18em] uppercase text-muted-foreground mb-3">What you get in 60s</p>
+              <div className="relative space-y-3">
+                <div className="rounded-[5px] border border-border bg-background p-3.5">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-[12px] font-semibold text-foreground">EIC Accelerator — Digital Infrastructure</p>
+                    <span className="text-[12px] font-bold text-foreground">91%</span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground mt-1">High fit on digital innovation scope · Deadline pressure: 24 days</p>
+                </div>
+
+                <div className="rounded-[5px] border border-border bg-background p-3.5">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-[12px] font-semibold text-foreground">Erasmus+ Alliances for Innovation</p>
+                    <span className="text-[12px] font-bold text-foreground">84%</span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground mt-1">Strong training match · Consortium likely required</p>
+                </div>
+
+                <div className="rounded-[5px] border border-dashed border-border bg-secondary/20 px-3.5 py-3">
+                  <p className="text-[11px] font-semibold text-foreground">Unlock 5 more matches + full application checklists</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">Free 14-day trial · No credit card required</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
         {/* Scan Form */}
         {!showResults && (
