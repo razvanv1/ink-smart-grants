@@ -53,8 +53,17 @@ export function AgentAction({ label, hint, variant = 'default', primary, classNa
   );
 }
 
+interface AgentActionItem {
+  label: string;
+  hint?: string;
+  variant?: AgentActionVariant;
+  primary?: boolean;
+  onClick?: () => void;
+  disabled?: boolean;
+}
+
 interface AgentActionPanelProps {
-  actions: { label: string; hint?: string; variant?: AgentActionVariant; primary?: boolean }[];
+  actions: AgentActionItem[];
   context?: string;
   className?: string;
 }
