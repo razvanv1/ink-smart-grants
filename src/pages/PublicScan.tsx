@@ -11,9 +11,7 @@ import octopusImg from "@/assets/ink-octopus.png";
 import { ScrollReveal } from "@/components/shared/ScrollReveal";
 import { Footer } from "@/components/Footer";
 
-const orgTypes = ["NGO / Non-profit", "SME / Startup", "Educational institution", "Research / University", "Public Sector"];
-const domains = ["Digital / AI / Tech", "Education / Training", "Innovation / R&D", "Environment / Climate", "Health / Social", "Culture / Creative", "Agriculture / Rural"];
-const budgetRanges = ["Up to €100K", "€100K – €500K", "€500K – €2M", "€2M – €5M", "€5M+"];
+import { orgTypes, domains, budgetRanges, grantTypes, fundingStatuses, geographies } from "@/data/scanConfig";
 
 interface ScanMatch {
   callId: string; callName: string; programme: string; fitScore: number; effortScore: number;
