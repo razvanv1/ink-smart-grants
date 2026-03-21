@@ -1,10 +1,16 @@
 import { workflows, workflowStages } from "@/data/sampleData";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ReadinessBar } from "@/components/shared/ScoreBadge";
+import { AgentActionPanel } from "@/components/shared/AgentAction";
 import { Link } from "react-router-dom";
 import { AlertTriangle } from "lucide-react";
 
 const Workflows = () => {
+  const active = workflows.filter(w => w.status !== 'completed');
+  const completed = workflows.filter(w => w.status === 'completed');
+  const atRisk = workflows.filter(w => w.status === 'at-risk').length;
+  const totalBlockers = workflows.reduce((s, w) => s + w.blockers, 0);
+
   return (
     <div className="p-8 max-w-[1200px] mx-auto space-y-8">
       <div className="flex items-end justify-between border-b border-border pb-6">
@@ -12,12 +18,25 @@ const Workflows = () => {
           <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Application Execution</p>
           <h1 className="ink-page-title">Workflows</h1>
         </div>
-        <span className="text-[11px] text-muted-foreground pb-1">{workflows.length} active</span>
+        <div className="flex items-center gap-4 pb-1">
+          <span className="text-[11px] text-muted-foreground">{active.length} active · {completed.length} completed</span>
+        </div>
       </div>
 
+      {(atRisk > 0 || totalBlockers > 0) && (
+        <AgentActionPanel
+          context={`${atRisk} at risk · ${totalBlockers} blockers across all workflows`}
+          actions={[
+            { label: 'Review readiness', variant: 'compliance', primary: true },
+            { label: 'Surface blockers', variant: 'coordination' },
+          ]}
+        />
+      )}
+
       <div>
-        {workflows.map(wf => {
+        {active.map(wf => {
           const stageIndex = workflowStages.indexOf(wf.stage);
+          const daysLeft = Math.max(0, Math.ceil((new Date(wf.deadline).getTime() - Date.now()) / 86400000));
           return (
             <Link key={wf.id} to={`/workflows/${wf.id}`} className="block py-5 border-b border-border/60 hover:bg-secondary/20 -mx-4 px-4 rounded transition-colors group">
               <div className="flex items-start justify-between gap-6">
@@ -30,7 +49,7 @@ const Workflows = () => {
                       </span>
                     )}
                   </div>
-                  <p className="text-[11px] text-muted-foreground">{wf.opportunityName} · {wf.owner} · {wf.deadline}</p>
+                  <p className="text-[11px] text-muted-foreground">{wf.opportunityName} · {wf.owner}</p>
                 </div>
                 <div className="flex items-center gap-6 shrink-0">
                   <div className="flex items-center gap-3">
@@ -41,6 +60,9 @@ const Workflows = () => {
                     </div>
                     <span className="text-[11px] text-muted-foreground w-24">{wf.stage}</span>
                   </div>
+                  <div className="text-right w-12">
+                    <span className={`text-[12px] font-bold ${daysLeft <= 7 ? 'text-destructive' : daysLeft <= 21 ? 'text-warning' : 'text-foreground'}`} style={{ fontVariantNumeric: 'tabular-nums' }}>{daysLeft}d</span>
+                  </div>
                   <ReadinessBar score={wf.readinessScore} segments={8} />
                   <StatusChip status={wf.status} dot />
                 </div>
@@ -49,6 +71,24 @@ const Workflows = () => {
           );
         })}
       </div>
+
+      {completed.length > 0 && (
+        <>
+          <div className="ink-rule" />
+          <h2 className="text-[10px] tracking-[0.15em] uppercase font-semibold text-muted-foreground">Completed</h2>
+          {completed.map(wf => (
+            <Link key={wf.id} to={`/workflows/${wf.id}`} className="block py-4 border-b border-border/40 hover:bg-secondary/20 -mx-4 px-4 rounded transition-colors group opacity-60 hover:opacity-100">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-[13px] font-semibold text-foreground group-hover:text-primary transition-colors">{wf.name}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{wf.opportunityName} · Submitted {wf.deadline}</p>
+                </div>
+                <StatusChip status={wf.status} dot />
+              </div>
+            </Link>
+          ))}
+        </>
+      )}
 
       {workflows.length === 0 && (
         <div className="py-24 text-center">
