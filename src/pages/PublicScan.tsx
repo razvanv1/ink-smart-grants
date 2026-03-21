@@ -199,7 +199,7 @@ const PublicScan = () => {
 
           {/* Stat blocks + mascot row below form */}
           {!showResults && (
-            <ScrollReveal delay={300} className="max-w-[780px] mx-auto mt-10 flex items-center justify-center gap-5">
+            <ScrollReveal delay={300} className="max-w-[960px] mx-auto mt-10 flex items-center justify-center gap-5">
                 <StatBlock number="940+" label="Active calls" />
                 <StatBlock number="3" label="Free matches" />
                 <StatBlock number="60s" label="To results" />
