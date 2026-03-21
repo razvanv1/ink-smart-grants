@@ -22,6 +22,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Onboarding from "./pages/Onboarding";
 import PublicScan from "./pages/PublicScan";
 import ScanPage from "./pages/Scan";
+import Contact from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
