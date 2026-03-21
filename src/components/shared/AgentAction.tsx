@@ -22,7 +22,7 @@ const variantConfig: Record<AgentActionVariant, { icon: typeof Target; accent: s
   default: { icon: Target, accent: 'text-primary', bg: 'hover:bg-primary/5' },
 };
 
-export function AgentAction({ label, hint, variant = 'default', primary, className = '' }: AgentActionProps) {
+export function AgentAction({ label, hint, variant = 'default', primary, className = '', onClick, disabled }: AgentActionProps) {
   const config = variantConfig[variant];
   const Icon = config.icon;
 
