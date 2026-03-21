@@ -77,9 +77,7 @@ export default function Auth() {
       <div className="w-full max-w-[380px]">
         {/* Brand */}
         <div className="flex items-center gap-2.5 mb-10">
-          <div className="h-7 w-7 bg-primary rounded-sm flex items-center justify-center">
-            <span className="text-[12px] font-extrabold text-primary-foreground tracking-tighter">IN</span>
-          </div>
+          <img src={inkMascot} alt="INK" className="h-8 w-8 object-contain" />
           <span className="font-extrabold text-foreground tracking-[-0.04em] text-[17px]">INK</span>
         </div>
 
