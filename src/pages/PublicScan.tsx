@@ -246,7 +246,7 @@ const PublicScan = () => {
       </div>
 
       {/* ═══ RESULTS + PRICING + FOOTER ═══ */}
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
+      <div className="w-full px-6 sm:px-10 lg:px-20 xl:px-28 max-w-[1600px] mx-auto">
         {showResults && (
           <div ref={resultsRef} className="space-y-8 relative z-10 mb-20">
             <div className="flex items-center justify-between opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
