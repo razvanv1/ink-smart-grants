@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { LandingHeader } from "@/components/landing/LandingHeader";
 import { TypewriterText } from "@/components/landing/TypewriterText";
 import { PricingSection } from "@/components/landing/PricingSection";
-import { InkLogo } from "@/components/InkLogo";
+
 import octopusImg from "@/assets/ink-octopus.png";
 import { ScrollReveal } from "@/components/shared/ScrollReveal";
 import { Footer } from "@/components/Footer";
