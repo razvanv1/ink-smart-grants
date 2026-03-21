@@ -2,10 +2,10 @@ import { useParams, Link } from "react-router-dom";
 import { workflows, tasks as allTasks, agentEvents } from "@/data/sampleData";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ReadinessBar } from "@/components/shared/ScoreBadge";
-import { ArrowLeft, AlertTriangle, CheckCircle2, Clock, FileText, Shield, Bot, User } from "lucide-react";
+import { ArrowLeft, AlertTriangle } from "lucide-react";
 import { useState } from "react";
 
-const tabs = ['Overview', 'Draft Structure', 'Missing Inputs', 'Tasks', 'Compliance', 'Documents', 'Activity'];
+const tabs = ['Overview', 'Draft', 'Missing Inputs', 'Tasks', 'Compliance', 'Documents', 'Activity'];
 
 const draftSections = [
   { name: 'Problem / Need', status: 'drafted', readiness: 78, source: 'KA2 Application 2024' },
@@ -19,83 +19,70 @@ const draftSections = [
 ];
 
 const missingInputs = [
-  { item: 'Partner budget breakdown from TU Berlin', owner: 'External', priority: 'high' },
-  { item: 'Co-financing commitment letter', owner: 'Maria K.', priority: 'high' },
-  { item: 'Updated staff CVs (WP leads)', owner: 'Nikos T.', priority: 'medium' },
-  { item: 'KPI targets for digital skills outcomes', owner: 'Elena P.', priority: 'medium' },
-  { item: 'Signed consortium agreement draft', owner: 'Legal', priority: 'low' },
+  { item: 'Partner budget from TU Berlin', priority: 'high' },
+  { item: 'Co-financing commitment letter', priority: 'high' },
+  { item: 'Updated staff CVs', priority: 'medium' },
+  { item: 'KPI targets for outcomes', priority: 'medium' },
+  { item: 'Consortium agreement draft', priority: 'low' },
 ];
 
 const complianceChecks = [
-  { check: 'Page limit (45 pages)', status: 'pass', detail: '42/45 pages used' },
-  { check: 'Budget within ceiling', status: 'pass', detail: '€2.8M of €3M ceiling' },
-  { check: 'Minimum consortium size', status: 'pass', detail: '5 partners confirmed' },
-  { check: 'Gender action plan', status: 'warning', detail: 'Section drafted, needs review' },
-  { check: 'Data management plan', status: 'missing', detail: 'Not started' },
-  { check: 'Ethics self-assessment', status: 'missing', detail: 'Not started' },
-  { check: 'Annex: Budget table', status: 'pass', detail: 'Uploaded' },
-  { check: 'Annex: Gantt chart', status: 'warning', detail: 'Draft version only' },
+  { check: 'Page limit (45p)', result: '42/45', status: 'pass' },
+  { check: 'Budget ceiling', result: '€2.8M / €3M', status: 'pass' },
+  { check: 'Consortium size', result: '5 partners', status: 'pass' },
+  { check: 'Gender action plan', result: 'Needs review', status: 'warning' },
+  { check: 'Data management plan', result: 'Not started', status: 'missing' },
+  { check: 'Ethics self-assessment', result: 'Not started', status: 'missing' },
 ];
 
 const documents = [
-  { name: 'Draft Proposal v3.docx', type: 'Proposal', date: '2026-03-18', size: '2.4 MB' },
-  { name: 'Budget Annex.xlsx', type: 'Budget', date: '2026-03-15', size: '890 KB' },
-  { name: 'Partner Letters of Intent.pdf', type: 'Partnership', date: '2026-03-10', size: '1.1 MB' },
-  { name: 'Gantt Chart Draft.pdf', type: 'Timeline', date: '2026-03-12', size: '340 KB' },
+  { name: 'Draft Proposal v3.docx', meta: 'Proposal · 2.4 MB', date: '2026-03-18' },
+  { name: 'Budget Annex.xlsx', meta: 'Budget · 890 KB', date: '2026-03-15' },
+  { name: 'Partner Letters of Intent.pdf', meta: 'Partnership · 1.1 MB', date: '2026-03-10' },
+  { name: 'Gantt Chart Draft.pdf', meta: 'Timeline · 340 KB', date: '2026-03-12' },
 ];
 
 const WorkflowDetail = () => {
   const { id } = useParams();
   const wf = workflows.find(w => w.id === id) || workflows[0];
   const wfTasks = allTasks.filter(t => t.workflowId === wf.id);
-  const recentEvents = agentEvents.slice(0, 6);
   const [activeTab, setActiveTab] = useState('Overview');
 
   return (
-    <div className="p-6 max-w-[1200px] mx-auto space-y-5">
-      <Link to="/workflows" className="text-sm text-primary hover:underline flex items-center gap-1">
-        <ArrowLeft className="h-3.5 w-3.5" /> Workflows
+    <div className="p-8 max-w-[1000px] mx-auto space-y-6">
+      <Link to="/workflows" className="text-[12px] text-muted-foreground hover:text-foreground flex items-center gap-1">
+        <ArrowLeft className="h-3 w-3" /> Workflows
       </Link>
 
-      {/* Header */}
-      <div className="rounded-lg border border-border bg-card p-5">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <StatusChip status={wf.status} />
-              {wf.blockers > 0 && (
-                <span className="flex items-center gap-1 text-xs text-destructive">
-                  <AlertTriangle className="h-3 w-3" /> {wf.blockers} blocker{wf.blockers > 1 ? 's' : ''}
-                </span>
-              )}
-            </div>
-            <h1 className="text-lg font-semibold tracking-tight text-foreground">{wf.name}</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">
-              {wf.opportunityName} · {wf.stage} · {wf.owner}
-            </p>
+      {/* Header — flat, no card wrapper */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-border">
+        <div>
+          <h1 className="text-lg font-semibold tracking-tight text-foreground">{wf.name}</h1>
+          <p className="text-[13px] text-muted-foreground mt-1">{wf.stage} · {wf.owner} · {wf.deadline}</p>
+          <div className="flex items-center gap-3 mt-2">
+            <StatusChip status={wf.status} />
+            {wf.blockers > 0 && (
+              <span className="text-[11px] text-destructive flex items-center gap-1">
+                <AlertTriangle className="h-3 w-3" /> {wf.blockers} blocker{wf.blockers > 1 ? 's' : ''}
+              </span>
+            )}
           </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-[11px] text-muted-foreground uppercase tracking-wider">Deadline</p>
-              <p className="text-sm font-semibold tabular-nums text-foreground">{wf.deadline}</p>
-            </div>
-            <div className="w-32">
-              <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-1">Readiness</p>
-              <ReadinessBar score={wf.readinessScore} />
-            </div>
-          </div>
+        </div>
+        <div className="w-40">
+          <p className="text-[11px] text-muted-foreground uppercase tracking-wide mb-1">Readiness</p>
+          <ReadinessBar score={wf.readinessScore} />
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-1 border-b border-border overflow-x-auto">
+      {/* Tabs — underline style */}
+      <div className="flex gap-0 border-b border-border overflow-x-auto">
         {tabs.map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-3 py-2 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+            className={`px-4 py-2 text-[13px] font-medium whitespace-nowrap border-b-[1.5px] -mb-px transition-colors ${
               activeTab === tab
-                ? 'border-primary text-foreground'
+                ? 'border-foreground text-foreground'
                 : 'border-transparent text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -104,167 +91,133 @@ const WorkflowDetail = () => {
         ))}
       </div>
 
-      {/* Tab Content */}
-      {activeTab === 'Overview' && (
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="rounded-lg border border-border bg-card p-5 space-y-3">
-            <h3 className="text-sm font-semibold text-foreground">Current Status</h3>
-            <p className="text-sm text-muted-foreground text-pretty">Proposal drafting underway. Impact and objectives sections drafted using prior KA2 application. Budget and partnership sections pending external inputs. Co-financing letter required within 5 days.</p>
-            <div className="pt-2 space-y-2">
-              <p className="text-xs text-muted-foreground"><strong className="text-foreground">Next milestone:</strong> Complete budget annex</p>
-              <p className="text-xs text-muted-foreground"><strong className="text-foreground">Key blocker:</strong> Partner budget inputs overdue</p>
-              <p className="text-xs text-muted-foreground"><strong className="text-foreground">Recommended:</strong> Follow up with TU Berlin on budget breakdown</p>
-            </div>
-          </div>
-          <div className="space-y-4">
-            <div className="rounded-lg border border-border bg-card p-5">
-              <h3 className="text-sm font-semibold text-foreground mb-3">Quick Stats</h3>
-              <div className="grid grid-cols-2 gap-3">
-                <Stat label="Sections Drafted" value="5/8" />
-                <Stat label="Tasks Complete" value={`${wfTasks.filter(t=>t.status==='done').length}/${wfTasks.length}`} />
-                <Stat label="Missing Inputs" value="5" />
-                <Stat label="Compliance" value="5/8" />
+      {/* Content */}
+      <div className="pt-2">
+        {activeTab === 'Overview' && (
+          <div className="grid md:grid-cols-5 gap-8">
+            <div className="md:col-span-3">
+              <p className="text-[14px] text-muted-foreground leading-[1.7] text-pretty mb-6">
+                Proposal drafting underway. Impact and objectives drafted from prior KA2 application. Budget and partnership sections pending external inputs.
+              </p>
+              <div className="space-y-3 border-t border-border pt-5">
+                <Signal label="Next milestone" value="Complete budget annex" />
+                <Signal label="Key blocker" value="Partner budget inputs overdue" highlight />
+                <Signal label="Recommended" value="Follow up with TU Berlin" />
               </div>
             </div>
+            <div className="md:col-span-2 grid grid-cols-2 gap-y-4 gap-x-6 border-l border-border pl-8 content-start">
+              <Stat label="Sections" value="5 / 8" />
+              <Stat label="Tasks" value={`${wfTasks.filter(t=>t.status==='done').length} / ${wfTasks.length}`} />
+              <Stat label="Missing" value="5" />
+              <Stat label="Compliance" value="3 / 6" />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {activeTab === 'Draft Structure' && (
-        <div className="rounded-lg border border-border bg-card overflow-hidden">
+        {activeTab === 'Draft' && (
           <div className="divide-y divide-border">
-            {draftSections.map((section, i) => (
-              <div key={i} className="flex items-center justify-between p-4 hover:bg-muted/30 transition-colors">
-                <div className="flex items-center gap-3 min-w-0">
-                  <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{section.name}</p>
-                    {section.source && <p className="text-xs text-muted-foreground">Source: {section.source}</p>}
-                  </div>
+            {draftSections.map((s, i) => (
+              <div key={i} className="flex items-center justify-between py-3.5">
+                <div>
+                  <p className="text-[13px] font-medium text-foreground">{s.name}</p>
+                  {s.source && <p className="text-[11px] text-muted-foreground mt-0.5">via {s.source}</p>}
                 </div>
-                <div className="flex items-center gap-4">
-                  <StatusChip status={section.status} />
-                  <div className="w-24">
-                    <ReadinessBar score={section.readiness} />
-                  </div>
+                <div className="flex items-center gap-5">
+                  <StatusChip status={s.status} />
+                  <div className="w-20"><ReadinessBar score={s.readiness} /></div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {activeTab === 'Missing Inputs' && (
-        <div className="rounded-lg border border-border bg-card overflow-hidden">
+        {activeTab === 'Missing Inputs' && (
           <div className="divide-y divide-border">
             {missingInputs.map((input, i) => (
-              <div key={i} className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3">
-                  <AlertTriangle className={`h-4 w-4 shrink-0 ${input.priority === 'high' ? 'text-destructive' : input.priority === 'medium' ? 'text-warning' : 'text-muted-foreground'}`} />
-                  <div>
-                    <p className="text-sm text-foreground">{input.item}</p>
-                    <p className="text-xs text-muted-foreground">Owner: {input.owner}</p>
-                  </div>
-                </div>
+              <div key={i} className="flex items-center justify-between py-3.5">
+                <p className="text-[13px] text-foreground">{input.item}</p>
                 <StatusChip status={input.priority} />
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {activeTab === 'Tasks' && (
-        <div className="rounded-lg border border-border bg-card overflow-hidden">
+        {activeTab === 'Tasks' && (
           <div className="divide-y divide-border">
             {wfTasks.length > 0 ? wfTasks.map(task => (
-              <div key={task.id} className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 className={`h-4 w-4 shrink-0 ${task.status === 'done' ? 'text-success' : task.status === 'overdue' ? 'text-destructive' : 'text-muted-foreground'}`} />
-                  <div>
-                    <p className="text-sm text-foreground">{task.title}</p>
-                    <p className="text-xs text-muted-foreground">{task.owner} · Due {task.dueDate}</p>
-                  </div>
+              <div key={task.id} className="flex items-center justify-between py-3.5">
+                <div>
+                  <p className="text-[13px] text-foreground">{task.title}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{task.owner} · {task.dueDate}</p>
                 </div>
                 <StatusChip status={task.status} />
               </div>
             )) : (
-              <div className="p-8 text-center text-sm text-muted-foreground">No tasks for this workflow yet</div>
+              <p className="py-12 text-center text-sm text-muted-foreground">No tasks yet</p>
             )}
           </div>
-        </div>
-      )}
+        )}
 
-      {activeTab === 'Compliance' && (
-        <div className="rounded-lg border border-border bg-card overflow-hidden">
+        {activeTab === 'Compliance' && (
           <div className="divide-y divide-border">
-            {complianceChecks.map((check, i) => (
-              <div key={i} className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3">
-                  <Shield className={`h-4 w-4 shrink-0 ${check.status === 'pass' ? 'text-success' : check.status === 'warning' ? 'text-warning' : 'text-destructive'}`} />
-                  <div>
-                    <p className="text-sm text-foreground">{check.check}</p>
-                    <p className="text-xs text-muted-foreground">{check.detail}</p>
-                  </div>
+            {complianceChecks.map((c, i) => (
+              <div key={i} className="flex items-center justify-between py-3.5">
+                <div>
+                  <p className="text-[13px] text-foreground">{c.check}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{c.result}</p>
                 </div>
-                <StatusChip status={check.status === 'pass' ? 'done' : check.status === 'warning' ? 'warning' : 'at-risk'} />
+                <StatusChip status={c.status} />
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {activeTab === 'Documents' && (
-        <div className="rounded-lg border border-border bg-card overflow-hidden">
+        {activeTab === 'Documents' && (
           <div className="divide-y divide-border">
             {documents.map((doc, i) => (
-              <div key={i} className="flex items-center justify-between p-4 hover:bg-muted/30 transition-colors cursor-pointer">
-                <div className="flex items-center gap-3">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{doc.name}</p>
-                    <p className="text-xs text-muted-foreground">{doc.type} · {doc.size}</p>
-                  </div>
+              <div key={i} className="flex items-center justify-between py-3.5 cursor-pointer hover:bg-secondary/40 -mx-2 px-2 rounded transition-colors">
+                <div>
+                  <p className="text-[13px] font-medium text-foreground">{doc.name}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{doc.meta}</p>
                 </div>
-                <span className="text-xs text-muted-foreground tabular-nums">{doc.date}</span>
+                <span className="text-[11px] text-muted-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>{doc.date}</span>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {activeTab === 'Activity' && (
-        <div className="rounded-lg border border-border bg-card overflow-hidden">
+        {activeTab === 'Activity' && (
           <div className="divide-y divide-border">
-            {recentEvents.map(event => (
-              <div key={event.id} className="flex items-start gap-3 p-4">
-                <div className="mt-0.5 h-6 w-6 rounded bg-muted flex items-center justify-center shrink-0">
-                  {event.agent === 'Scout' || event.agent === 'Compliance' || event.agent === 'Writer' ?
-                    <Bot className="h-3.5 w-3.5 text-muted-foreground" /> :
-                    <User className="h-3.5 w-3.5 text-muted-foreground" />
-                  }
+            {agentEvents.slice(0, 6).map(event => (
+              <div key={event.id} className="py-3.5">
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-[11px] font-semibold text-foreground">{event.agent}</span>
+                  <span className="text-[11px] text-muted-foreground">{event.timestamp}</span>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-foreground">{event.agent}</span>
-                    <span className="text-xs text-muted-foreground">{event.action}</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">{event.detail}</p>
-                </div>
-                <span className="text-[11px] text-muted-foreground whitespace-nowrap">{event.timestamp}</span>
+                <p className="text-[12px] text-muted-foreground">{event.detail}</p>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
 
+function Signal({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
+  return (
+    <div className="flex items-baseline gap-3">
+      <span className="text-[11px] text-muted-foreground uppercase tracking-wide w-28 shrink-0">{label}</span>
+      <span className={`text-[13px] ${highlight ? 'text-destructive font-medium' : 'text-foreground'}`}>{value}</span>
+    </div>
+  );
+}
+
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-[11px] text-muted-foreground uppercase tracking-wider">{label}</p>
-      <p className="text-lg font-semibold tabular-nums text-foreground">{value}</p>
+      <p className="text-[11px] text-muted-foreground uppercase tracking-wide">{label}</p>
+      <p className="text-lg font-semibold text-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>{value}</p>
     </div>
   );
 }

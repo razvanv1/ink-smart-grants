@@ -1,5 +1,3 @@
-import { CheckCircle2, AlertCircle } from "lucide-react";
-
 const profileData = {
   orgName: 'The Unlearning School',
   orgType: 'Non-Profit / Social Enterprise',
@@ -14,96 +12,94 @@ const profileData = {
   preferredSources: ['Horizon Europe', 'Erasmus+', 'Digital Europe', 'ESF+'],
   preferredTypes: ['RIA', 'Cooperation Partnership', 'CSA', 'National Grant'],
   excludedThemes: ['Military/defense', 'Nuclear energy', 'Fossil fuel extraction'],
-  notes: 'Currently prioritizing calls with digital skills and AI literacy focus. Actively seeking coordination role opportunities.',
+  notes: 'Prioritizing calls with digital skills and AI literacy focus. Seeking coordination role opportunities.',
   completeness: 85,
   lastUpdated: '2026-03-15',
 };
 
-const missingFields = [
-  'Add detailed staff competency matrix',
-  'Upload updated organizational chart',
-  'Complete financial sustainability statement',
+const missing = [
+  'Staff competency matrix',
+  'Updated organizational chart',
+  'Financial sustainability statement',
 ];
 
 const FundingProfile = () => {
   return (
-    <div className="p-6 max-w-[1000px] mx-auto space-y-5">
+    <div className="p-8 max-w-[860px] mx-auto space-y-8">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight">Funding Profile</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Your organization's funding identity and eligibility</p>
-        </div>
-        <button className="px-3 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity active:scale-[0.97]">
-          Edit Profile
+        <h1 className="text-lg font-semibold tracking-tight">Funding Profile</h1>
+        <button className="px-3 py-1.5 rounded bg-foreground text-background text-[13px] font-semibold hover:opacity-90 transition-opacity active:scale-[0.97]">
+          Edit
         </button>
       </div>
 
       {/* Completeness */}
-      <div className="rounded-lg border border-border bg-card p-5">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-semibold text-foreground">Profile Completeness</h3>
-          <span className="text-sm font-semibold tabular-nums text-foreground">{profileData.completeness}%</span>
+      <div className="border-b border-border pb-6">
+        <div className="flex items-baseline justify-between mb-2">
+          <span className="text-[11px] text-muted-foreground uppercase tracking-wide">Profile Completeness</span>
+          <span className="text-sm font-semibold text-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>{profileData.completeness}%</span>
         </div>
-        <div className="h-2 rounded-full bg-muted overflow-hidden mb-3">
-          <div className="h-full rounded-full bg-primary" style={{ width: `${profileData.completeness}%` }} />
+        <div className="h-1 rounded-full bg-secondary overflow-hidden mb-3">
+          <div className="h-full rounded-full bg-foreground" style={{ width: `${profileData.completeness}%` }} />
         </div>
-        {missingFields.length > 0 && (
-          <div className="space-y-1.5">
-            {missingFields.map((field, i) => (
-              <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
-                <AlertCircle className="h-3.5 w-3.5 text-warning shrink-0" />
-                {field}
-              </div>
-            ))}
-          </div>
-        )}
-        <p className="text-[11px] text-muted-foreground mt-3">Last updated: {profileData.lastUpdated}</p>
+        <div className="space-y-1">
+          {missing.map((m, i) => (
+            <p key={i} className="text-[12px] text-muted-foreground">· {m}</p>
+          ))}
+        </div>
       </div>
 
-      {/* Profile Fields */}
-      <div className="grid md:grid-cols-2 gap-4">
-        <ProfileCard label="Organization Name" value={profileData.orgName} />
-        <ProfileCard label="Organization Type" value={profileData.orgType} />
-        <ProfileCard label="Country / Geography" value={profileData.country} />
-        <ProfileCard label="Budget Range" value={profileData.budgetRange} />
-        <ProfileCard label="Team Capacity" value={profileData.teamCapacity} />
-        <ProfileCard label="Prior Grant Experience" value={profileData.priorExperience} />
+      {/* Fields — flat, no card wrappers */}
+      <div className="grid md:grid-cols-2 gap-y-5 gap-x-10">
+        <Field label="Organization" value={profileData.orgName} />
+        <Field label="Type" value={profileData.orgType} />
+        <Field label="Country" value={profileData.country} />
+        <Field label="Budget Range" value={profileData.budgetRange} />
+        <Field label="Team Capacity" value={profileData.teamCapacity} />
+        <Field label="Prior Experience" value={profileData.priorExperience} />
       </div>
 
-      <ProfileCard label="Funding Goals" value={profileData.fundingGoals} />
-      <ProfileCard label="Partnership Readiness" value={profileData.partnershipReadiness} />
-
-      <div className="grid md:grid-cols-2 gap-4">
-        <TagsCard label="Primary Domains" tags={profileData.primaryDomains} />
-        <TagsCard label="Secondary Domains" tags={profileData.secondaryDomains} />
-        <TagsCard label="Preferred Sources" tags={profileData.preferredSources} />
-        <TagsCard label="Preferred Types" tags={profileData.preferredTypes} />
+      <div className="border-t border-border pt-6 space-y-5">
+        <Field label="Funding Goals" value={profileData.fundingGoals} />
+        <Field label="Partnership Readiness" value={profileData.partnershipReadiness} />
       </div>
 
-      <TagsCard label="Excluded Themes" tags={profileData.excludedThemes} variant="destructive" />
+      <div className="border-t border-border pt-6 grid md:grid-cols-2 gap-y-5 gap-x-10">
+        <Tags label="Primary Domains" tags={profileData.primaryDomains} />
+        <Tags label="Secondary Domains" tags={profileData.secondaryDomains} />
+        <Tags label="Preferred Sources" tags={profileData.preferredSources} />
+        <Tags label="Preferred Types" tags={profileData.preferredTypes} />
+      </div>
 
-      <ProfileCard label="Notes" value={profileData.notes} />
+      <div className="border-t border-border pt-6">
+        <Tags label="Excluded" tags={profileData.excludedThemes} muted />
+      </div>
+
+      <div className="border-t border-border pt-6">
+        <Field label="Notes" value={profileData.notes} />
+        <p className="text-[11px] text-muted-foreground mt-4">Last updated {profileData.lastUpdated}</p>
+      </div>
     </div>
   );
 };
 
-function ProfileCard({ label, value }: { label: string; value: string }) {
+function Field({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-1">{label}</p>
-      <p className="text-sm text-foreground leading-relaxed">{value}</p>
+    <div>
+      <p className="text-[11px] text-muted-foreground uppercase tracking-wide">{label}</p>
+      <p className="text-[13px] text-foreground mt-0.5 leading-relaxed">{value}</p>
     </div>
   );
 }
 
-function TagsCard({ label, tags, variant }: { label: string; tags: string[]; variant?: string }) {
+function Tags({ label, tags, muted }: { label: string; tags: string[]; muted?: boolean }) {
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <p className="text-[11px] text-muted-foreground uppercase tracking-wider mb-2">{label}</p>
+    <div>
+      <p className="text-[11px] text-muted-foreground uppercase tracking-wide mb-1.5">{label}</p>
       <div className="flex flex-wrap gap-1.5">
         {tags.map(tag => (
-          <span key={tag} className={`px-2 py-1 rounded-md text-xs font-medium ${
-            variant === 'destructive' ? 'bg-destructive/10 text-destructive' : 'bg-muted text-foreground'
+          <span key={tag} className={`px-2 py-0.5 rounded text-[12px] font-medium ${
+            muted ? 'bg-secondary text-muted-foreground line-through' : 'bg-secondary text-foreground'
           }`}>
             {tag}
           </span>
