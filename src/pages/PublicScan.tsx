@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Search, ChevronDown, ChevronUp, Lock, ArrowRight, Loader2, AlertTriangle, Clock, Users, TrendingUp, Sparkles, FileText, Target, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import inkMascot from "@/assets/ink-mascot.png";
 import { LandingHeader } from "@/components/landing/LandingHeader";
 import { TypewriterText } from "@/components/landing/TypewriterText";
 import { PricingSection } from "@/components/landing/PricingSection";
@@ -104,9 +103,20 @@ const PublicScan = () => {
             </p>
           </div>
 
+          {/* ═══ HOW IT WORKS — before scan form ═══ */}
+          {!showResults && (
+            <div className="max-w-[780px] mx-auto mb-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <HowItWorksStep step={1} icon={<FileText className="h-4 w-4" />} title="Describe your project" description="Tell us what you want to fund in one sentence" />
+                <HowItWorksStep step={2} icon={<Target className="h-4 w-4" />} title="Get matched calls" description="AI matches your profile against 940+ live calls" />
+                <HowItWorksStep step={3} icon={<Zap className="h-4 w-4" />} title="Start your application" description="Turn the best match into an active workflow" />
+              </div>
+            </div>
+          )}
+
           {/* ═══ SCAN FORM — the hero ═══ */}
           {!showResults && (
-            <div className="max-w-[780px] mx-auto bg-card rounded-[10px] border border-border shadow-2xl shadow-foreground/[0.06] p-6 sm:p-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
+            <div className="max-w-[780px] mx-auto bg-card rounded-[10px] border border-border shadow-2xl shadow-foreground/[0.06] p-6 sm:p-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.55s" }}>
               <form onSubmit={handleScan} className="space-y-5">
                 <div>
                   <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">What do you want to fund?</label>
@@ -162,36 +172,14 @@ const PublicScan = () => {
 
           {/* Stat blocks + mascot row below form */}
           {!showResults && (
-            <div className="max-w-[780px] mx-auto mt-10 flex flex-col sm:flex-row items-center justify-between gap-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.7s" }}>
-              <div className="flex items-center gap-5">
+            <div className="max-w-[780px] mx-auto mt-10 flex items-center justify-center gap-5 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.7s" }}>
                 <StatBlock number="940+" label="Active calls" />
                 <StatBlock number="3" label="Free matches" />
                 <StatBlock number="60s" label="To results" />
-              </div>
-              <div className="flex items-center gap-4">
-                <img src={inkMascot} alt="INK mascot" className="w-16 sm:w-20 h-auto animate-float drop-shadow-lg" />
-                <p className="text-[12px] sm:text-[13px] font-bold text-foreground/80 italic max-w-[180px] leading-snug">
-                  "I can slap 8 grants at once."
-                </p>
-              </div>
             </div>
           )}
         </div>
       </section>
-
-      {/* ═══ HOW IT WORKS ═══ */}
-      {!showResults && (
-        <section className="py-16 sm:py-20 border-t border-border/40">
-          <div className="max-w-[780px] mx-auto px-4 sm:px-6">
-            <p className="text-[10px] font-bold tracking-[0.18em] uppercase text-info mb-6 text-center opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s", animationFillMode: "forwards" }}>How it works</p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <HowItWorksStep step={1} icon={<FileText className="h-4 w-4" />} title="Describe your project" description="Tell us what you want to fund in one sentence" />
-              <HowItWorksStep step={2} icon={<Target className="h-4 w-4" />} title="Get matched calls" description="AI matches your profile against 940+ live calls" />
-              <HowItWorksStep step={3} icon={<Zap className="h-4 w-4" />} title="Start your application" description="Turn the best match into an active workflow" />
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* ═══ RESULTS + PRICING + FOOTER ═══ */}
       <div className="max-w-[1080px] mx-auto px-4 sm:px-6">
@@ -235,9 +223,6 @@ const PublicScan = () => {
 
                 {/* Unlock CTA */}
                 <div className="px-8 py-16 text-center bg-gradient-to-b from-card to-info/[0.08]">
-                  <div className="animate-float inline-block mb-4">
-                    <img src={inkMascot} alt="" className="h-20 w-auto drop-shadow-xl" />
-                  </div>
                   <h3 className="text-[24px] font-extrabold text-foreground tracking-[-0.03em] mb-3">
                     Unlock {lockedCount} more matches & full platform
                   </h3>
