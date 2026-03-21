@@ -1,56 +1,64 @@
-import { agentEvents } from "@/data/sampleData";
+import { agentEvents, workflows, opportunities } from "@/data/sampleData";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { AgentAction } from "@/components/shared/AgentAction";
 
+const atRiskCount = workflows.filter(w => w.status === 'at-risk').length;
+const newOpps = opportunities.filter(o => o.status === 'new').length;
+const blockedTasks = workflows.reduce((s, w) => s + w.blockers, 0);
+
 const agentSummaries = [
   {
-    agent: 'Scout' as const,
-    signal: '3 new calls from 12 sources',
+    agent: 'Scout',
+    role: 'Discovers relevant funding calls',
+    signal: `${newOpps} new calls matched from 12 monitored sources`,
     severity: 'info' as const,
     actions: [
-      { label: 'Review new alerts', variant: 'strategic' as const, primary: true },
-      { label: 'Re-scan sources', variant: 'knowledge' as const },
+      { label: 'Review new matches', variant: 'strategic' as const, primary: true },
     ],
   },
   {
-    agent: 'Selection' as const,
-    signal: 'Capacity for 2 additional workflows',
+    agent: 'Selection',
+    role: 'Prioritizes what to pursue',
+    signal: `Capacity for ${Math.max(0, 4 - workflows.filter(w => w.status === 'active' || w.status === 'at-risk').length)} additional workflows`,
     severity: 'attention' as const,
     actions: [
       { label: 'Re-run prioritization', variant: 'strategic' as const, primary: true },
     ],
   },
   {
-    agent: 'Writer' as const,
-    signal: '89% content overlap for Erasmus+',
+    agent: 'Writer',
+    role: 'Drafts proposal structures',
+    signal: '89% content overlap detected for Erasmus+ call',
     severity: 'info' as const,
     actions: [
       { label: 'Build draft from overlap', variant: 'drafting' as const, primary: true },
-      { label: 'Reuse past content', variant: 'knowledge' as const },
     ],
   },
   {
-    agent: 'Compliance' as const,
-    signal: '2 annexes missing on DIGITAL-2026',
-    severity: 'critical' as const,
+    agent: 'Compliance',
+    role: 'Checks submission readiness',
+    signal: `${blockedTasks > 0 ? `${blockedTasks} unresolved issues across workflows` : 'All checks passing'}`,
+    severity: blockedTasks > 0 ? 'critical' as const : 'info' as const,
     actions: [
-      { label: 'Surface missing annexes', variant: 'compliance' as const, primary: true },
+      { label: 'Surface compliance gaps', variant: 'compliance' as const, primary: true },
     ],
   },
   {
-    agent: 'Coordinator' as const,
-    signal: 'Partner inputs 3 days overdue',
+    agent: 'Coordinator',
+    role: 'Manages inputs and partners',
+    signal: 'Partner inputs 3 days overdue on DIGITAL-2026',
     severity: 'critical' as const,
     actions: [
       { label: 'Prepare follow-up', variant: 'coordination' as const, primary: true },
     ],
   },
   {
-    agent: 'Copilot' as const,
-    signal: '2 active, 1 at risk',
-    severity: 'attention' as const,
+    agent: 'Copilot',
+    role: 'Executive oversight layer',
+    signal: `${atRiskCount} at risk · ${workflows.filter(w => w.status === 'active').length} on track`,
+    severity: atRiskCount > 0 ? 'attention' as const : 'info' as const,
     actions: [
-      { label: 'Summarize at-risk workflows', variant: 'strategic' as const, primary: true },
+      { label: 'Summarize portfolio status', variant: 'strategic' as const, primary: true },
     ],
   },
 ];
@@ -63,16 +71,18 @@ const AgentActivity = () => {
           <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">System Intelligence</p>
           <h1 className="ink-page-title">Agent Activity</h1>
         </div>
+        <span className="text-[11px] text-muted-foreground pb-1">6 agents active</span>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-8">
         {agentSummaries.map(s => (
           <div key={s.agent} className="ink-accent-border">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-[11px] font-bold text-foreground tracking-tight">{s.agent}</span>
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="text-[12px] font-bold text-foreground tracking-tight">{s.agent}</span>
               <StatusChip status={s.severity} />
             </div>
-            <p className="text-[12px] text-muted-foreground leading-relaxed mb-3">{s.signal}</p>
+            <p className="text-[10px] text-muted-foreground tracking-wide uppercase mb-2">{s.role}</p>
+            <p className="text-[12px] text-foreground/80 leading-relaxed mb-3">{s.signal}</p>
             <div className="flex flex-wrap gap-1.5">
               {s.actions.map(a => (
                 <AgentAction key={a.label} label={a.label} variant={a.variant} primary={a.primary} />
@@ -85,7 +95,7 @@ const AgentActivity = () => {
       <div className="ink-rule" />
 
       <div>
-        <h2 className="text-[10px] tracking-[0.15em] uppercase font-semibold text-muted-foreground mb-5">Timeline</h2>
+        <h2 className="text-[10px] tracking-[0.15em] uppercase font-semibold text-muted-foreground mb-5">Recent Activity</h2>
         {agentEvents.length > 0 ? agentEvents.map(event => (
           <div key={event.id} className="ink-signal py-3.5 mb-1.5">
             <div className="flex items-center gap-2 mb-0.5">
