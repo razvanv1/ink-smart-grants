@@ -67,7 +67,7 @@ export function PricingSection() {
         </p>
       </ScrollReveal>
 
-      <div className="grid md:grid-cols-3 gap-5 max-w-[1100px] mx-auto items-stretch">
+      <div className="grid md:grid-cols-3 gap-6 items-stretch">
         {plans.map((plan, i) => (
           <ScrollReveal key={plan.name} delay={140 + i * 90} className="flex">
           <div
