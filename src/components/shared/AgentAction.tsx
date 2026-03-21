@@ -104,7 +104,7 @@ export function AgentActionRow({ actions, className = '' }: AgentActionRowProps)
   return (
     <div className={`flex items-center gap-1 ${className}`}>
       {actions.map(a => (
-        <AgentAction key={a.label} label={a.label} hint={a.hint} variant={a.variant} />
+        <AgentAction key={a.label} label={a.label} hint={a.hint} variant={a.variant} onClick={a.onClick} disabled={a.disabled} />
       ))}
     </div>
   );
