@@ -44,7 +44,9 @@ export default function Auth() {
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
-        toast({ title: "Account created", description: "Check your email to confirm." });
+        toast({ title: "Verifică emailul", description: "Ți-am trimis un link de confirmare. Verifică inbox-ul (și spam) pentru a-ți activa contul.", duration: 10000 });
+        setMode("login");
+        return;
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
