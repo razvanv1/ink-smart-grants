@@ -6,59 +6,51 @@
 
 @layer base {
   :root {
-    --background: 0 0% 99%;
-    --foreground: 225 25% 12%;
+    --background: 0 0% 100%;
+    --foreground: 225 30% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 225 25% 12%;
+    --card-foreground: 225 30% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 225 25% 12%;
+    --popover-foreground: 225 30% 10%;
 
-    --primary: 24 80% 52%;
+    --primary: 24 75% 48%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 225 20% 25%;
+    --secondary: 225 10% 97%;
+    --secondary-foreground: 225 15% 30%;
 
-    --muted: 220 14% 95%;
-    --muted-foreground: 220 8% 46%;
+    --muted: 225 10% 95%;
+    --muted-foreground: 220 6% 50%;
 
-    --accent: 220 14% 96%;
-    --accent-foreground: 225 20% 25%;
+    --accent: 225 10% 97%;
+    --accent-foreground: 225 15% 30%;
 
-    --destructive: 0 72% 51%;
+    --destructive: 0 65% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 24 80% 52%;
+    --border: 225 8% 92%;
+    --input: 225 8% 92%;
+    --ring: 24 75% 48%;
 
-    --radius: 0.5rem;
+    --radius: 0.375rem;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 8% 46%;
-    --sidebar-primary: 24 80% 52%;
+    --sidebar-foreground: 220 6% 50%;
+    --sidebar-primary: 24 75% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 96%;
-    --sidebar-accent-foreground: 225 20% 18%;
-    --sidebar-border: 220 13% 93%;
-    --sidebar-ring: 24 80% 52%;
+    --sidebar-accent: 225 10% 97%;
+    --sidebar-accent-foreground: 225 15% 18%;
+    --sidebar-border: 225 8% 94%;
+    --sidebar-ring: 24 75% 48%;
 
-    /* Semantic tokens */
-    --surface-elevated: 0 0% 100%;
-    --surface-subtle: 220 20% 98%;
-
-    --success: 152 55% 38%;
+    --success: 158 50% 36%;
     --success-foreground: 0 0% 100%;
-    --warning: 38 92% 50%;
+    --warning: 36 90% 48%;
     --warning-foreground: 0 0% 10%;
-    --info: 215 70% 50%;
+    --info: 215 55% 48%;
     --info-foreground: 0 0% 100%;
-
-    --score-high: 152 55% 38%;
-    --score-medium: 38 92% 50%;
-    --score-low: 0 72% 51%;
   }
 }
 
@@ -70,41 +62,19 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+    width: 4px;
+    height: 4px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
     background: hsl(var(--border));
-    border-radius: 3px;
+    border-radius: 2px;
   }
-  ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground));
-  }
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
-  .text-pretty {
-    text-wrap: pretty;
-  }
-}
-
-/* Geometric decorative pattern */
-.geo-pattern {
-  background-image: 
-    linear-gradient(30deg, hsl(var(--border)) 12%, transparent 12.5%, transparent 87%, hsl(var(--border)) 87.5%, hsl(var(--border))),
-    linear-gradient(150deg, hsl(var(--border)) 12%, transparent 12.5%, transparent 87%, hsl(var(--border)) 87.5%, hsl(var(--border))),
-    linear-gradient(30deg, hsl(var(--border)) 12%, transparent 12.5%, transparent 87%, hsl(var(--border)) 87.5%, hsl(var(--border))),
-    linear-gradient(150deg, hsl(var(--border)) 12%, transparent 12.5%, transparent 87%, hsl(var(--border)) 87.5%, hsl(var(--border)));
-  background-size: 80px 140px;
-  background-position: 0 0, 0 0, 40px 70px, 40px 70px;
-  opacity: 0.3;
 }

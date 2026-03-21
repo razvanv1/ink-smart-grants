@@ -1,26 +1,12 @@
 import {
-  LayoutDashboard,
-  Building2,
-  Radar,
-  GitBranch,
-  Layers,
-  BookOpen,
-  Bot,
-  Settings,
-  ChevronLeft,
+  LayoutDashboard, Building2, Radar, GitBranch, Layers,
+  BookOpen, Bot, Settings, ChevronLeft,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarFooter,
-  useSidebar,
+  Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
+  SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
 
 const navItems = [
@@ -37,27 +23,18 @@ const navItems = [
 export function AppSidebar() {
   const { state, toggleSidebar } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
-      <div className="flex h-14 items-center gap-2 px-4 border-b border-sidebar-border">
-        {!collapsed && (
-          <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-sm tracking-tight">I</span>
-            </div>
-            <span className="font-semibold text-foreground tracking-tight text-[15px]">INK</span>
-          </div>
-        )}
-        {collapsed && (
-          <div className="h-7 w-7 rounded-md bg-primary flex items-center justify-center mx-auto">
-            <span className="text-primary-foreground font-bold text-sm tracking-tight">I</span>
-          </div>
+      <div className="flex h-12 items-center px-4 border-b border-sidebar-border">
+        {!collapsed ? (
+          <span className="font-bold text-foreground tracking-[-0.03em] text-[15px]">INK</span>
+        ) : (
+          <span className="font-bold text-foreground tracking-[-0.03em] text-[15px] mx-auto">I</span>
         )}
       </div>
 
-      <SidebarContent className="pt-2">
+      <SidebarContent className="pt-3">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -67,11 +44,11 @@ export function AppSidebar() {
                     <NavLink
                       to={item.url}
                       end={item.url === "/"}
-                      className="flex items-center gap-3 px-3 py-2 rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors duration-150"
-                      activeClassName="bg-sidebar-accent text-foreground font-medium"
+                      className="flex items-center gap-3 px-3 py-[7px] rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors duration-100"
+                      activeClassName="text-foreground bg-secondary font-medium"
                     >
-                      <item.icon className="h-4 w-4 shrink-0" />
-                      {!collapsed && <span className="text-sm">{item.title}</span>}
+                      <item.icon className="h-[15px] w-[15px] shrink-0" strokeWidth={1.8} />
+                      {!collapsed && <span className="text-[13px]">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -84,9 +61,9 @@ export function AppSidebar() {
       <SidebarFooter className="border-t border-sidebar-border p-2">
         <button
           onClick={toggleSidebar}
-          className="flex items-center justify-center w-full py-1.5 rounded-md text-muted-foreground hover:text-foreground hover:bg-sidebar-accent transition-colors duration-150"
+          className="flex items-center justify-center w-full py-1 rounded-md text-muted-foreground hover:text-foreground transition-colors duration-100"
         >
-          <ChevronLeft className={`h-4 w-4 transition-transform duration-200 ${collapsed ? 'rotate-180' : ''}`} />
+          <ChevronLeft className={`h-3.5 w-3.5 transition-transform duration-150 ${collapsed ? 'rotate-180' : ''}`} />
         </button>
       </SidebarFooter>
     </Sidebar>

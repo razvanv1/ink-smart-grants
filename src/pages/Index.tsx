@@ -1,150 +1,126 @@
 import { MetricCard } from "@/components/shared/MetricCard";
 import { StatusChip } from "@/components/shared/StatusChip";
-import { ScoreBadge, ReadinessBar, UrgencyIndicator } from "@/components/shared/ScoreBadge";
+import { ScoreBadge, ReadinessBar } from "@/components/shared/ScoreBadge";
 import { opportunities, workflows, agentEvents, tasks } from "@/data/sampleData";
 import { Link } from "react-router-dom";
-import {
-  Radar, GitBranch, AlertTriangle, CalendarClock, CheckCircle2,
-  ArrowRight, Bot, Clock, Target, TrendingUp
-} from "lucide-react";
+import { ArrowRight, AlertTriangle } from "lucide-react";
 
 const Dashboard = () => {
-  const shortlisted = opportunities.filter(o => o.status === 'shortlisted' || o.status === 'new');
+  const priorityOpps = opportunities.filter(o => o.status === 'shortlisted' || o.status === 'new').slice(0, 3);
   const activeWorkflows = workflows.filter(w => w.status === 'active' || w.status === 'at-risk');
-  const atRisk = workflows.filter(w => w.status === 'at-risk');
-  const tasksDueThisWeek = tasks.filter(t => t.status !== 'done');
-  const recentEvents = agentEvents.slice(0, 5);
+  const urgentTasks = tasks.filter(t => t.status === 'overdue' || t.status === 'in-progress').slice(0, 4);
+  const recentEvents = agentEvents.slice(0, 4);
 
   return (
-    <div className="p-6 max-w-[1400px] mx-auto space-y-6">
-      {/* Page header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight text-foreground">Dashboard</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Funding operations overview</p>
-        </div>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Clock className="h-3.5 w-3.5" />
-          Last synced 2 min ago
-        </div>
+    <div className="p-8 max-w-[1200px] mx-auto space-y-10">
+      {/* Header */}
+      <div>
+        <h1 className="text-lg font-semibold tracking-tight">Overview</h1>
       </div>
 
-      {/* KPI Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3" style={{ animationDelay: '0.05s' }}>
-        <MetricCard label="Calls Monitored" value={47} change="+6 this week" changeType="positive" icon={<Radar className="h-4 w-4" />} />
-        <MetricCard label="Matched" value={8} change="+2 new" changeType="positive" icon={<Target className="h-4 w-4" />} />
-        <MetricCard label="Shortlisted" value={3} icon={<TrendingUp className="h-4 w-4" />} />
-        <MetricCard label="Active Workflows" value={activeWorkflows.length} icon={<GitBranch className="h-4 w-4" />} />
-        <MetricCard label="At Risk" value={atRisk.length} changeType="negative" icon={<AlertTriangle className="h-4 w-4" />} />
-        <MetricCard label="Tasks Due" value={tasksDueThisWeek.length} icon={<CalendarClock className="h-4 w-4" />} />
+      {/* Metrics — flat, no cards, separated by subtle dividers */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border-b border-border pb-1">
+        <MetricCard label="Monitored" value={47} sub="+6 this week" />
+        <MetricCard label="Matched" value={8} sub="2 new" />
+        <MetricCard label="Active Workflows" value={activeWorkflows.length} />
+        <MetricCard label="At Risk" value={workflows.filter(w => w.status === 'at-risk').length} sub="Needs attention" />
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-4">
-        {/* Priority Opportunities */}
-        <div className="lg:col-span-2 rounded-lg border border-border bg-card">
-          <div className="flex items-center justify-between p-4 border-b border-border">
-            <h2 className="text-sm font-semibold text-foreground">Priority Opportunities</h2>
-            <Link to="/opportunities" className="text-xs text-primary hover:underline flex items-center gap-1">
-              View all <ArrowRight className="h-3 w-3" />
-            </Link>
-          </div>
-          <div className="divide-y divide-border">
-            {shortlisted.slice(0, 4).map(opp => (
-              <Link key={opp.id} to={`/opportunities/${opp.id}`} className="flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors group">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">{opp.callName}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">{opp.programme} · {opp.thematicArea}</p>
-                </div>
-                <ScoreBadge score={opp.fitScore} label="fit" />
-                <UrgencyIndicator urgency={opp.urgency} />
-                <StatusChip status={opp.status} />
-                <span className="text-xs text-muted-foreground tabular-nums hidden sm:block">{opp.deadline}</span>
+      {/* Two-column layout */}
+      <div className="grid lg:grid-cols-5 gap-10">
+        {/* Left: Priority opportunities */}
+        <div className="lg:col-span-3 space-y-8">
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-[13px] font-semibold text-foreground uppercase tracking-wide">Priority Opportunities</h2>
+              <Link to="/opportunities" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
+                All <ArrowRight className="h-3 w-3" />
               </Link>
-            ))}
-          </div>
-        </div>
+            </div>
+            <div className="space-y-0 divide-y divide-border">
+              {priorityOpps.map(opp => (
+                <Link key={opp.id} to={`/opportunities/${opp.id}`} className="flex items-center justify-between py-3.5 group">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">{opp.callName}</p>
+                    <p className="text-[12px] text-muted-foreground mt-0.5">{opp.programme} · {opp.deadline}</p>
+                  </div>
+                  <div className="flex items-center gap-5 ml-4 shrink-0">
+                    <ScoreBadge score={opp.fitScore} label="fit" />
+                    <StatusChip status={opp.status} />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
 
-        {/* Workflows Needing Attention */}
-        <div className="rounded-lg border border-border bg-card">
-          <div className="flex items-center justify-between p-4 border-b border-border">
-            <h2 className="text-sm font-semibold text-foreground">Workflows</h2>
-            <Link to="/workflows" className="text-xs text-primary hover:underline flex items-center gap-1">
-              All <ArrowRight className="h-3 w-3" />
-            </Link>
-          </div>
-          <div className="divide-y divide-border">
-            {activeWorkflows.map(wf => (
-              <Link key={wf.id} to={`/workflows/${wf.id}`} className="block p-4 hover:bg-muted/50 transition-colors">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-medium text-foreground truncate">{wf.name}</p>
-                  <StatusChip status={wf.status} />
-                </div>
-                <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
-                  <span>{wf.stage} · {wf.owner}</span>
-                  <span className="tabular-nums">{wf.deadline}</span>
-                </div>
-                <ReadinessBar score={wf.readinessScore} />
-                {wf.blockers > 0 && (
-                  <p className="text-xs text-destructive mt-2 flex items-center gap-1">
-                    <AlertTriangle className="h-3 w-3" /> {wf.blockers} blocker{wf.blockers > 1 ? 's' : ''}
-                  </p>
-                )}
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-[13px] font-semibold text-foreground uppercase tracking-wide">Workflows</h2>
+              <Link to="/workflows" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1">
+                All <ArrowRight className="h-3 w-3" />
               </Link>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="grid lg:grid-cols-2 gap-4">
-        {/* Upcoming Deadlines */}
-        <div className="rounded-lg border border-border bg-card">
-          <div className="p-4 border-b border-border">
-            <h2 className="text-sm font-semibold text-foreground">Upcoming Deadlines</h2>
-          </div>
-          <div className="divide-y divide-border">
-            {tasks.filter(t => t.status !== 'done').slice(0, 5).map(task => (
-              <div key={task.id} className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3 min-w-0">
-                  <CheckCircle2 className={`h-4 w-4 shrink-0 ${task.status === 'overdue' ? 'text-destructive' : 'text-muted-foreground'}`} />
-                  <div className="min-w-0">
-                    <p className="text-sm text-foreground truncate">{task.title}</p>
-                    <p className="text-xs text-muted-foreground">{task.owner}</p>
+            </div>
+            <div className="space-y-3">
+              {activeWorkflows.map(wf => (
+                <Link key={wf.id} to={`/workflows/${wf.id}`} className="block py-3 border-b border-border last:border-0 group">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-medium text-foreground group-hover:text-primary transition-colors truncate">{wf.name}</p>
+                    <div className="flex items-center gap-3 shrink-0 ml-4">
+                      <StatusChip status={wf.status} />
+                      {wf.blockers > 0 && (
+                        <span className="text-[11px] text-destructive flex items-center gap-1">
+                          <AlertTriangle className="h-3 w-3" /> {wf.blockers}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <StatusChip status={task.status} />
-                  <span className="text-xs text-muted-foreground tabular-nums hidden sm:block">{task.dueDate}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+                  <div className="flex items-center justify-between text-[12px] text-muted-foreground mb-2">
+                    <span>{wf.stage} · {wf.owner}</span>
+                    <span style={{ fontVariantNumeric: 'tabular-nums' }}>{wf.deadline}</span>
+                  </div>
+                  <ReadinessBar score={wf.readinessScore} />
+                </Link>
+              ))}
+            </div>
+          </section>
         </div>
 
-        {/* Recent Agent Activity */}
-        <div className="rounded-lg border border-border bg-card">
-          <div className="flex items-center justify-between p-4 border-b border-border">
-            <h2 className="text-sm font-semibold text-foreground">Agent Activity</h2>
-            <Link to="/agent-activity" className="text-xs text-primary hover:underline flex items-center gap-1">
-              View all <ArrowRight className="h-3 w-3" />
-            </Link>
-          </div>
-          <div className="divide-y divide-border">
-            {recentEvents.map(event => (
-              <div key={event.id} className="flex items-start gap-3 p-4">
-                <div className="mt-0.5 h-6 w-6 rounded bg-muted flex items-center justify-center shrink-0">
-                  <Bot className="h-3.5 w-3.5 text-muted-foreground" />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-foreground">{event.agent}</span>
-                    <span className="text-xs text-muted-foreground">· {event.action}</span>
+        {/* Right: Tasks + Agent signals */}
+        <div className="lg:col-span-2 space-y-8">
+          <section>
+            <h2 className="text-[13px] font-semibold text-foreground uppercase tracking-wide mb-4">Deadlines</h2>
+            <div className="space-y-0 divide-y divide-border">
+              {urgentTasks.map(task => (
+                <div key={task.id} className="py-3">
+                  <div className="flex items-start justify-between">
+                    <p className="text-sm text-foreground">{task.title}</p>
+                    <StatusChip status={task.status} className="ml-3 shrink-0" />
                   </div>
-                  <p className="text-xs text-muted-foreground mt-0.5 text-pretty">{event.detail}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{task.owner} · {task.dueDate}</p>
                 </div>
-                <span className="text-[11px] text-muted-foreground whitespace-nowrap">{event.timestamp}</span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-[13px] font-semibold text-foreground uppercase tracking-wide">Agent Signals</h2>
+              <Link to="/agent-activity" className="text-[12px] text-muted-foreground hover:text-foreground transition-colors">
+                View all
+              </Link>
+            </div>
+            <div className="space-y-0 divide-y divide-border">
+              {recentEvents.map(event => (
+                <div key={event.id} className="py-3">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-[11px] font-semibold text-foreground">{event.agent}</span>
+                    <span className="text-[11px] text-muted-foreground">{event.timestamp}</span>
+                  </div>
+                  <p className="text-[12px] text-muted-foreground leading-relaxed">{event.detail}</p>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       </div>
     </div>

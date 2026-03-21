@@ -1,27 +1,31 @@
 import { cn } from "@/lib/utils";
 
-type StatusVariant = 'new' | 'watchlist' | 'shortlisted' | 'active' | 'at-risk' | 'completed' | 'rejected' | 'submitted' | 'pending' | 'in-progress' | 'overdue' | 'paused' | 'done' | 'info' | 'warning' | 'success' | 'alert' | 'critical';
-
-const variantStyles: Record<string, string> = {
-  new: 'bg-info/15 text-info border-info/20',
-  watchlist: 'bg-muted text-muted-foreground border-border',
-  shortlisted: 'bg-warning/15 text-warning border-warning/20',
-  active: 'bg-primary/15 text-primary border-primary/20',
-  'active-workflow': 'bg-primary/15 text-primary border-primary/20',
-  'at-risk': 'bg-destructive/15 text-destructive border-destructive/20',
-  completed: 'bg-success/15 text-success border-success/20',
-  rejected: 'bg-muted text-muted-foreground border-border line-through',
-  submitted: 'bg-success/15 text-success border-success/20',
-  pending: 'bg-muted text-muted-foreground border-border',
-  'in-progress': 'bg-primary/15 text-primary border-primary/20',
-  overdue: 'bg-destructive/15 text-destructive border-destructive/20',
-  paused: 'bg-muted text-muted-foreground border-border',
-  done: 'bg-success/15 text-success border-success/20',
-  info: 'bg-info/15 text-info border-info/20',
-  warning: 'bg-warning/15 text-warning border-warning/20',
-  success: 'bg-success/15 text-success border-success/20',
-  alert: 'bg-destructive/15 text-destructive border-destructive/20',
-  critical: 'bg-destructive/15 text-destructive border-destructive/20',
+const styles: Record<string, string> = {
+  new: 'text-info',
+  watchlist: 'text-muted-foreground',
+  shortlisted: 'text-warning',
+  active: 'text-primary',
+  'active-workflow': 'text-primary',
+  'at-risk': 'text-destructive',
+  completed: 'text-success',
+  rejected: 'text-muted-foreground line-through',
+  submitted: 'text-success',
+  pending: 'text-muted-foreground',
+  'in-progress': 'text-primary',
+  overdue: 'text-destructive',
+  paused: 'text-muted-foreground',
+  done: 'text-success',
+  drafted: 'text-success',
+  info: 'text-info',
+  warning: 'text-warning',
+  success: 'text-success',
+  alert: 'text-destructive',
+  critical: 'text-destructive',
+  high: 'text-destructive',
+  medium: 'text-warning',
+  low: 'text-muted-foreground',
+  pass: 'text-success',
+  missing: 'text-destructive',
 };
 
 interface StatusChipProps {
@@ -30,17 +34,13 @@ interface StatusChipProps {
 }
 
 export function StatusChip({ status, className }: StatusChipProps) {
-  const variant = status.toLowerCase().replace(/\s+/g, '-') as StatusVariant;
-  const styles = variantStyles[variant] || variantStyles.info;
-  const displayLabel = status.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+  const key = status.toLowerCase().replace(/\s+/g, '-');
+  const color = styles[key] || 'text-muted-foreground';
+  const label = status.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
   return (
-    <span className={cn(
-      "inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold uppercase tracking-wider border",
-      styles,
-      className
-    )}>
-      {displayLabel}
+    <span className={cn("text-[11px] font-medium", color, className)}>
+      {label}
     </span>
   );
 }
