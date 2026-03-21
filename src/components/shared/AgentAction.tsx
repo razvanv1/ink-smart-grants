@@ -9,6 +9,8 @@ interface AgentActionProps {
   variant?: AgentActionVariant;
   primary?: boolean;
   className?: string;
+  onClick?: () => void;
+  disabled?: boolean;
 }
 
 const variantConfig: Record<AgentActionVariant, { icon: typeof Target; accent: string; bg: string }> = {
