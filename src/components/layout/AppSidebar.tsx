@@ -31,7 +31,7 @@ export function AppSidebar() {
       <div className="flex h-14 items-center px-4 border-b border-sidebar-border">
         {!collapsed ? (
           <div className="flex items-center gap-2.5">
-            <img src={inkMascot} alt="INK" className="h-7 w-7 object-contain" />
+            <img src={inkLogo} alt="INK" className="h-7 w-7 object-contain" />
             <span className="font-extrabold text-foreground tracking-[-0.04em] text-[15px]">INK</span>
           </div>
         ) : (
