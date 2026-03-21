@@ -7,6 +7,7 @@ import { LandingHeader } from "@/components/landing/LandingHeader";
 import { TypewriterText } from "@/components/landing/TypewriterText";
 import { PricingSection } from "@/components/landing/PricingSection";
 import { InkLogo } from "@/components/InkLogo";
+import octopusImg from "@/assets/ink-octopus.png";
 import { ScrollReveal } from "@/components/shared/ScrollReveal";
 
 const orgTypes = ["NGO / Non-profit", "SME / Startup", "Educational institution", "Research / University", "Public Sector"];
@@ -86,12 +87,19 @@ const PublicScan = () => {
         <div className="relative max-w-[1080px] mx-auto px-4 sm:px-6 pt-16 sm:pt-20 pb-12">
           {/* Centered headline */}
           <div className="text-center mb-10 sm:mb-14">
-            <div className="inline-flex items-center gap-2 rounded-[3px] border border-info/30 bg-info/[0.10] px-4 py-2 mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-              <Sparkles className="h-3.5 w-3.5 text-info" />
-              <span className="text-[10px] sm:text-[11px] font-bold text-info tracking-wide uppercase">Free Funding Scan · No Account Required</span>
+            {/* Hero banner with octopus + slogan */}
+            <div className="flex items-center justify-center gap-3 mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
+              <img src={octopusImg} alt="INK octopus" className="h-14 sm:h-20 w-auto" />
+              <p className="text-[15px] sm:text-[18px] font-extrabold text-foreground/80 tracking-[-0.02em] italic leading-snug text-left">
+                "I can slap<br />8 grants at once."
+              </p>
             </div>
 
-            <h1 className="text-[32px] sm:text-[44px] lg:text-[56px] font-extrabold text-foreground tracking-[-0.045em] leading-[1.05] mb-5 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
+            <p className="text-[10px] sm:text-[11px] font-bold text-info tracking-wide uppercase mb-5 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
+              Free Funding Scan · No Account Required
+            </p>
+
+            <h1 className="text-[32px] sm:text-[44px] lg:text-[56px] font-extrabold text-foreground tracking-[-0.045em] leading-[1.05] mb-5 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.25s" }}>
               Find funding for<br />
               <TypewriterText
                 phrases={["AI training programs", "green energy projects", "digital innovation labs", "research consortiums", "social impact startups"]}
@@ -99,7 +107,7 @@ const PublicScan = () => {
               />
             </h1>
 
-            <p className="text-[14px] sm:text-[16px] text-foreground/80 leading-relaxed max-w-[560px] mx-auto mb-0 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.35s" }}>
+            <p className="text-[14px] sm:text-[16px] text-foreground/80 leading-relaxed max-w-[560px] mx-auto mb-0 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
               Describe your project. Get matched against 940+ live EU & national calls in 60 seconds.
             </p>
           </div>
