@@ -88,7 +88,7 @@ const PublicScan = () => {
           <div className="text-center mb-10 sm:mb-14">
             <div className="inline-flex items-center gap-2 rounded-[3px] border border-info/30 bg-info/[0.10] px-4 py-2 mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
               <Sparkles className="h-3.5 w-3.5 text-info" />
-              <span className="text-[10px] sm:text-[11px] font-bold text-info tracking-wide uppercase">Free Funding Scan — No Account Required</span>
+              <span className="text-[10px] sm:text-[11px] font-bold text-info tracking-wide uppercase">Free Funding Scan · No Account Required</span>
             </div>
 
             <h1 className="text-[32px] sm:text-[44px] lg:text-[56px] font-extrabold text-foreground tracking-[-0.045em] leading-[1.05] mb-5 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
@@ -110,10 +110,10 @@ const PublicScan = () => {
               <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info text-center mb-2">How It Works</p>
               <h2 className="text-[22px] sm:text-[26px] font-extrabold text-foreground tracking-[-0.03em] text-center mb-2">Get matched in 3 simple steps</h2>
               <p className="text-[13px] text-foreground/70 text-center mb-8 max-w-[480px] mx-auto leading-relaxed">
-                Our AI scans 940+ live EU & national funding calls and matches them to your project profile — no expertise needed.
+                Our AI scans 940+ live EU & national funding calls and matches them to your project profile. No expertise needed.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                <ScrollReveal delay={180}><HowItWorksStep step={1} title="Describe your project" description="Tell us what you want to fund — a training program, research project, or innovation idea. One sentence is enough." /></ScrollReveal>
+                <ScrollReveal delay={180}><HowItWorksStep step={1} title="Describe your project" description="Tell us what you want to fund: a training program, research project, or innovation idea. One sentence is enough." /></ScrollReveal>
                 <ScrollReveal delay={260}><HowItWorksStep step={2} title="Get matched calls" description="Our AI instantly compares your profile against all active calls and ranks them by fit score, deadline & budget." /></ScrollReveal>
                 <ScrollReveal delay={340}><HowItWorksStep step={3} title="Start your application" description="Pick your best match and turn it into an active workflow with checklists, AI drafting, and deadline tracking." /></ScrollReveal>
               </div>
@@ -343,8 +343,8 @@ function FreeResultCard({ match, index }: { match: ScanMatch; index: number }) {
             <MiniStat label="Complexity" value={match.complexity} />
           </div>
           <div className="space-y-2.5">
-            <p className="text-[12px] text-foreground/75 leading-relaxed"><span className="font-semibold text-foreground">Why it fits — </span>{match.whyItFits}</p>
-            <p className="text-[12px] text-foreground/75 leading-relaxed"><span className="font-semibold text-foreground">Key challenge — </span>{match.whyDifficult}</p>
+            <p className="text-[12px] text-foreground/75 leading-relaxed"><span className="font-semibold text-foreground">Why it fits: </span>{match.whyItFits}</p>
+            <p className="text-[12px] text-foreground/75 leading-relaxed"><span className="font-semibold text-foreground">Key challenge: </span>{match.whyDifficult}</p>
           </div>
           <div className="mt-4 pt-3 border-t border-border/20 flex items-center justify-between">
             <p className="text-[11px] text-foreground/70"><span className="font-semibold text-foreground">Next step:</span> {match.recommendedAction}</p>

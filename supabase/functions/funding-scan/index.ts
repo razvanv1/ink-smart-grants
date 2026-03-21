@@ -35,10 +35,10 @@ CRITICAL MATCHING RULES:
 - Use realistic deadlines (3-12 months from now), budgets that match programme norms, and correct eligibility criteria
 - Match based on thematic alignment, eligible organization types, TRL levels, and geographic scope
 - The more detailed the user's project description, the more precise and differentiated the matching should be
-- Score fitScore honestly — a 95%+ match should only happen when project intent perfectly aligns with the call topic
+- Score fitScore honestly: a 95%+ match should only happen when project intent perfectly aligns with the call topic
 - Include a mix of high-fit (80%+) and moderate-fit (50-79%) calls to show breadth
 
-Return 8 matched calls ranked by fit score (highest first). Make the matching logic transparent — explain WHY each call matches or doesn't fully match.`;
+Return 8 matched calls ranked by fit score (highest first). Make the matching logic transparent. Explain WHY each call matches or doesn't fully match.`;
 
     const userPrompt = `Project intent: "${projectIntent}"
 Organization type: ${organizationType}
@@ -118,7 +118,7 @@ Find the most relevant EU and national funding calls for this profile. Return ex
     if (!response.ok) {
       if (response.status === 429) {
         return new Response(
-          JSON.stringify({ error: "Rate limited — please try again shortly." }),
+          JSON.stringify({ error: "Rate limited. Please try again shortly." }),
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }

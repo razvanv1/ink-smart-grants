@@ -427,7 +427,7 @@ const ScanPage = () => {
                             Add to Watchlist
                           </button>
                           <button
-                            onClick={() => toast.info("Start Workflow — available in production")}
+                            onClick={() => toast.info("Start Workflow: available in production")}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-[11px] font-semibold tracking-wide text-muted-foreground hover:text-foreground hover:bg-secondary transition-all active:scale-[0.97]"
                           >
                             <ArrowRight className="h-3 w-3" /> Start Workflow
