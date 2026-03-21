@@ -7,6 +7,7 @@ import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
+import inkMascot from "@/assets/ink-mascot.png";
 
 const navItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
@@ -30,15 +31,11 @@ export function AppSidebar() {
       <div className="flex h-14 items-center px-4 border-b border-sidebar-border">
         {!collapsed ? (
           <div className="flex items-center gap-2.5">
-            <div className="h-6 w-6 bg-primary rounded-sm flex items-center justify-center">
-              <span className="text-[11px] font-extrabold text-primary-foreground tracking-tighter">IN</span>
-            </div>
+            <img src={inkMascot} alt="INK" className="h-7 w-7 object-contain" />
             <span className="font-extrabold text-foreground tracking-[-0.04em] text-[15px]">INK</span>
           </div>
         ) : (
-          <div className="h-6 w-6 bg-primary rounded-sm flex items-center justify-center mx-auto">
-            <span className="text-[11px] font-extrabold text-primary-foreground tracking-tighter">IN</span>
-          </div>
+          <img src={inkMascot} alt="INK" className="h-6 w-6 object-contain mx-auto" />
         )}
       </div>
 
