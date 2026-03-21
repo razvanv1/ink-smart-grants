@@ -142,6 +142,8 @@ const PublicScan = () => {
         </div>
       </section>
 
+      {/* ═══ HOW IT WORKS + SCAN FORM ═══ */}
+      <div className="w-full max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pb-16">
           {/* ═══ HOW IT WORKS ═══ */}
           {!showResults && (
             <ScrollReveal delay={120} className="max-w-[960px] mx-auto mb-14">
@@ -158,7 +160,7 @@ const PublicScan = () => {
             </ScrollReveal>
           )}
 
-          {/* ═══ SCAN FORM — the hero ═══ */}
+          {/* ═══ SCAN FORM ═══ */}
           {!showResults && (
             <ScrollReveal delay={220} id="scan-form" className="max-w-[960px] mx-auto bg-card rounded-[14px] border-2 border-info/40 shadow-[0_8px_60px_-12px_hsl(var(--info)/0.25),0_2px_12px_-4px_hsl(var(--info)/0.10)] p-6 sm:p-10 relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-info/60 via-info to-info/60" />
@@ -191,7 +193,7 @@ const PublicScan = () => {
                 </div>
                 <button type="button" onClick={() => setShowAdvanced(!showAdvanced)} className="w-full flex items-center justify-center gap-2 py-3 rounded-[6px] border border-dashed border-info/40 bg-info/[0.04] text-[12px] font-bold text-info hover:bg-info/[0.08] hover:border-info/60 transition-all active:scale-[0.98]">
                   {showAdvanced ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                  {showAdvanced ? "Hide Advanced Filters" : "Show Advanced Filters (Budget, Geography)"}
+                  {showAdvanced ? "Hide Advanced Filters" : "Show Advanced Filters (Grant Type, Status, Budget, Geography)"}
                 </button>
                 {showAdvanced && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
@@ -233,7 +235,7 @@ const PublicScan = () => {
             </ScrollReveal>
           )}
 
-          {/* Stat blocks + mascot row below form */}
+          {/* Stat blocks */}
           {!showResults && (
             <ScrollReveal delay={300} className="max-w-[960px] mx-auto mt-10 flex items-center justify-center gap-5">
                 <StatBlock number="940+" label="Active calls" />
@@ -241,8 +243,7 @@ const PublicScan = () => {
                 <StatBlock number="60s" label="To results" />
             </ScrollReveal>
           )}
-        </div>
-      </section>
+      </div>
 
       {/* ═══ RESULTS + PRICING + FOOTER ═══ */}
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
