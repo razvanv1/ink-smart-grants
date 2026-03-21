@@ -285,7 +285,7 @@ const PublicScan = () => {
 function HowItWorksStep({ step, title, description }: { step: number; title: string; description: string }) {
   return (
     <div className="relative flex flex-col items-center text-center p-5 rounded-[8px] border border-border bg-card hover:shadow-md hover:shadow-info/[0.08] transition-all duration-300 group">
-      <span className="text-[42px] font-extralight leading-none text-foreground/15 mb-3 select-none" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>{step}</span>
+      <span className="text-[42px] font-extralight leading-none mb-3 select-none" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", color: 'hsl(18 72% 46%)' }}>{step}</span>
       <p className="text-[14px] font-bold text-foreground leading-snug mb-1.5">{title}</p>
       <p className="text-[12px] text-foreground/70 leading-relaxed">{description}</p>
     </div>
