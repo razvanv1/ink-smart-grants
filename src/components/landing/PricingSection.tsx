@@ -109,7 +109,7 @@ export function PricingSection() {
             </ul>
 
             <button
-              onClick={() => navigate("/auth")}
+              onClick={() => navigate(plan.name === "Enterprise" ? "/contact" : "/auth")}
               className={`w-full py-3 text-[13px] font-bold tracking-wide rounded-[3px] flex items-center justify-center gap-2 active:scale-[0.97] transition-all mt-auto ${
                 plan.popular
                   ? "bg-info text-info-foreground hover:bg-info/90 shadow-sm shadow-info/20"

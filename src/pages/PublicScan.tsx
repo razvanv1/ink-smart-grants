@@ -6,9 +6,10 @@ import { toast } from "sonner";
 import { LandingHeader } from "@/components/landing/LandingHeader";
 import { TypewriterText } from "@/components/landing/TypewriterText";
 import { PricingSection } from "@/components/landing/PricingSection";
-import { InkLogo } from "@/components/InkLogo";
+
 import octopusImg from "@/assets/ink-octopus.png";
 import { ScrollReveal } from "@/components/shared/ScrollReveal";
+import { Footer } from "@/components/Footer";
 
 const orgTypes = ["NGO / Non-profit", "SME / Startup", "Educational institution", "Research / University", "Public Sector"];
 const domains = ["Digital / AI / Tech", "Education / Training", "Innovation / R&D", "Environment / Climate", "Health / Social", "Culture / Creative", "Agriculture / Rural"];
@@ -272,10 +273,7 @@ const PublicScan = () => {
         <PricingSection />
 
         {/* ═══ FOOTER ═══ */}
-        <footer className="py-12 border-t border-border/40 text-center">
-          <InkLogo size={32} className="justify-center mb-4" />
-          <p className="text-[11px] text-foreground/65">© {new Date().getFullYear()} INK. Agentic funding operations platform.</p>
-        </footer>
+        <Footer variant="landing" />
       </div>
     </div>
   );
