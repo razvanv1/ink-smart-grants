@@ -39,7 +39,7 @@ function AppRoutes() {
 
   return (
     <Routes>
-      <Route path="/auth" element={user ? <Navigate to="/" replace /> : <Auth />} />
+      <Route path="/auth" element={user ? <Navigate to={new URLSearchParams(window.location.search).get("redirect") || "/"} replace /> : <Auth />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/scan-public" element={user ? <Navigate to="/" replace /> : <PublicScan />} />
       <Route path="/landing" element={user ? <Navigate to="/" replace /> : <PublicScan />} />

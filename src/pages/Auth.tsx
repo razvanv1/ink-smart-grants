@@ -14,6 +14,16 @@ export default function Auth() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // Pre-fill email from query params (from public scan unlock)
+  useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const emailParam = params.get("email");
+    if (emailParam) setEmail(emailParam);
+    // If coming from public scan, default to signup
+    const redirect = params.get("redirect");
+    if (redirect && emailParam) setMode("signup");
+  });
+
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
