@@ -36,7 +36,6 @@ export function AppSidebar() {
           </div>
         ) : (
           <img src={inkMascot} alt="INK" className="h-6 w-6 object-contain mx-auto" />
-          </div>
         )}
       </div>
 
