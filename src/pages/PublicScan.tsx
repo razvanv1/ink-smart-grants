@@ -123,10 +123,13 @@ const PublicScan = () => {
           {/* ═══ SCAN FORM — the hero ═══ */}
           {!showResults && (
             <ScrollReveal delay={220} className="max-w-[780px] mx-auto bg-card rounded-[10px] border border-border shadow-2xl shadow-foreground/[0.06] p-6 sm:p-10">
+              <h2 className="text-[22px] sm:text-[28px] font-extrabold text-foreground tracking-[-0.03em] leading-tight mb-2">
+                What do you want to fund?
+              </h2>
+              <p className="text-[13px] text-foreground/65 leading-relaxed mb-6">
+                Descrie-ți proiectul, ideea sau nevoia de finanțare cât mai detaliat. Cu cât oferi mai multe detalii despre obiective, grup țintă și domeniu, cu atât AI-ul nostru va face un matchmaking mai precis cu call-urile active.
+              </p>
               <form onSubmit={handleScan} className="space-y-5">
-                <div>
-                  <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">What do you want to fund?</label>
-                  <input type="text" value={projectIntent} onChange={e => setProjectIntent(e.target.value)} placeholder="e.g. AI training program for professionals" className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all" />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
