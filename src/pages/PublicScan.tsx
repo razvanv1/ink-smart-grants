@@ -127,7 +127,7 @@ const PublicScan = () => {
                 What do you want to fund?
               </h2>
               <p className="text-[13px] text-foreground/65 leading-relaxed mb-6">
-                Descrie-ți proiectul, ideea sau nevoia de finanțare cât mai detaliat. Cu cât oferi mai multe detalii despre obiective, grup țintă și domeniu, cu atât AI-ul nostru va face un matchmaking mai precis cu call-urile active.
+                Describe your project, idea, or funding need in as much detail as possible. The more you tell us about your objectives, target group, and domain, the more precise our AI matchmaking will be against active calls.
               </p>
               <form onSubmit={handleScan} className="space-y-5">
                 <div>
