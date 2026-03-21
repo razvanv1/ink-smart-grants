@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
+import { ScrollReveal } from "@/components/shared/ScrollReveal";
 
 const plans = [
   {
@@ -56,7 +57,7 @@ export function PricingSection() {
 
   return (
     <section id="pricing" className="py-24">
-      <div className="text-center mb-16 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s", animationFillMode: "forwards" }}>
+      <ScrollReveal className="text-center mb-16" delay={80}>
         <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info mb-3">Pricing</p>
         <h2 className="text-[32px] font-extrabold text-foreground tracking-[-0.035em] leading-[1.1] mb-4">
           Simple pricing. No long-term contracts.
@@ -64,18 +65,17 @@ export function PricingSection() {
         <p className="text-[15px] text-foreground/75 max-w-[500px] mx-auto leading-relaxed">
           Start free for 14 days. Full platform access, no credit card required.
         </p>
-      </div>
+      </ScrollReveal>
 
       <div className="grid md:grid-cols-3 gap-5 max-w-[960px] mx-auto">
         {plans.map((plan, i) => (
+          <ScrollReveal key={plan.name} delay={140 + i * 90}>
           <div
-            key={plan.name}
-            className={`relative rounded-[6px] border p-6 flex flex-col opacity-0 animate-fade-in-up ${
+            className={`relative rounded-[6px] border p-6 flex flex-col ${
               plan.popular
                 ? "border-info/70 bg-info/[0.06] shadow-lg shadow-info/[0.15]"
                 : "border-border bg-card shadow-sm"
             }`}
-            style={{ animationDelay: `${0.2 + i * 0.1}s`, animationFillMode: "forwards" }}
           >
             {plan.popular && (
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -120,6 +120,7 @@ export function PricingSection() {
               <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>
+          </ScrollReveal>
         ))}
       </div>
     </section>

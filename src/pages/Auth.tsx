@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import inkMascot from "@/assets/ink-mascot.png";
+import { InkLogo } from "@/components/InkLogo";
 
 export default function Auth() {
   const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
@@ -16,14 +16,14 @@ export default function Auth() {
   const navigate = useNavigate();
 
   // Pre-fill email from query params (from public scan unlock)
-  useState(() => {
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const emailParam = params.get("email");
     if (emailParam) setEmail(emailParam);
     // If coming from public scan, default to signup
     const redirect = params.get("redirect");
     if (redirect && emailParam) setMode("signup");
-  });
+  }, []);
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,12 +73,16 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
-      <div className="w-full max-w-[380px]">
+    <div className="min-h-screen bg-background flex items-center justify-center px-4 relative overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div className="absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-info/[0.08] to-transparent" />
+        <div className="absolute -top-16 -left-16 w-72 h-72 rounded-full border border-info/20" />
+        <div className="absolute top-14 right-[8%] w-24 h-24 rounded-[8px] border border-info/20 rotate-[12deg]" />
+      </div>
+      <div className="w-full max-w-[400px] bg-card border border-border rounded-[10px] shadow-xl shadow-foreground/[0.06] p-6 sm:p-7 relative z-10">
         {/* Brand */}
-        <div className="flex items-center gap-2.5 mb-10">
-          <img src={inkMascot} alt="INK" className="h-8 w-8 object-contain" />
-          <span className="font-extrabold text-foreground tracking-[-0.04em] text-[17px]">INK</span>
+        <div className="mb-8">
+          <InkLogo size={34} />
         </div>
 
         <h1 className="text-xl font-semibold tracking-tight text-foreground mb-1">
@@ -143,7 +147,7 @@ export default function Auth() {
               className="h-10 text-[13px]"
             />
           )}
-          <Button type="submit" className="w-full h-10 text-[13px] font-medium" disabled={loading}>
+          <Button type="submit" className="w-full h-10 text-[13px] font-medium bg-info text-info-foreground hover:bg-info/90" disabled={loading}>
             {loading ? "…" : mode === "forgot" ? "Send reset link" : mode === "signup" ? "Create account" : "Sign in"}
           </Button>
         </form>
@@ -156,7 +160,7 @@ export default function Auth() {
               </button>
               <p className="text-[12px] text-muted-foreground">
                 No account?{" "}
-                <button onClick={() => setMode("signup")} className="text-foreground font-medium hover:underline">
+                <button onClick={() => setMode("signup")} className="text-info font-semibold hover:underline">
                   Sign up
                 </button>
               </p>
@@ -165,7 +169,7 @@ export default function Auth() {
           {mode === "signup" && (
             <p className="text-[12px] text-muted-foreground">
               Already have an account?{" "}
-              <button onClick={() => setMode("login")} className="text-foreground font-medium hover:underline">
+              <button onClick={() => setMode("login")} className="text-info font-semibold hover:underline">
                 Sign in
               </button>
             </p>
