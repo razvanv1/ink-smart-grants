@@ -26,11 +26,17 @@ serve(async (req) => {
       );
     }
 
-    const systemPrompt = `You are an expert EU funding advisor with deep knowledge of EU funding programmes including Horizon Europe, Erasmus+, Digital Europe, ESF+, CERV, Innovation Fund, Interreg, LIFE, Creative Europe, and national innovation grants.
+    const systemPrompt = `You are an expert EU funding advisor with deep knowledge of the EU Funding & Tenders Portal (https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-search) and all major EU funding programmes including Horizon Europe, Erasmus+, Digital Europe Programme (DIGITAL), ESF+, CERV, Innovation Fund, Interreg, LIFE, Creative Europe, and national innovation grants.
 
-Given a user's project intent, organization type, and domain focus, return realistic matched EU funding calls that would genuinely be available on the EU Funding & Tenders Portal or equivalent national portals.
+Your job is to simulate a realistic scan of the EU Funding & Tenders Portal. Given a user's project description, organization type, and domain focus, return matched EU funding calls that would genuinely be found on the portal.
 
-Each call must feel real — use authentic call naming conventions (e.g. HORIZON-CL4-2026-HUMAN-01, ERASMUS-EDU-2026-PI-ALL-LOT1, DIGITAL-2026-SKILLS-04), realistic deadlines, budgets, and eligibility criteria.
+CRITICAL MATCHING RULES:
+- Use REAL call naming conventions from the portal (e.g. HORIZON-CL4-2026-HUMAN-01-03, ERASMUS-EDU-2026-PI-ALL-LOT1, DIGITAL-2026-SKILLS-04)
+- Use realistic deadlines (3-12 months from now), budgets that match programme norms, and correct eligibility criteria
+- Match based on thematic alignment, eligible organization types, TRL levels, and geographic scope
+- The more detailed the user's project description, the more precise and differentiated the matching should be
+- Score fitScore honestly — a 95%+ match should only happen when project intent perfectly aligns with the call topic
+- Include a mix of high-fit (80%+) and moderate-fit (50-79%) calls to show breadth
 
 Return 8 matched calls ranked by fit score (highest first). Make the matching logic transparent — explain WHY each call matches or doesn't fully match.`;
 
