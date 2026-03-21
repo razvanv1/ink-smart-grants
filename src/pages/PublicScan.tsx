@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, ChevronDown, ChevronUp, Lock, ArrowRight, Loader2, AlertTriangle, Clock, Users, TrendingUp, Sparkles, FileText, Target, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,6 +7,7 @@ import { LandingHeader } from "@/components/landing/LandingHeader";
 import { TypewriterText } from "@/components/landing/TypewriterText";
 import { PricingSection } from "@/components/landing/PricingSection";
 import { InkLogo } from "@/components/InkLogo";
+import { ScrollReveal } from "@/components/shared/ScrollReveal";
 
 const orgTypes = ["NGO / Non-profit", "SME / Startup", "Educational institution", "Research / University", "Public Sector"];
 const domains = ["Digital / AI / Tech", "Education / Training", "Innovation / R&D", "Environment / Climate", "Health / Social", "Culture / Creative", "Agriculture / Rural"];
@@ -105,18 +106,18 @@ const PublicScan = () => {
 
           {/* ═══ HOW IT WORKS — before scan form ═══ */}
           {!showResults && (
-            <div className="max-w-[780px] mx-auto mb-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+            <ScrollReveal delay={120} className="max-w-[780px] mx-auto mb-10">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <HowItWorksStep step={1} icon={<FileText className="h-4 w-4" />} title="Describe your project" description="Tell us what you want to fund in one sentence" />
-                <HowItWorksStep step={2} icon={<Target className="h-4 w-4" />} title="Get matched calls" description="AI matches your profile against 940+ live calls" />
-                <HowItWorksStep step={3} icon={<Zap className="h-4 w-4" />} title="Start your application" description="Turn the best match into an active workflow" />
+                <ScrollReveal delay={180}><HowItWorksStep step={1} icon={<FileText className="h-4 w-4" />} title="Describe your project" description="Tell us what you want to fund in one sentence" /></ScrollReveal>
+                <ScrollReveal delay={240}><HowItWorksStep step={2} icon={<Target className="h-4 w-4" />} title="Get matched calls" description="AI matches your profile against 940+ live calls" /></ScrollReveal>
+                <ScrollReveal delay={300}><HowItWorksStep step={3} icon={<Zap className="h-4 w-4" />} title="Start your application" description="Turn the best match into an active workflow" /></ScrollReveal>
               </div>
-            </div>
+            </ScrollReveal>
           )}
 
           {/* ═══ SCAN FORM — the hero ═══ */}
           {!showResults && (
-            <div className="max-w-[780px] mx-auto bg-card rounded-[10px] border border-border shadow-2xl shadow-foreground/[0.06] p-6 sm:p-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.55s" }}>
+            <ScrollReveal delay={220} className="max-w-[780px] mx-auto bg-card rounded-[10px] border border-border shadow-2xl shadow-foreground/[0.06] p-6 sm:p-10">
               <form onSubmit={handleScan} className="space-y-5">
                 <div>
                   <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">What do you want to fund?</label>
@@ -167,16 +168,16 @@ const PublicScan = () => {
                 </button>
                 <p className="text-[11px] text-foreground/55 text-center">Free · No account required · Real EU data</p>
               </form>
-            </div>
+            </ScrollReveal>
           )}
 
           {/* Stat blocks + mascot row below form */}
           {!showResults && (
-            <div className="max-w-[780px] mx-auto mt-10 flex items-center justify-center gap-5 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.7s" }}>
+            <ScrollReveal delay={300} className="max-w-[780px] mx-auto mt-10 flex items-center justify-center gap-5">
                 <StatBlock number="940+" label="Active calls" />
                 <StatBlock number="3" label="Free matches" />
                 <StatBlock number="60s" label="To results" />
-            </div>
+            </ScrollReveal>
           )}
         </div>
       </section>
