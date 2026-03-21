@@ -85,7 +85,7 @@ const PublicScan = () => {
           <div className="absolute top-[50%] right-[3%] w-[100px] h-[100px] border border-info/20 rounded-[6px] rotate-[12deg]" />
         </div>
 
-        <div className="relative max-w-[1080px] mx-auto px-4 sm:px-6 pt-16 sm:pt-20 pb-12">
+        <div className="relative max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-12">
           {/* Centered headline */}
           <div className="text-center mb-10 sm:mb-14">
             {/* Hero banner with octopus + slogan */}
@@ -120,7 +120,7 @@ const PublicScan = () => {
 
           {/* ═══ HOW IT WORKS ═══ */}
           {!showResults && (
-            <ScrollReveal delay={120} className="max-w-[780px] mx-auto mb-14">
+            <ScrollReveal delay={120} className="max-w-[960px] mx-auto mb-14">
               <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info text-center mb-2">How It Works</p>
               <h2 className="text-[22px] sm:text-[26px] font-extrabold text-foreground tracking-[-0.03em] text-center mb-2">Get matched in 3 simple steps</h2>
               <p className="text-[13px] text-foreground/70 text-center mb-8 max-w-[480px] mx-auto leading-relaxed">
@@ -136,7 +136,7 @@ const PublicScan = () => {
 
           {/* ═══ SCAN FORM — the hero ═══ */}
           {!showResults && (
-            <ScrollReveal delay={220} id="scan-form" className="max-w-[780px] mx-auto bg-card rounded-[14px] border-2 border-info/40 shadow-[0_8px_60px_-12px_hsl(var(--info)/0.25),0_2px_12px_-4px_hsl(var(--info)/0.10)] p-6 sm:p-10 relative overflow-hidden">
+            <ScrollReveal delay={220} id="scan-form" className="max-w-[960px] mx-auto bg-card rounded-[14px] border-2 border-info/40 shadow-[0_8px_60px_-12px_hsl(var(--info)/0.25),0_2px_12px_-4px_hsl(var(--info)/0.10)] p-6 sm:p-10 relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-info/60 via-info to-info/60" />
               <h2 className="text-[22px] sm:text-[28px] font-extrabold text-foreground tracking-[-0.03em] leading-tight mb-2">
                 What do you want to fund?
@@ -199,7 +199,7 @@ const PublicScan = () => {
 
           {/* Stat blocks + mascot row below form */}
           {!showResults && (
-            <ScrollReveal delay={300} className="max-w-[780px] mx-auto mt-10 flex items-center justify-center gap-5">
+            <ScrollReveal delay={300} className="max-w-[960px] mx-auto mt-10 flex items-center justify-center gap-5">
                 <StatBlock number="940+" label="Active calls" />
                 <StatBlock number="3" label="Free matches" />
                 <StatBlock number="60s" label="To results" />
@@ -209,7 +209,7 @@ const PublicScan = () => {
       </section>
 
       {/* ═══ RESULTS + PRICING + FOOTER ═══ */}
-      <div className="max-w-[1080px] mx-auto px-4 sm:px-6">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
         {showResults && (
           <div ref={resultsRef} className="space-y-8 relative z-10 mb-20">
             <div className="flex items-center justify-between opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
