@@ -8,7 +8,7 @@ export function LandingHeader() {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/80">
       <div className="max-w-[1080px] mx-auto px-6 h-14 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
-          <img src={inkLogo} alt="INK" className="h-7 w-7 object-contain" />
+          <img src={inkLogo} alt="INK" className="h-9 w-9 object-contain" />
           <span className="font-extrabold text-foreground tracking-[-0.04em] text-[17px]">INK</span>
         </div>
         <div className="flex items-center gap-4">
