@@ -35,7 +35,7 @@ export function AppSidebar() {
             <span className="font-extrabold text-foreground tracking-[-0.04em] text-[15px]">INK</span>
           </div>
         ) : (
-          <img src={inkMascot} alt="INK" className="h-6 w-6 object-contain mx-auto" />
+          <img src={inkLogo} alt="INK" className="h-6 w-6 object-contain mx-auto" />
         )}
       </div>
 
