@@ -7,7 +7,7 @@ import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter, useSidebar,
 } from "@/components/ui/sidebar";
-import inkMascot from "@/assets/ink-mascot.png";
+import inkLogo from "@/assets/ink-octopus-logo.png";
 
 const navItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
