@@ -96,7 +96,7 @@ export function AgentActionPanel({ actions, context, className = '' }: AgentActi
 }
 
 interface AgentActionRowProps {
-  actions: { label: string; hint?: string; variant?: AgentActionVariant }[];
+  actions: AgentActionItem[];
   className?: string;
 }
 
