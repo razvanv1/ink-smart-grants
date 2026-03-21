@@ -319,10 +319,10 @@ const PublicScan = () => {
 /* ── How It Works step ── */
 function HowItWorksStep({ step, title, description }: { step: number; title: string; description: string }) {
   return (
-    <div className="relative flex flex-col items-center text-center p-5 rounded-[8px] border border-border bg-card hover:shadow-md hover:shadow-info/[0.08] transition-all duration-300 group">
-      <span className="text-[42px] font-extralight leading-none mb-3 select-none" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", color: 'hsl(18 72% 46%)' }}>{step}</span>
-      <p className="text-[14px] font-bold text-foreground leading-snug mb-1.5">{title}</p>
-      <p className="text-[12px] text-foreground/70 leading-relaxed">{description}</p>
+    <div className="relative flex flex-col items-center text-center p-7 rounded-[10px] border border-border bg-card hover:shadow-lg hover:shadow-info/[0.08] transition-all duration-300 group">
+      <span className="text-[52px] font-extralight leading-none mb-4 select-none" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", color: 'hsl(18 72% 46%)' }}>{step}</span>
+      <p className="text-[16px] font-bold text-foreground leading-snug mb-2">{title}</p>
+      <p className="text-[13px] text-foreground/65 leading-relaxed">{description}</p>
     </div>
   );
 }
@@ -330,9 +330,9 @@ function HowItWorksStep({ step, title, description }: { step: number; title: str
 /* ── Stat block for hero ── */
 function StatBlock({ number, label }: { number: string; label: string }) {
   return (
-    <div className="text-center p-3 rounded-[6px] border border-foreground/15 bg-background shadow-sm">
-      <p className="text-[24px] font-extrabold text-foreground leading-none mb-1" style={{ fontVariantNumeric: "tabular-nums" }}>{number}</p>
-      <p className="text-[10px] text-foreground/65 font-semibold uppercase tracking-wider">{label}</p>
+    <div className="text-center px-6 py-4 rounded-[6px] border border-foreground/15 bg-background shadow-sm">
+      <p className="text-[28px] font-extrabold text-foreground leading-none mb-1" style={{ fontVariantNumeric: "tabular-nums" }}>{number}</p>
+      <p className="text-[11px] text-foreground/60 font-semibold uppercase tracking-wider">{label}</p>
     </div>
   );
 }
