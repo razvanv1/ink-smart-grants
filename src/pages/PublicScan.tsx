@@ -278,7 +278,7 @@ const PublicScan = () => {
         {/* ═══ FOOTER ═══ */}
         <footer className="py-12 border-t border-border/40 text-center">
           <div className="flex items-center justify-center gap-2.5 mb-4">
-            <img src={inkLogo} alt="INK" className="h-8 w-8 object-contain" />
+            <img src={inkLogo} alt="INK" className="h-11 w-11 object-contain" />
             <span className="font-extrabold text-foreground tracking-[-0.04em] text-[15px]">INK</span>
           </div>
           <p className="text-[11px] text-foreground/65">© {new Date().getFullYear()} INK. Agentic funding operations platform.</p>
