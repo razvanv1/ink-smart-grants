@@ -2,12 +2,12 @@ import { cn } from "@/lib/utils";
 
 type StatusVariant = 'new' | 'watchlist' | 'shortlisted' | 'active' | 'at-risk' | 'completed' | 'rejected' | 'submitted' | 'pending' | 'in-progress' | 'overdue' | 'paused' | 'done' | 'info' | 'warning' | 'success' | 'alert' | 'critical';
 
-const variantStyles: Record<StatusVariant, string> = {
+const variantStyles: Record<string, string> = {
   new: 'bg-info/15 text-info border-info/20',
   watchlist: 'bg-muted text-muted-foreground border-border',
   shortlisted: 'bg-warning/15 text-warning border-warning/20',
   active: 'bg-primary/15 text-primary border-primary/20',
-  'active-workflow' as any: 'bg-primary/15 text-primary border-primary/20',
+  'active-workflow': 'bg-primary/15 text-primary border-primary/20',
   'at-risk': 'bg-destructive/15 text-destructive border-destructive/20',
   completed: 'bg-success/15 text-success border-success/20',
   rejected: 'bg-muted text-muted-foreground border-border line-through',
