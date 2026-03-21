@@ -85,7 +85,7 @@ const PublicScan = () => {
           <div className="absolute top-[50%] right-[3%] w-[100px] h-[100px] border border-info/20 rounded-[6px] rotate-[12deg]" />
         </div>
 
-        <div className="relative max-w-[1080px] mx-auto px-4 sm:px-6 pt-16 sm:pt-20 pb-12">
+        <div className="relative max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-12">
           {/* Centered headline */}
           <div className="text-center mb-10 sm:mb-14">
             {/* Hero banner with octopus + slogan */}
