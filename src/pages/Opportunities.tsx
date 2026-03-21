@@ -20,6 +20,9 @@ const Opportunities = () => {
     return matchesStatus && matchesSearch;
   });
 
+  const shortlisted = opportunities.filter(o => o.status === 'shortlisted').length;
+  const partnerNeeded = filtered.filter(o => o.partnerRequired).length;
+
   return (
     <div className="p-8 max-w-[1300px] mx-auto space-y-8">
       <div className="flex items-end justify-between border-b border-border pb-6">
@@ -27,10 +30,14 @@ const Opportunities = () => {
           <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Matched Opportunities</p>
           <h1 className="ink-page-title">Opportunities</h1>
         </div>
-        <div className="flex items-center gap-4 pb-1">
-          <AgentAction label="Compare shortlisted" variant="strategic" />
-          <AgentAction label="Find partners" variant="coordination" />
-          <span className="text-[11px] text-muted-foreground">{filtered.length} calls</span>
+        <div className="flex items-center gap-3 pb-1">
+          {partnerNeeded > 0 && (
+            <AgentAction label={`Find partners (${partnerNeeded} need consortium)`} variant="coordination" />
+          )}
+          {shortlisted > 0 && (
+            <AgentAction label={`Compare ${shortlisted} shortlisted`} variant="strategic" />
+          )}
+          <span className="text-[11px] text-muted-foreground ml-1">{filtered.length} calls</span>
         </div>
       </div>
 

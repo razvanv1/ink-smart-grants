@@ -21,6 +21,10 @@ const OpportunityDetail = () => {
     );
   }
 
+  const needsPartner = opp.partnerRequired;
+  const isHighFit = opp.fitScore >= 80;
+  const isUrgent = opp.urgency === 'high' || opp.urgency === 'critical';
+
   return (
     <div className="p-8 max-w-[960px] mx-auto space-y-10">
       <Link to="/opportunities" className="text-[11px] text-muted-foreground hover:text-foreground flex items-center gap-1">
@@ -71,14 +75,13 @@ const OpportunityDetail = () => {
           </div>
 
           <AgentActionPanel
-            label="Agent actions"
+            context={`${isHighFit ? 'Strong thematic fit' : 'Moderate fit'} · ${opp.complexity} complexity${needsPartner ? ' · Consortium required' : ''}${isUrgent ? ' · Deadline approaching' : ''}`}
             actions={[
-              { label: 'Explain fit', variant: 'strategic' },
-              { label: 'Estimate effort', variant: 'strategic' },
-              { label: 'Find partners', variant: 'coordination' },
-              { label: 'Flag risks', variant: 'compliance' },
-              { label: 'Generate brief', variant: 'drafting' },
-              { label: 'Compare similar calls', variant: 'knowledge' },
+              ...(needsPartner ? [{ label: 'Find matching partners', variant: 'coordination' as const, primary: true }] : []),
+              ...(isHighFit && !linkedWorkflow ? [{ label: 'Turn this into a workflow', variant: 'strategic' as const, primary: true }] : []),
+              { label: 'Generate decision brief', variant: 'drafting' as const, primary: !needsPartner && !!linkedWorkflow },
+              { label: 'Estimate execution effort', variant: 'strategic' as const },
+              { label: 'Compare similar calls', variant: 'knowledge' as const },
             ]}
           />
         </div>

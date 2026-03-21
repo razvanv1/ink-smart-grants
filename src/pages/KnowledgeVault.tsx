@@ -20,6 +20,8 @@ const KnowledgeVault = () => {
     asset.tags.some(t => t.toLowerCase().includes(search.toLowerCase()))
   );
 
+  const highReuse = knowledgeAssets.filter(a => a.reusePotential === 'high').length;
+
   return (
     <div className="p-8 max-w-[1100px] mx-auto space-y-8">
       <div className="flex items-end justify-between border-b border-border pb-6">
@@ -45,12 +47,12 @@ const KnowledgeVault = () => {
       </div>
 
       <AgentActionPanel
-        label="Knowledge actions"
+        context={`${knowledgeAssets.length} assets · ${highReuse} with high reuse potential across active workflows`}
         actions={[
-          { label: 'Find reusable sections', variant: 'knowledge' },
-          { label: 'Extract proposal assets', variant: 'drafting' },
+          { label: 'Find reusable sections', variant: 'knowledge', primary: true },
+          { label: 'Build draft from past content', variant: 'drafting', primary: highReuse > 0 },
           { label: 'Suggest for active workflows', variant: 'strategic' },
-          { label: 'Tag assets for reuse', variant: 'knowledge' },
+          { label: 'Extract proposal assets', variant: 'knowledge' },
         ]}
       />
 
@@ -77,7 +79,7 @@ const KnowledgeVault = () => {
                   <span key={tag}>{tag}</span>
                 ))}
                 <span className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                  <AgentAction label="Summarize" variant="knowledge" compact />
+                  <AgentAction label="Reuse in workflow" variant="knowledge" />
                 </span>
               </div>
             </div>

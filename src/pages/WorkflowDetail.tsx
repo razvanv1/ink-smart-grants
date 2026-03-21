@@ -50,6 +50,10 @@ const WorkflowDetail = () => {
   const stageIndex = workflowStages.indexOf(wf.stage);
   const [activeTab, setActiveTab] = useState('Overview');
 
+  const todoSections = draftSections.filter(s => s.status === 'todo').length;
+  const missingCount = missingInputs.filter(i => i.priority === 'high').length;
+  const failedChecks = complianceChecks.filter(c => c.status !== 'pass').length;
+
   return (
     <div className="p-8 max-w-[1060px] mx-auto space-y-8">
       <Link to="/workflows" className="text-[11px] text-muted-foreground hover:text-foreground flex items-center gap-1">
@@ -135,15 +139,13 @@ const WorkflowDetail = () => {
             </div>
 
             <AgentActionPanel
-              label="Workflow actions"
+              context={`${todoSections} sections not started · ${missingCount} high-priority inputs missing · ${failedChecks} compliance gaps`}
               actions={[
-                { label: 'Draft missing sections', variant: 'drafting' },
-                { label: 'Generate outline', variant: 'drafting' },
-                { label: 'Identify blockers', variant: 'compliance' },
-                { label: 'Build task list', variant: 'coordination' },
-                { label: 'Check readiness', variant: 'compliance' },
-                { label: 'Summarize missing inputs', variant: 'coordination' },
-                { label: 'Prepare partner summary', variant: 'coordination' },
+                { label: 'Build first draft', variant: 'drafting', primary: todoSections > 0 },
+                { label: 'Surface missing inputs', variant: 'coordination', primary: missingCount > 0 },
+                { label: 'Review readiness', variant: 'compliance', primary: true },
+                { label: 'Detect blockers', variant: 'compliance' },
+                { label: 'Prepare partner request', variant: 'coordination' },
               ]}
             />
           </div>
@@ -153,8 +155,8 @@ const WorkflowDetail = () => {
           <div>
             <AgentActionRow
               actions={[
-                { label: 'Draft missing sections', variant: 'drafting' },
-                { label: 'Reuse from vault', variant: 'knowledge' },
+                { label: 'Build missing sections', variant: 'drafting' },
+                { label: 'Reuse past proposal content', variant: 'knowledge' },
               ]}
               className="mb-5"
             />
@@ -180,8 +182,8 @@ const WorkflowDetail = () => {
           <div>
             <AgentActionRow
               actions={[
-                { label: 'Summarize gaps', variant: 'coordination' },
-                { label: 'Prepare request email', variant: 'coordination' },
+                { label: 'Prepare collection email', variant: 'coordination' },
+                { label: 'Flag overdue items', variant: 'compliance' },
               ]}
               className="mb-5"
             />
@@ -201,7 +203,7 @@ const WorkflowDetail = () => {
           <div>
             <AgentActionRow
               actions={[
-                { label: 'Build task list', variant: 'coordination' },
+                { label: 'Generate task list from call', variant: 'coordination' },
                 { label: 'Detect dependencies', variant: 'compliance' },
               ]}
               className="mb-5"
@@ -227,7 +229,7 @@ const WorkflowDetail = () => {
           <div>
             <AgentActionRow
               actions={[
-                { label: 'Review compliance gaps', variant: 'compliance' },
+                { label: 'Check compliance gaps', variant: 'compliance' },
                 { label: 'Surface missing annexes', variant: 'compliance' },
               ]}
               className="mb-5"
