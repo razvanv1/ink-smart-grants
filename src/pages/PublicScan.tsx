@@ -75,49 +75,75 @@ const PublicScan = () => {
     <div className="min-h-screen bg-background relative overflow-x-hidden">
       <LandingHeader />
 
-      {/* ═══ HERO — scan-form-first layout ═══ */}
-      <section className="relative pt-14 overflow-hidden min-h-screen">
-        {/* Geometric accents */}
+      {/* ═══ HERO ═══ */}
+      <section className="relative pt-14 overflow-hidden">
+        {/* Subtle geometric background */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-          <div className="absolute inset-x-0 top-0 h-[600px] bg-gradient-to-b from-info/[0.08] via-secondary/50 to-transparent" />
-          <div className="absolute top-20 -left-32 w-[600px] h-[600px] rounded-full border border-info/15" />
-          <div className="absolute -top-16 right-[6%] w-[240px] h-[240px] bg-info/[0.08] rounded-[12px] rotate-[18deg]" />
-          <div className="absolute top-[50%] right-[3%] w-[100px] h-[100px] border border-info/20 rounded-[6px] rotate-[12deg]" />
+          <div className="absolute inset-x-0 top-0 h-[500px] bg-gradient-to-b from-muted/60 to-transparent" />
         </div>
 
-        <div className="relative max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-12">
-          {/* Centered headline */}
-          <div className="text-center mb-10 sm:mb-14">
-            {/* Hero banner with octopus + slogan */}
-            <div className="flex items-center justify-center gap-3 mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-              <img src={octopusImg} alt="INK octopus" className="h-14 sm:h-20 w-auto" />
-              <p className="text-[15px] sm:text-[18px] font-extrabold text-foreground/80 tracking-[-0.02em] italic leading-snug text-left">
+        <div className="relative w-full max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pt-20 sm:pt-28 pb-16">
+          {/* Two-column hero: left text, right mascot */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 lg:gap-20 items-center">
+            <div className="max-w-[720px]">
+              <button
+                onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-info/30 bg-info/[0.06] text-[11px] font-bold tracking-wide uppercase text-info hover:bg-info/[0.12] active:scale-[0.97] transition-all mb-6 opacity-0 animate-fade-in-up"
+                style={{ animationDelay: "0.1s" }}
+              >
+                Free Funding Scan · No Account Required
+                <ChevronDown className="h-3 w-3" />
+              </button>
+
+              <h1 className="text-[36px] sm:text-[48px] lg:text-[60px] font-extrabold text-foreground tracking-[-0.045em] leading-[1.02] mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.2s", lineHeight: "1.05" }}>
+                Find funding for<br />
+                <TypewriterText
+                  phrases={["AI training programs", "green energy projects", "digital innovation labs", "research consortiums", "social impact startups"]}
+                  className="text-info"
+                />
+              </h1>
+
+              <p className="text-[15px] sm:text-[17px] text-foreground/75 leading-[1.7] max-w-[560px] mb-8 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.35s" }}>
+                A funding operations platform that monitors opportunities, decides what's worth pursuing, builds applications faster and pushes execution all the way to submission.
+              </p>
+
+              <div className="flex items-center gap-4 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
+                <button
+                  onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                  className="px-7 py-3.5 bg-foreground text-background text-[14px] font-bold rounded-[4px] hover:bg-foreground/90 active:scale-[0.97] transition-all shadow-sm"
+                >
+                  Start Scanning
+                </button>
+                <button
+                  onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="px-7 py-3.5 text-[14px] font-semibold text-foreground/80 hover:text-foreground transition-colors"
+                >
+                  View Pricing
+                </button>
+              </div>
+            </div>
+
+            {/* Mascot block */}
+            <div className="hidden lg:flex flex-col items-center gap-4 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+              <img src={octopusImg} alt="INK octopus mascot" className="w-[220px] h-auto drop-shadow-lg" />
+              <p className="text-[16px] font-extrabold text-foreground/70 tracking-[-0.01em] italic leading-snug text-center">
                 "I can slap<br />8 grants at once."
               </p>
             </div>
-
-            <button
-              onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-info text-info-foreground text-[11px] sm:text-[12px] font-bold tracking-wide uppercase shadow-md shadow-info/25 hover:bg-info/90 active:scale-[0.97] transition-all mb-5 opacity-0 animate-fade-in-up"
-              style={{ animationDelay: "0.15s" }}
-            >
-              Free Funding Scan · No Account Required
-              <ChevronDown className="h-3.5 w-3.5" />
-            </button>
-
-            <h1 className="text-[32px] sm:text-[44px] lg:text-[56px] font-extrabold text-foreground tracking-[-0.045em] leading-[1.05] mb-5 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.25s" }}>
-              Find funding for<br />
-              <TypewriterText
-                phrases={["AI training programs", "green energy projects", "digital innovation labs", "research consortiums", "social impact startups"]}
-                className="text-info"
-              />
-            </h1>
-
-            <p className="text-[14px] sm:text-[16px] text-foreground/80 leading-relaxed max-w-[600px] mx-auto mb-0 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-              A funding operations platform that monitors opportunities, decides what's worth pursuing, builds applications faster and pushes execution all the way to submission.
-            </p>
           </div>
 
+          {/* Mobile mascot */}
+          <div className="flex lg:hidden items-center justify-center gap-3 mt-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+            <img src={octopusImg} alt="INK octopus" className="h-20 w-auto" />
+            <p className="text-[15px] font-extrabold text-foreground/70 italic leading-snug text-left">
+              "I can slap<br />8 grants at once."
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ HOW IT WORKS + SCAN FORM ═══ */}
+      <div className="w-full max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 pb-16">
           {/* ═══ HOW IT WORKS ═══ */}
           {!showResults && (
             <ScrollReveal delay={120} className="max-w-[960px] mx-auto mb-14">
@@ -134,7 +160,7 @@ const PublicScan = () => {
             </ScrollReveal>
           )}
 
-          {/* ═══ SCAN FORM — the hero ═══ */}
+          {/* ═══ SCAN FORM ═══ */}
           {!showResults && (
             <ScrollReveal delay={220} id="scan-form" className="max-w-[960px] mx-auto bg-card rounded-[14px] border-2 border-info/40 shadow-[0_8px_60px_-12px_hsl(var(--info)/0.25),0_2px_12px_-4px_hsl(var(--info)/0.10)] p-6 sm:p-10 relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-info/60 via-info to-info/60" />
@@ -167,7 +193,7 @@ const PublicScan = () => {
                 </div>
                 <button type="button" onClick={() => setShowAdvanced(!showAdvanced)} className="w-full flex items-center justify-center gap-2 py-3 rounded-[6px] border border-dashed border-info/40 bg-info/[0.04] text-[12px] font-bold text-info hover:bg-info/[0.08] hover:border-info/60 transition-all active:scale-[0.98]">
                   {showAdvanced ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                  {showAdvanced ? "Hide Advanced Filters" : "Show Advanced Filters (Budget, Geography)"}
+                  {showAdvanced ? "Hide Advanced Filters" : "Show Advanced Filters (Grant Type, Status, Budget, Geography)"}
                 </button>
                 {showAdvanced && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
@@ -209,7 +235,7 @@ const PublicScan = () => {
             </ScrollReveal>
           )}
 
-          {/* Stat blocks + mascot row below form */}
+          {/* Stat blocks */}
           {!showResults && (
             <ScrollReveal delay={300} className="max-w-[960px] mx-auto mt-10 flex items-center justify-center gap-5">
                 <StatBlock number="940+" label="Active calls" />
@@ -217,11 +243,10 @@ const PublicScan = () => {
                 <StatBlock number="60s" label="To results" />
             </ScrollReveal>
           )}
-        </div>
-      </section>
+      </div>
 
       {/* ═══ RESULTS + PRICING + FOOTER ═══ */}
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16">
         {showResults && (
           <div ref={resultsRef} className="space-y-8 relative z-10 mb-20">
             <div className="flex items-center justify-between opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
