@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, ChevronDown, ChevronUp, Lock, ArrowRight, Loader2, AlertTriangle, Clock, Users, TrendingUp, Sparkles, FileText, Target, Zap } from "lucide-react";
+import { Search, ChevronDown, ChevronUp, Lock, ArrowRight, Loader2, AlertTriangle, Clock, Users, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { LandingHeader } from "@/components/landing/LandingHeader";
@@ -78,22 +78,26 @@ const PublicScan = () => {
       {/* ═══ HERO ═══ */}
       <section className="relative pt-14 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div className="absolute inset-x-0 top-0 h-[600px] bg-gradient-to-b from-muted/50 to-transparent" />
+          <div className="absolute inset-x-0 top-0 h-[700px] bg-gradient-to-b from-muted/60 via-muted/15 to-transparent" />
+          <div className="absolute -top-28 right-[8%] h-[420px] w-[420px] rounded-full bg-info/10 blur-3xl" />
         </div>
 
-        <div className="relative w-full px-6 sm:px-10 lg:px-20 xl:px-28 pt-20 sm:pt-28 pb-20">
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] xl:grid-cols-[1fr_440px] gap-10 lg:gap-16 items-center max-w-[1600px] mx-auto">
+        <div className="relative w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pt-20 sm:pt-28 pb-20 sm:pb-24 lg:pb-28">
+          <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(760px,1fr)] 2xl:grid-cols-[minmax(0,1fr)_minmax(860px,1fr)] gap-10 xl:gap-16 items-center max-w-[1880px] mx-auto">
             <div>
               <button
                 onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-info/30 bg-info/[0.06] text-[11px] font-bold tracking-wide uppercase text-info hover:bg-info/[0.12] active:scale-[0.97] transition-all mb-6 opacity-0 animate-fade-in-up"
+                className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-info/35 bg-info/[0.08] text-[11px] sm:text-[12px] font-bold tracking-wide uppercase text-info hover:bg-info/[0.15] active:scale-[0.97] transition-all mb-7 opacity-0 animate-fade-in-up"
                 style={{ animationDelay: "0.1s" }}
               >
                 Free Funding Scan · No Account Required
                 <ChevronDown className="h-3 w-3" />
               </button>
 
-              <h1 className="text-[38px] sm:text-[52px] lg:text-[62px] xl:text-[72px] font-extrabold text-foreground tracking-[-0.045em] mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.2s", lineHeight: "1.04" }}>
+              <h1
+                className="text-[clamp(2.9rem,6.2vw,7.4rem)] font-extrabold text-foreground tracking-[-0.05em] mb-6 sm:mb-7 opacity-0 animate-fade-in-up"
+                style={{ animationDelay: "0.2s", lineHeight: "0.97" }}
+              >
                 Find funding for<br />
                 <TypewriterText
                   phrases={["AI training programs", "green energy projects", "digital innovation labs", "research consortiums", "social impact startups"]}
@@ -101,39 +105,45 @@ const PublicScan = () => {
                 />
               </h1>
 
-              <p className="text-[16px] sm:text-[18px] lg:text-[19px] text-foreground/70 leading-[1.7] max-w-[620px] mb-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.35s" }}>
+              <p className="text-[17px] sm:text-[19px] lg:text-[21px] text-foreground/70 leading-[1.7] max-w-[760px] mb-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.35s" }}>
                 A funding operations platform that monitors opportunities, decides what's worth pursuing, builds applications faster and pushes execution all the way to submission.
               </p>
 
-              <div className="flex items-center gap-4 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
+              <div className="flex flex-wrap items-center gap-4 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
                 <button
                   onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                  className="px-8 py-4 bg-foreground text-background text-[15px] font-bold rounded-[4px] hover:bg-foreground/90 active:scale-[0.97] transition-all shadow-sm"
+                  className="px-9 py-4.5 bg-foreground text-background text-[16px] font-bold rounded-[4px] hover:bg-foreground/90 active:scale-[0.97] transition-all shadow-sm"
                 >
                   Start Scanning
                 </button>
                 <button
                   onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="px-8 py-4 text-[15px] font-semibold text-foreground/70 hover:text-foreground transition-colors"
+                  className="px-8 py-4 text-[15px] font-semibold text-foreground/75 hover:text-foreground transition-colors"
                 >
                   View Pricing
                 </button>
               </div>
             </div>
 
-            {/* Mascot — large and prominent */}
-            <div className="hidden lg:flex flex-col items-center gap-5 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-              <img src={octopusImg} alt="INK octopus mascot" className="w-full max-w-[380px] xl:max-w-[440px] h-auto drop-shadow-2xl" />
-              <p className="text-[18px] xl:text-[20px] font-extrabold text-foreground/65 tracking-[-0.01em] italic leading-snug text-center">
-                "I can slap<br />8 grants at once."
-              </p>
+            <div className="hidden xl:flex justify-end opacity-0 animate-fade-in-up" style={{ animationDelay: "0.28s" }}>
+              <div className="relative w-full max-w-[820px] 2xl:max-w-[900px]">
+                <div className="absolute inset-0 rounded-full bg-info/12 blur-3xl scale-[0.88]" />
+                <img
+                  src={octopusImg}
+                  alt="INK octopus mascot"
+                  className="relative w-full max-w-[760px] 2xl:max-w-[840px] h-auto ml-auto drop-shadow-[0_28px_56px_hsl(var(--foreground)/0.2)]"
+                />
+                <p className="absolute bottom-10 right-2 text-[24px] 2xl:text-[28px] font-extrabold text-foreground/70 tracking-[-0.01em] italic leading-snug text-right">
+                  "I can slap<br />8 grants at once."
+                </p>
+              </div>
             </div>
           </div>
 
           {/* Mobile mascot */}
-          <div className="flex lg:hidden items-center justify-center gap-4 mt-12 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-            <img src={octopusImg} alt="INK octopus" className="h-24 w-auto" />
-            <p className="text-[16px] font-extrabold text-foreground/65 italic leading-snug text-left">
+          <div className="flex xl:hidden items-center justify-center gap-4 sm:gap-5 mt-12 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+            <img src={octopusImg} alt="INK octopus" className="h-32 sm:h-40 w-auto" />
+            <p className="text-[17px] sm:text-[18px] font-extrabold text-foreground/65 italic leading-snug text-left">
               "I can slap<br />8 grants at once."
             </p>
           </div>
@@ -141,17 +151,17 @@ const PublicScan = () => {
       </section>
 
       {/* ═══ HOW IT WORKS + SCAN FORM ═══ */}
-      <div className="w-full px-6 sm:px-10 lg:px-20 xl:px-28 pb-20">
-        <div className="max-w-[1600px] mx-auto">
+      <div className="w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pb-20">
+        <div className="max-w-[1880px] mx-auto">
           {/* ═══ HOW IT WORKS ═══ */}
           {!showResults && (
-            <ScrollReveal delay={120} className="mb-16">
+            <ScrollReveal id="how-it-works" delay={120} className="mb-16 sm:mb-20">
               <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info text-center mb-2">How It Works</p>
-              <h2 className="text-[24px] sm:text-[30px] font-extrabold text-foreground tracking-[-0.03em] text-center mb-3">Get matched in 3 simple steps</h2>
-              <p className="text-[14px] text-foreground/65 text-center mb-10 max-w-[520px] mx-auto leading-relaxed">
+              <h2 className="text-[28px] sm:text-[34px] lg:text-[40px] font-extrabold text-foreground tracking-[-0.04em] text-center mb-3">Get matched in 3 simple steps</h2>
+              <p className="text-[15px] sm:text-[16px] text-foreground/65 text-center mb-10 max-w-[660px] mx-auto leading-relaxed">
                 Our AI scans 940+ live EU & national funding calls and matches them to your project profile. No expertise needed.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
                 <ScrollReveal delay={180}><HowItWorksStep step={1} title="Describe your project" description="Tell us what you want to fund: a training program, research project, or innovation idea. One sentence is enough." /></ScrollReveal>
                 <ScrollReveal delay={260}><HowItWorksStep step={2} title="Get matched calls" description="Our AI instantly compares your profile against all active calls and ranks them by fit score, deadline & budget." /></ScrollReveal>
                 <ScrollReveal delay={340}><HowItWorksStep step={3} title="Start your application" description="Pick your best match and turn it into an active workflow with checklists, AI drafting, and deadline tracking." /></ScrollReveal>
@@ -161,12 +171,12 @@ const PublicScan = () => {
 
           {/* ═══ SCAN FORM ═══ */}
           {!showResults && (
-            <ScrollReveal delay={220} id="scan-form" className="max-w-[1100px] mx-auto bg-card rounded-[14px] border-2 border-info/40 shadow-[0_8px_60px_-12px_hsl(var(--info)/0.25),0_2px_12px_-4px_hsl(var(--info)/0.10)] p-7 sm:p-12 relative overflow-hidden">
+            <ScrollReveal delay={220} id="scan-form" className="max-w-[1320px] mx-auto bg-card rounded-[16px] border-2 border-info/45 shadow-[0_14px_78px_-14px_hsl(var(--info)/0.28),0_2px_14px_-4px_hsl(var(--info)/0.12)] p-8 sm:p-12 lg:p-14 relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-info/60 via-info to-info/60" />
-              <h2 className="text-[24px] sm:text-[32px] font-extrabold text-foreground tracking-[-0.03em] leading-tight mb-2">
+              <h2 className="text-[28px] sm:text-[36px] font-extrabold text-foreground tracking-[-0.03em] leading-tight mb-2">
                 What do you want to fund?
               </h2>
-              <p className="text-[14px] text-foreground/60 leading-relaxed mb-7">
+              <p className="text-[15px] text-foreground/60 leading-relaxed mb-7 max-w-[980px]">
                 Describe your project, idea, or funding need in as much detail as possible. The more you tell us about your objectives, target group, and domain, the more precise our AI matchmaking will be against active calls.
               </p>
               <form onSubmit={handleScan} className="space-y-5">
@@ -236,7 +246,7 @@ const PublicScan = () => {
 
           {/* Stat blocks */}
           {!showResults && (
-            <ScrollReveal delay={300} className="max-w-[1100px] mx-auto mt-12 flex items-center justify-center gap-6">
+            <ScrollReveal delay={300} className="max-w-[1320px] mx-auto mt-12 flex items-center justify-center gap-4 sm:gap-6 flex-wrap">
                 <StatBlock number="940+" label="Active calls" />
                 <StatBlock number="3" label="Free matches" />
                 <StatBlock number="60s" label="To results" />
@@ -246,7 +256,7 @@ const PublicScan = () => {
       </div>
 
       {/* ═══ RESULTS + PRICING + FOOTER ═══ */}
-      <div className="w-full px-6 sm:px-10 lg:px-20 xl:px-28 max-w-[1600px] mx-auto">
+      <div className="w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 max-w-[1880px] mx-auto">
         {showResults && (
           <div ref={resultsRef} className="space-y-8 relative z-10 mb-20">
             <div className="flex items-center justify-between opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
@@ -319,10 +329,10 @@ const PublicScan = () => {
 /* ── How It Works step ── */
 function HowItWorksStep({ step, title, description }: { step: number; title: string; description: string }) {
   return (
-    <div className="relative flex flex-col items-center text-center p-7 rounded-[10px] border border-border bg-card hover:shadow-lg hover:shadow-info/[0.08] transition-all duration-300 group">
-      <span className="text-[52px] font-extralight leading-none mb-4 select-none" style={{ fontFamily: "'Georgia', 'Times New Roman', serif", color: 'hsl(18 72% 46%)' }}>{step}</span>
-      <p className="text-[16px] font-bold text-foreground leading-snug mb-2">{title}</p>
-      <p className="text-[13px] text-foreground/65 leading-relaxed">{description}</p>
+    <div className="relative flex flex-col items-center text-center p-8 sm:p-9 rounded-[12px] border border-border bg-card hover:shadow-lg hover:shadow-info/[0.08] transition-all duration-300 group min-h-[240px] justify-center">
+      <span className="text-[58px] sm:text-[64px] font-light leading-none mb-5 select-none text-primary" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>{step}</span>
+      <p className="text-[18px] font-bold text-foreground leading-snug mb-2">{title}</p>
+      <p className="text-[14px] text-foreground/65 leading-relaxed max-w-[360px]">{description}</p>
     </div>
   );
 }
@@ -330,8 +340,8 @@ function HowItWorksStep({ step, title, description }: { step: number; title: str
 /* ── Stat block for hero ── */
 function StatBlock({ number, label }: { number: string; label: string }) {
   return (
-    <div className="text-center px-6 py-4 rounded-[6px] border border-foreground/15 bg-background shadow-sm">
-      <p className="text-[28px] font-extrabold text-foreground leading-none mb-1" style={{ fontVariantNumeric: "tabular-nums" }}>{number}</p>
+    <div className="text-center px-7 sm:px-8 py-4.5 rounded-[8px] border border-foreground/15 bg-background shadow-sm min-w-[150px]">
+      <p className="text-[30px] sm:text-[34px] font-extrabold text-foreground leading-none mb-1" style={{ fontVariantNumeric: "tabular-nums" }}>{number}</p>
       <p className="text-[11px] text-foreground/60 font-semibold uppercase tracking-wider">{label}</p>
     </div>
   );
