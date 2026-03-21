@@ -28,6 +28,8 @@ const PublicScan = () => {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [budgetRange, setBudgetRange] = useState("");
   const [geography, setGeography] = useState("");
+  const [grantType, setGrantType] = useState("");
+  const [fundingStatus, setFundingStatus] = useState("");
   const [isScanning, setIsScanning] = useState(false);
   const [matches, setMatches] = useState<ScanMatch[]>([]);
   const [email, setEmail] = useState("");
