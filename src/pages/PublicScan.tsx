@@ -88,7 +88,7 @@ const PublicScan = () => {
           <div className="text-center mb-10 sm:mb-14">
             <div className="inline-flex items-center gap-2 rounded-[3px] border border-info/30 bg-info/[0.10] px-4 py-2 mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
               <Sparkles className="h-3.5 w-3.5 text-info" />
-              <span className="text-[10px] sm:text-[11px] font-bold text-info tracking-wide uppercase">Free Funding Scan — No Account Required</span>
+              <span className="text-[10px] sm:text-[11px] font-bold text-info tracking-wide uppercase">Free Funding Scan · No Account Required</span>
             </div>
 
             <h1 className="text-[32px] sm:text-[44px] lg:text-[56px] font-extrabold text-foreground tracking-[-0.045em] leading-[1.05] mb-5 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
