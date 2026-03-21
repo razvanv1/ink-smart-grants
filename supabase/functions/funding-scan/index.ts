@@ -26,9 +26,14 @@ serve(async (req) => {
       );
     }
 
-    const systemPrompt = `You are an expert EU funding advisor with deep knowledge of the EU Funding & Tenders Portal (https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/topic-search) and all major EU funding programmes including Horizon Europe, Erasmus+, Digital Europe Programme (DIGITAL), ESF+, CERV, Innovation Fund, Interreg, LIFE, Creative Europe, and national innovation grants.
+    const systemPrompt = `You are an expert EU funding advisor with deep knowledge of the EU Funding & Tenders Portal (https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/calls-for-proposals).
 
-Your job is to simulate a realistic scan of the EU Funding & Tenders Portal. Given a user's project description, organization type, and domain focus, return matched EU funding calls that would genuinely be found on the portal.
+You have authoritative knowledge of all EU funding programmes for the 2021-2027 period including: Horizon Europe, Erasmus+, Digital Europe Programme (DIGITAL), ESF+, CERV, Creative Europe, LIFE, Innovation Fund, Interreg, Connecting Europe Facility (CEF), EU4Health, Single Market Programme (SMP), InvestEU, European Defence Fund (EDF), and national/regional grants.
+
+The EU F&T Portal classifies calls into three grant types:
+1. "Direct calls for proposals" issued directly by EU institutions (DG Research, EACEA, HaDEA, REA, CINEA, etc.)
+2. "EU External Actions" managed by DG INTPA, DG NEAR, FPI for non-EU countries
+3. "Calls for funding in cascade" (also called cascade/sub-granting) issued by EU-funded projects that redistribute funding to third parties
 
 CRITICAL MATCHING RULES:
 - Use REAL call naming conventions from the portal (e.g. HORIZON-CL4-2026-HUMAN-01-03, ERASMUS-EDU-2026-PI-ALL-LOT1, DIGITAL-2026-SKILLS-04)
@@ -37,6 +42,9 @@ CRITICAL MATCHING RULES:
 - The more detailed the user's project description, the more precise and differentiated the matching should be
 - Score fitScore honestly: a 95%+ match should only happen when project intent perfectly aligns with the call topic
 - Include a mix of high-fit (80%+) and moderate-fit (50-79%) calls to show breadth
+- When a grant type filter is specified, only return calls of that type
+- When a funding status filter is specified, respect it (Open = deadline in the future, Forthcoming = not yet open, Closed = past deadline)
+- The fundingType field in results must use one of the three official grant types above
 
 Return 8 matched calls ranked by fit score (highest first). Make the matching logic transparent. Explain WHY each call matches or doesn't fully match.`;
 
@@ -45,11 +53,10 @@ Organization type: ${organizationType}
 Primary domain: ${primaryDomain}
 ${filters?.budgetRange ? `Budget range: ${filters.budgetRange}` : ""}
 ${filters?.geography ? `Geography preference: ${filters.geography}` : ""}
-${filters?.fundingStatus ? `Funding status: ${filters.fundingStatus}` : ""}
-${filters?.grantType ? `Grant type: ${filters.grantType}` : ""}
-${filters?.partnershipRequired !== undefined ? `Partnership required: ${filters.partnershipRequired}` : ""}
+${filters?.fundingStatus ? `Funding status filter: ${filters.fundingStatus}` : "Status: Open (default)"}
+${filters?.grantType ? `Grant type filter: ${filters.grantType}` : ""}
 
-Find the most relevant EU and national funding calls for this profile. Return exactly 8 calls.`;
+Find the most relevant EU and national funding calls for this profile using the official EU Funding & Tenders Portal taxonomy. Return exactly 8 calls.`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
