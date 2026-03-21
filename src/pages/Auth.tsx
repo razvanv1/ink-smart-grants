@@ -5,6 +5,7 @@ import { lovable } from "@/integrations/lovable";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import inkMascot from "@/assets/ink-mascot.png";
 
 export default function Auth() {
   const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
