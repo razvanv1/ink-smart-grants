@@ -1,0 +1,149 @@
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+};
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  try {
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY is not configured");
+    }
+
+    const { projectIntent, organizationType, primaryDomain, filters } = await req.json();
+
+    if (!projectIntent || !organizationType || !primaryDomain) {
+      return new Response(
+        JSON.stringify({ error: "Missing required fields: projectIntent, organizationType, primaryDomain" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const systemPrompt = `You are an expert EU funding advisor with deep knowledge of EU funding programmes including Horizon Europe, Erasmus+, Digital Europe, ESF+, CERV, Innovation Fund, Interreg, LIFE, Creative Europe, and national innovation grants.
+
+Given a user's project intent, organization type, and domain focus, return realistic matched EU funding calls that would genuinely be available on the EU Funding & Tenders Portal or equivalent national portals.
+
+Each call must feel real — use authentic call naming conventions (e.g. HORIZON-CL4-2026-HUMAN-01, ERASMUS-EDU-2026-PI-ALL-LOT1, DIGITAL-2026-SKILLS-04), realistic deadlines, budgets, and eligibility criteria.
+
+Return 8 matched calls ranked by fit score (highest first). Make the matching logic transparent — explain WHY each call matches or doesn't fully match.`;
+
+    const userPrompt = `Project intent: "${projectIntent}"
+Organization type: ${organizationType}
+Primary domain: ${primaryDomain}
+${filters?.budgetRange ? `Budget range: ${filters.budgetRange}` : ""}
+${filters?.geography ? `Geography preference: ${filters.geography}` : ""}
+${filters?.fundingStatus ? `Funding status: ${filters.fundingStatus}` : ""}
+${filters?.grantType ? `Grant type: ${filters.grantType}` : ""}
+${filters?.partnershipRequired !== undefined ? `Partnership required: ${filters.partnershipRequired}` : ""}
+
+Find the most relevant EU and national funding calls for this profile. Return exactly 8 calls.`;
+
+    const response = await fetch(
+      "https://ai.gateway.lovable.dev/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${LOVABLE_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "google/gemini-3-flash-preview",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          tools: [
+            {
+              type: "function",
+              function: {
+                name: "return_matched_calls",
+                description: "Return matched EU funding calls ranked by fit score",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    matches: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          callId: { type: "string", description: "Realistic EU call identifier" },
+                          callName: { type: "string", description: "Full call title" },
+                          programme: { type: "string", description: "Funding programme name" },
+                          fitScore: { type: "number", description: "0-100 fit score" },
+                          effortScore: { type: "number", description: "0-100 effort/complexity score" },
+                          urgency: { type: "string", enum: ["low", "medium", "high", "critical"] },
+                          deadline: { type: "string", description: "YYYY-MM-DD format" },
+                          fundingRange: { type: "string", description: "Budget range e.g. €250K – €400K" },
+                          geography: { type: "string" },
+                          thematicArea: { type: "string" },
+                          fundingType: { type: "string" },
+                          whyItFits: { type: "string", description: "2-3 sentences on why this matches" },
+                          whyDifficult: { type: "string", description: "1-2 sentences on challenges" },
+                          complexity: { type: "string", enum: ["low", "medium", "high"] },
+                          partnerRequired: { type: "boolean" },
+                          recommendedAction: { type: "string", enum: ["Start Workflow", "Review", "Watch", "Needs More Info", "Needs Partner"] },
+                        },
+                        required: ["callId", "callName", "programme", "fitScore", "effortScore", "urgency", "deadline", "fundingRange", "geography", "thematicArea", "fundingType", "whyItFits", "whyDifficult", "complexity", "partnerRequired", "recommendedAction"],
+                        additionalProperties: false,
+                      },
+                    },
+                  },
+                  required: ["matches"],
+                  additionalProperties: false,
+                },
+              },
+            },
+          ],
+          tool_choice: {
+            type: "function",
+            function: { name: "return_matched_calls" },
+          },
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      if (response.status === 429) {
+        return new Response(
+          JSON.stringify({ error: "Rate limited — please try again shortly." }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (response.status === 402) {
+        return new Response(
+          JSON.stringify({ error: "AI credits exhausted. Please add funds." }),
+          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      const text = await response.text();
+      console.error("AI gateway error:", response.status, text);
+      throw new Error(`AI gateway error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
+
+    if (!toolCall?.function?.arguments) {
+      throw new Error("No structured output from AI");
+    }
+
+    const result = JSON.parse(toolCall.function.arguments);
+
+    return new Response(JSON.stringify(result), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  } catch (e) {
+    console.error("funding-scan error:", e);
+    return new Response(
+      JSON.stringify({ error: e instanceof Error ? e.message : "Unknown error" }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+});
