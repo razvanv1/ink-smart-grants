@@ -56,22 +56,22 @@ export function PricingSection() {
   const navigate = useNavigate();
 
   return (
-    <section id="pricing" className="py-24">
+    <section id="pricing" className="py-24 sm:py-28">
       <ScrollReveal className="text-center mb-16" delay={80}>
         <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info mb-3">Pricing</p>
-        <h2 className="text-[32px] font-extrabold text-foreground tracking-[-0.035em] leading-[1.1] mb-4">
+        <h2 className="text-[34px] sm:text-[40px] font-extrabold text-foreground tracking-[-0.04em] leading-[1.08] mb-4">
           Simple pricing. No long-term contracts.
         </h2>
-        <p className="text-[15px] text-foreground/75 max-w-[500px] mx-auto leading-relaxed">
+        <p className="text-[16px] text-foreground/75 max-w-[560px] mx-auto leading-relaxed">
           Start free for 14 days. Full platform access, no credit card required.
         </p>
       </ScrollReveal>
 
-      <div className="grid md:grid-cols-3 gap-6 items-stretch">
+      <div className="grid lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
         {plans.map((plan, i) => (
           <ScrollReveal key={plan.name} delay={140 + i * 90} className="flex">
           <div
-            className={`relative rounded-[6px] border p-6 flex flex-col w-full ${
+            className={`relative rounded-[8px] border p-7 sm:p-8 flex flex-col w-full ${
               plan.popular
                 ? "border-info/70 bg-info/[0.06] shadow-lg shadow-info/[0.15]"
                 : "border-border bg-card shadow-sm"

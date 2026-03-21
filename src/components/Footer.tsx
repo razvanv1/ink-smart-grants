@@ -11,7 +11,7 @@ export function Footer({ variant = "landing" }: FooterProps) {
 
   return (
     <footer className={`border-t border-border/40 ${isApp ? "bg-background py-6" : "bg-card/50 py-12 sm:py-16"}`}>
-      <div className={`mx-auto px-4 sm:px-6 ${isApp ? "max-w-full" : "max-w-[1080px]"}`}>
+      <div className={`mx-auto px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 ${isApp ? "max-w-full" : "max-w-[1760px]"}`}>
         {!isApp && (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-6 mb-10">
             {/* Brand column */}
