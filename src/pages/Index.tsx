@@ -53,7 +53,7 @@ const Dashboard = () => {
         <div className="border border-border/60 rounded-sm p-6">
           <div className="grid md:grid-cols-5 gap-8 items-start">
             <div className="md:col-span-3 ink-accent-border">
-              <p className="text-[10px] text-primary tracking-[0.15em] uppercase font-semibold mb-2">Top Match — Recommended</p>
+              <p className="text-[10px] text-primary tracking-[0.15em] uppercase font-semibold mb-2">Top Match · Recommended</p>
               <Link to={`/opportunities/${topOpp.id}`} className="group">
                 <h2 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">{topOpp.callName}</h2>
               </Link>

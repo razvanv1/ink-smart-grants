@@ -66,7 +66,7 @@ const Pipeline = () => {
                 })}
                 {opps.length === 0 && (
                   <div className="flex items-center justify-center h-20 text-[10px] text-muted-foreground/50 border-l border-dashed border-border pl-3">
-                    —
+                    -
                   </div>
                 )}
               </div>
