@@ -46,7 +46,7 @@ const PublicScan = () => {
     setShowResults(false);
     try {
       const { data, error } = await supabase.functions.invoke("funding-scan", {
-        body: { projectIntent, organizationType, primaryDomain, filters: { budgetRange: budgetRange || undefined, geography: geography || undefined } },
+        body: { projectIntent, organizationType, primaryDomain, filters: { budgetRange: budgetRange || undefined, geography: geography || undefined, grantType: grantType || undefined, fundingStatus: fundingStatus || undefined } },
       });
       if (error) throw error;
       if (data?.error) { toast.error(data.error); return; }
