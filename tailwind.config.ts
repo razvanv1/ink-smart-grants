@@ -66,7 +66,7 @@ export default {
           "50%": { transform: "translateY(-12px) rotate(2deg)" },
         },
         "typewriter-cursor": {
-          "0%, 100%": { borderColor: "hsl(var(--primary))" },
+          "0%, 100%": { borderColor: "currentColor" },
           "50%": { borderColor: "transparent" },
         },
         "pulse-glow": {

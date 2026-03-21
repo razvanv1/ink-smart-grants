@@ -39,7 +39,7 @@ export function TypewriterText({ phrases, className = "" }: TypewriterTextProps)
   return (
     <span className={className}>
       {displayed}
-      <span className="border-r-[3px] border-primary animate-typewriter-cursor ml-0.5">&nbsp;</span>
+      <span className="border-r-[3px] border-current text-current animate-typewriter-cursor ml-0.5">&nbsp;</span>
     </span>
   );
 }
