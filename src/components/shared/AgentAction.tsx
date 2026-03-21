@@ -29,7 +29,7 @@ export function AgentAction({ label, hint, variant = 'default', primary, classNa
   if (primary) {
     return (
       <button
-        onClick={onClick || (() => toast.info(label, { description: 'Agent processing — available in production' }))}
+        onClick={onClick || (() => toast.info(label, { description: 'Agent processing, available in production' }))}
         disabled={disabled}
         className={`group inline-flex items-center gap-2 px-3.5 py-2 rounded-sm border border-primary/20 bg-primary/[0.03] text-[11px] font-bold tracking-wide text-foreground hover:border-primary/40 hover:bg-primary/[0.06] transition-all active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none ${className}`}
       >
