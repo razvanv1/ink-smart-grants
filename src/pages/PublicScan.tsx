@@ -95,9 +95,14 @@ const PublicScan = () => {
               </p>
             </div>
 
-            <p className="text-[10px] sm:text-[11px] font-bold text-info tracking-wide uppercase mb-5 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
+            <button
+              onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-info text-info-foreground text-[11px] sm:text-[12px] font-bold tracking-wide uppercase shadow-md shadow-info/25 hover:bg-info/90 active:scale-[0.97] transition-all mb-5 opacity-0 animate-fade-in-up"
+              style={{ animationDelay: "0.15s" }}
+            >
               Free Funding Scan · No Account Required
-            </p>
+              <ChevronDown className="h-3.5 w-3.5" />
+            </button>
 
             <h1 className="text-[32px] sm:text-[44px] lg:text-[56px] font-extrabold text-foreground tracking-[-0.045em] leading-[1.05] mb-5 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.25s" }}>
               Find funding for<br />
@@ -130,7 +135,7 @@ const PublicScan = () => {
 
           {/* ═══ SCAN FORM — the hero ═══ */}
           {!showResults && (
-            <ScrollReveal delay={220} className="max-w-[780px] mx-auto bg-card rounded-[14px] border-2 border-info/40 shadow-[0_8px_60px_-12px_hsl(var(--info)/0.25),0_2px_12px_-4px_hsl(var(--info)/0.10)] p-6 sm:p-10 relative overflow-hidden">
+            <ScrollReveal delay={220} id="scan-form" className="max-w-[780px] mx-auto bg-card rounded-[14px] border-2 border-info/40 shadow-[0_8px_60px_-12px_hsl(var(--info)/0.25),0_2px_12px_-4px_hsl(var(--info)/0.10)] p-6 sm:p-10 relative overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-info/60 via-info to-info/60" />
               <h2 className="text-[22px] sm:text-[28px] font-extrabold text-foreground tracking-[-0.03em] leading-tight mb-2">
                 What do you want to fund?
