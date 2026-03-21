@@ -1,9 +1,8 @@
 import {
   LayoutDashboard, Building2, Radar, GitBranch, Layers,
-  BookOpen, Bot, Settings, ChevronLeft,
+  BookOpen, Bot, Settings, PanelLeftClose, PanelLeft,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
-import { useLocation } from "react-router-dom";
 import {
   Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter, useSidebar,
@@ -26,15 +25,23 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border">
-      <div className="flex h-12 items-center px-4 border-b border-sidebar-border">
+      {/* Brand mark */}
+      <div className="flex h-14 items-center px-4 border-b border-sidebar-border">
         {!collapsed ? (
-          <span className="font-bold text-foreground tracking-[-0.03em] text-[15px]">INK</span>
+          <div className="flex items-center gap-2.5">
+            <div className="h-6 w-6 bg-primary rounded-sm flex items-center justify-center">
+              <span className="text-[11px] font-extrabold text-primary-foreground tracking-tighter">IN</span>
+            </div>
+            <span className="font-extrabold text-foreground tracking-[-0.04em] text-[15px]">INK</span>
+          </div>
         ) : (
-          <span className="font-bold text-foreground tracking-[-0.03em] text-[15px] mx-auto">I</span>
+          <div className="h-6 w-6 bg-primary rounded-sm flex items-center justify-center mx-auto">
+            <span className="text-[11px] font-extrabold text-primary-foreground tracking-tighter">IN</span>
+          </div>
         )}
       </div>
 
-      <SidebarContent className="pt-3">
+      <SidebarContent className="pt-4 px-2">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -44,10 +51,10 @@ export function AppSidebar() {
                     <NavLink
                       to={item.url}
                       end={item.url === "/"}
-                      className="flex items-center gap-3 px-3 py-[7px] rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors duration-100"
-                      activeClassName="text-foreground bg-secondary font-medium"
+                      className="flex items-center gap-3 px-2.5 py-[7px] rounded text-muted-foreground hover:text-foreground transition-colors duration-100"
+                      activeClassName="text-foreground font-semibold"
                     >
-                      <item.icon className="h-[15px] w-[15px] shrink-0" strokeWidth={1.8} />
+                      <item.icon className="h-[14px] w-[14px] shrink-0" strokeWidth={1.6} />
                       {!collapsed && <span className="text-[13px]">{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
@@ -58,12 +65,12 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border p-2">
+      <SidebarFooter className="p-2">
         <button
           onClick={toggleSidebar}
-          className="flex items-center justify-center w-full py-1 rounded-md text-muted-foreground hover:text-foreground transition-colors duration-100"
+          className="flex items-center justify-center w-full py-1.5 text-muted-foreground hover:text-foreground transition-colors duration-100"
         >
-          <ChevronLeft className={`h-3.5 w-3.5 transition-transform duration-150 ${collapsed ? 'rotate-180' : ''}`} />
+          {collapsed ? <PanelLeft className="h-3.5 w-3.5" /> : <PanelLeftClose className="h-3.5 w-3.5" />}
         </button>
       </SidebarFooter>
     </Sidebar>

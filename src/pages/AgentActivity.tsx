@@ -2,25 +2,30 @@ import { agentEvents } from "@/data/sampleData";
 import { StatusChip } from "@/components/shared/StatusChip";
 
 const agentSummaries = [
-  { agent: 'Scout', signal: '3 new calls detected from 12 sources', severity: 'info' },
-  { agent: 'Selection', signal: 'Capacity for 2 additional workflows', severity: 'warning' },
-  { agent: 'Writer', signal: '89% content overlap found for Erasmus+ call', severity: 'success' },
-  { agent: 'Compliance', signal: '2 annexes missing on DIGITAL-2026', severity: 'alert' },
-  { agent: 'Coordinator', signal: 'Partner budget inputs 3 days overdue', severity: 'alert' },
-  { agent: 'Copilot', signal: '2 active workflows, 1 at risk', severity: 'warning' },
+  { agent: 'Scout', signal: '3 new calls from 12 sources', severity: 'info' as const },
+  { agent: 'Selection', signal: 'Capacity for 2 additional workflows', severity: 'warning' as const },
+  { agent: 'Writer', signal: '89% content overlap for Erasmus+', severity: 'success' as const },
+  { agent: 'Compliance', signal: '2 annexes missing on DIGITAL-2026', severity: 'alert' as const },
+  { agent: 'Coordinator', signal: 'Partner inputs 3 days overdue', severity: 'alert' as const },
+  { agent: 'Copilot', signal: '2 active, 1 at risk', severity: 'warning' as const },
 ];
 
 const AgentActivity = () => {
   return (
-    <div className="p-8 max-w-[1000px] mx-auto space-y-8">
-      <h1 className="text-lg font-semibold tracking-tight">Agent Activity</h1>
+    <div className="p-8 max-w-[1000px] mx-auto space-y-10">
+      <div className="flex items-end justify-between border-b border-border pb-6">
+        <div>
+          <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">System Intelligence</p>
+          <h1 className="ink-page-title">Agent Activity</h1>
+        </div>
+      </div>
 
-      {/* Summary grid — compact, no heavy panels */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-4 border-b border-border pb-6">
+      {/* Agent summary — compact grid with accent borders */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-y-6 gap-x-8">
         {agentSummaries.map(s => (
-          <div key={s.agent}>
-            <div className="flex items-center gap-2 mb-0.5">
-              <span className="text-[12px] font-semibold text-foreground">{s.agent}</span>
+          <div key={s.agent} className="ink-accent-border">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[11px] font-bold text-foreground tracking-tight">{s.agent}</span>
               <StatusChip status={s.severity} />
             </div>
             <p className="text-[12px] text-muted-foreground leading-relaxed">{s.signal}</p>
@@ -28,21 +33,21 @@ const AgentActivity = () => {
         ))}
       </div>
 
-      {/* Timeline — clean list */}
+      <div className="ink-rule" />
+
+      {/* Timeline */}
       <div>
-        <h2 className="text-[13px] font-semibold text-foreground uppercase tracking-wide mb-4">Timeline</h2>
-        <div className="divide-y divide-border">
-          {agentEvents.map(event => (
-            <div key={event.id} className="py-3.5">
-              <div className="flex items-center gap-2 mb-0.5">
-                <span className="text-[11px] font-semibold text-foreground">{event.agent}</span>
-                <span className="text-[11px] text-muted-foreground">· {event.action}</span>
-                <span className="text-[11px] text-muted-foreground ml-auto">{event.timestamp}</span>
-              </div>
-              <p className="text-[12px] text-muted-foreground leading-relaxed">{event.detail}</p>
+        <h2 className="text-[10px] tracking-[0.15em] uppercase font-semibold text-muted-foreground mb-5">Timeline</h2>
+        {agentEvents.map(event => (
+          <div key={event.id} className="ink-signal py-3.5 mb-1.5">
+            <div className="flex items-center gap-2 mb-0.5">
+              <span className="text-[10px] font-bold text-primary tracking-wider uppercase">{event.agent}</span>
+              <span className="text-[10px] text-muted-foreground">· {event.action}</span>
+              <span className="text-[10px] text-muted-foreground ml-auto">{event.timestamp}</span>
             </div>
-          ))}
-        </div>
+            <p className="text-[12px] text-foreground/75 leading-relaxed">{event.detail}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

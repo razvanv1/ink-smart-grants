@@ -1,78 +1,76 @@
-import { Building2, Users, Bell, Plug, Shield } from "lucide-react";
-
 const SettingsPage = () => {
   return (
     <div className="p-8 max-w-[800px] mx-auto space-y-10">
-      <h1 className="text-lg font-semibold tracking-tight">Settings</h1>
+      <div className="border-b border-border pb-6">
+        <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Configuration</p>
+        <h1 className="ink-page-title">Settings</h1>
+      </div>
 
-      {/* Organization */}
-      <section>
-        <h2 className="text-[13px] font-semibold text-foreground uppercase tracking-wide mb-4">Organization</h2>
-        <div className="grid sm:grid-cols-2 gap-y-4 gap-x-10">
+      <Section title="Organization">
+        <div className="grid sm:grid-cols-2 gap-y-5 gap-x-10">
           <Field label="Name" value="The Unlearning School" />
           <Field label="Entity Type" value="Non-Profit Association" />
           <Field label="Country" value="Greece" />
           <Field label="PIC Number" value="998745632" />
         </div>
-      </section>
+      </Section>
 
-      {/* Users */}
-      <section className="border-t border-border pt-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-[13px] font-semibold text-foreground uppercase tracking-wide">Team</h2>
-          <button className="text-[12px] text-primary font-medium hover:underline">Invite</button>
-        </div>
-        <div className="divide-y divide-border">
-          {[
-            { name: 'Elena P.', role: 'Admin', email: 'elena@unlearning.school' },
-            { name: 'Maria K.', role: 'Grant Manager', email: 'maria@unlearning.school' },
-            { name: 'Nikos T.', role: 'Member', email: 'nikos@unlearning.school' },
-          ].map(u => (
-            <div key={u.email} className="flex items-center justify-between py-3">
-              <div>
-                <p className="text-[13px] font-medium text-foreground">{u.name}</p>
-                <p className="text-[11px] text-muted-foreground">{u.email}</p>
-              </div>
-              <span className="text-[11px] text-muted-foreground">{u.role}</span>
+      <Section title="Team" action="Invite">
+        {[
+          { name: 'Elena P.', role: 'Admin', email: 'elena@unlearning.school' },
+          { name: 'Maria K.', role: 'Grant Manager', email: 'maria@unlearning.school' },
+          { name: 'Nikos T.', role: 'Member', email: 'nikos@unlearning.school' },
+        ].map(u => (
+          <div key={u.email} className="flex items-center justify-between py-3 border-b border-border/40 last:border-0">
+            <div>
+              <p className="text-[13px] font-semibold text-foreground">{u.name}</p>
+              <p className="text-[11px] text-muted-foreground">{u.email}</p>
             </div>
-          ))}
-        </div>
-      </section>
+            <span className="text-[10px] text-muted-foreground tracking-wider uppercase font-semibold">{u.role}</span>
+          </div>
+        ))}
+      </Section>
 
-      {/* Notifications */}
-      <section className="border-t border-border pt-8">
-        <h2 className="text-[13px] font-semibold text-foreground uppercase tracking-wide mb-4">Notifications</h2>
-        <div className="space-y-3">
+      <Section title="Notifications">
+        <div className="space-y-4">
           <Toggle label="Deadline reminders" on />
           <Toggle label="Agent risk alerts" on />
           <Toggle label="Weekly digest" on={false} />
         </div>
-      </section>
+      </Section>
 
-      {/* Integrations */}
-      <section className="border-t border-border pt-8">
-        <h2 className="text-[13px] font-semibold text-foreground uppercase tracking-wide mb-4">Integrations</h2>
-        <div className="space-y-2">
+      <Section title="Integrations">
+        <div className="space-y-3">
           <IntRow name="EU Funding Portal" connected />
-          <IntRow name="Google Drive" connected={false} />
-          <IntRow name="Slack" connected={false} />
+          <IntRow name="Google Drive" />
+          <IntRow name="Slack" />
         </div>
-      </section>
+      </Section>
 
-      {/* Privacy */}
-      <section className="border-t border-border pt-8">
-        <h2 className="text-[13px] font-semibold text-foreground uppercase tracking-wide mb-4">Data & Privacy</h2>
-        <p className="text-[13px] text-muted-foreground leading-relaxed">Data encrypted at rest and in transit. Never shared or used for model training.</p>
-        <button className="text-[12px] text-primary font-medium hover:underline mt-2">Export all data</button>
-      </section>
+      <Section title="Data & Privacy">
+        <p className="text-[13px] text-muted-foreground leading-relaxed">Encrypted at rest and in transit. Never shared or used for training.</p>
+        <button className="text-[11px] text-primary font-semibold hover:underline mt-2 tracking-wide uppercase">Export Data</button>
+      </Section>
     </div>
   );
 };
 
+function Section({ title, action, children }: { title: string; action?: string; children: React.ReactNode }) {
+  return (
+    <section className="border-t border-border pt-8">
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-[10px] tracking-[0.15em] uppercase font-bold text-foreground">{title}</h2>
+        {action && <button className="text-[11px] text-primary font-semibold hover:underline tracking-wide uppercase">{action}</button>}
+      </div>
+      {children}
+    </section>
+  );
+}
+
 function Field({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-[11px] text-muted-foreground uppercase tracking-wide">{label}</p>
+      <p className="text-[10px] text-muted-foreground tracking-[0.12em] uppercase font-medium">{label}</p>
       <p className="text-[13px] text-foreground mt-0.5">{value}</p>
     </div>
   );
@@ -82,19 +80,19 @@ function Toggle({ label, on }: { label: string; on: boolean }) {
   return (
     <div className="flex items-center justify-between">
       <span className="text-[13px] text-foreground">{label}</span>
-      <div className={`h-4 w-8 rounded-full relative cursor-pointer transition-colors ${on ? 'bg-foreground' : 'bg-secondary'}`}>
+      <div className={`h-4 w-8 rounded-full relative cursor-pointer transition-colors ${on ? 'bg-foreground' : 'bg-border'}`}>
         <div className={`absolute top-0.5 h-3 w-3 rounded-full bg-background transition-transform ${on ? 'translate-x-4' : 'translate-x-0.5'}`} />
       </div>
     </div>
   );
 }
 
-function IntRow({ name, connected }: { name: string; connected: boolean }) {
+function IntRow({ name, connected }: { name: string; connected?: boolean }) {
   return (
-    <div className="flex items-center justify-between py-1">
+    <div className="flex items-center justify-between">
       <span className="text-[13px] text-foreground">{name}</span>
-      <span className={`text-[11px] ${connected ? 'text-success' : 'text-muted-foreground'}`}>
-        {connected ? 'Connected' : 'Not connected'}
+      <span className={`text-[10px] tracking-wider uppercase font-semibold ${connected ? 'text-success' : 'text-muted-foreground/40'}`}>
+        {connected ? 'Connected' : '—'}
       </span>
     </div>
   );

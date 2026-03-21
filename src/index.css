@@ -6,50 +6,50 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 225 30% 10%;
+    --background: 40 20% 99%;
+    --foreground: 220 35% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 225 30% 10%;
+    --card-foreground: 220 35% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 225 30% 10%;
+    --popover-foreground: 220 35% 8%;
 
-    --primary: 24 75% 48%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 18 72% 46%;
+    --primary-foreground: 40 30% 97%;
 
-    --secondary: 225 10% 97%;
-    --secondary-foreground: 225 15% 30%;
+    --secondary: 40 12% 96%;
+    --secondary-foreground: 220 20% 28%;
 
-    --muted: 225 10% 95%;
-    --muted-foreground: 220 6% 50%;
+    --muted: 40 10% 94%;
+    --muted-foreground: 220 6% 44%;
 
-    --accent: 225 10% 97%;
-    --accent-foreground: 225 15% 30%;
+    --accent: 40 12% 96%;
+    --accent-foreground: 220 20% 28%;
 
-    --destructive: 0 65% 48%;
+    --destructive: 4 70% 46%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 225 8% 92%;
-    --input: 225 8% 92%;
-    --ring: 24 75% 48%;
+    --border: 40 8% 90%;
+    --input: 40 8% 90%;
+    --ring: 18 72% 46%;
 
-    --radius: 0.375rem;
+    --radius: 0.25rem;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 220 6% 50%;
-    --sidebar-primary: 24 75% 48%;
+    --sidebar-background: 40 15% 98.5%;
+    --sidebar-foreground: 220 6% 44%;
+    --sidebar-primary: 18 72% 46%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 225 10% 97%;
-    --sidebar-accent-foreground: 225 15% 18%;
-    --sidebar-border: 225 8% 94%;
-    --sidebar-ring: 24 75% 48%;
+    --sidebar-accent: 40 12% 95%;
+    --sidebar-accent-foreground: 220 20% 14%;
+    --sidebar-border: 40 8% 92%;
+    --sidebar-ring: 18 72% 46%;
 
-    --success: 158 50% 36%;
+    --success: 162 50% 32%;
     --success-foreground: 0 0% 100%;
-    --warning: 36 90% 48%;
+    --warning: 32 85% 46%;
     --warning-foreground: 0 0% 10%;
-    --info: 215 55% 48%;
+    --info: 220 50% 44%;
     --info-foreground: 0 0% 100%;
   }
 }
@@ -66,15 +66,68 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
-    border-radius: 2px;
-  }
+  ::-webkit-scrollbar { width: 3px; height: 3px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 2px; }
+}
+
+/* INK Design System — Ownable Patterns */
+
+/* Geometric page title accent */
+.ink-page-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  color: hsl(var(--foreground));
+}
+
+/* Signature left-accent for elevated containers */
+.ink-accent-border {
+  border-left: 2px solid hsl(var(--primary));
+  padding-left: 1rem;
+}
+
+/* Segmented readiness blocks — ownable INK pattern */
+.ink-segments {
+  display: flex;
+  gap: 2px;
+}
+.ink-segment {
+  width: 6px;
+  height: 14px;
+  border-radius: 1px;
+  background: hsl(var(--border));
+  transition: background 0.2s ease;
+}
+.ink-segment.filled {
+  background: hsl(var(--foreground));
+}
+.ink-segment.filled-warn {
+  background: hsl(var(--warning));
+}
+.ink-segment.filled-danger {
+  background: hsl(var(--destructive));
+}
+
+/* Score display — large, confident */
+.ink-score {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Thin geometric separator */
+.ink-rule {
+  height: 1px;
+  background: hsl(var(--border));
+  margin: 0;
+}
+
+/* Agent signal marker */
+.ink-signal {
+  border-left: 2px solid hsl(var(--primary) / 0.4);
+  padding-left: 0.75rem;
 }

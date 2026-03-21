@@ -8,64 +8,57 @@ const stageOrder = ['Created', 'Scoping', 'Drafting', 'Inputs Pending', 'Review'
 
 const Workflows = () => {
   return (
-    <div className="p-8 max-w-[1200px] mx-auto space-y-6">
-      <h1 className="text-lg font-semibold tracking-tight">Workflows</h1>
+    <div className="p-8 max-w-[1200px] mx-auto space-y-8">
+      <div className="flex items-end justify-between border-b border-border pb-6">
+        <div>
+          <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Application Execution</p>
+          <h1 className="ink-page-title">Workflows</h1>
+        </div>
+        <span className="text-[11px] text-muted-foreground pb-1">{workflows.length} active</span>
+      </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border">
-              <th className="text-left py-2.5 pr-4 font-medium text-muted-foreground text-[11px] uppercase tracking-wider">Workflow</th>
-              <th className="text-left py-2.5 pr-4 font-medium text-muted-foreground text-[11px] uppercase tracking-wider">Stage</th>
-              <th className="text-left py-2.5 pr-4 font-medium text-muted-foreground text-[11px] uppercase tracking-wider hidden lg:table-cell">Owner</th>
-              <th className="text-left py-2.5 pr-4 font-medium text-muted-foreground text-[11px] uppercase tracking-wider w-36">Readiness</th>
-              <th className="text-left py-2.5 pr-4 font-medium text-muted-foreground text-[11px] uppercase tracking-wider hidden sm:table-cell">Deadline</th>
-              <th className="text-right py-2.5 font-medium text-muted-foreground text-[11px] uppercase tracking-wider">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {workflows.map(wf => {
-              const stageIndex = stageOrder.indexOf(wf.stage);
-              return (
-                <tr key={wf.id} className="border-b border-border/60 hover:bg-secondary/40 transition-colors">
-                  <td className="py-3.5 pr-4">
-                    <Link to={`/workflows/${wf.id}`} className="text-[13px] font-medium text-foreground hover:text-primary transition-colors">
-                      {wf.name}
-                    </Link>
-                    <p className="text-[11px] text-muted-foreground mt-0.5 hidden md:block">{wf.opportunityName}</p>
-                  </td>
-                  <td className="py-3.5 pr-4">
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-[3px]">
-                        {stageOrder.slice(0, 7).map((_, i) => (
-                          <div key={i} className={`h-1 w-2.5 rounded-sm ${i <= stageIndex ? 'bg-foreground' : 'bg-secondary'}`} />
-                        ))}
-                      </div>
-                      <span className="text-[12px] text-muted-foreground">{wf.stage}</span>
+      {/* Workflow rows — more editorial */}
+      <div>
+        {workflows.map(wf => {
+          const stageIndex = stageOrder.indexOf(wf.stage);
+          return (
+            <Link key={wf.id} to={`/workflows/${wf.id}`} className="block py-5 border-b border-border/60 hover:bg-secondary/20 -mx-4 px-4 rounded transition-colors group">
+              <div className="flex items-start justify-between gap-6">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-3 mb-1.5">
+                    <p className="text-[14px] font-bold text-foreground group-hover:text-primary transition-colors tracking-tight truncate">{wf.name}</p>
+                    {wf.blockers > 0 && (
+                      <span className="text-[10px] text-destructive font-bold flex items-center gap-1 shrink-0 uppercase tracking-wider">
+                        <AlertTriangle className="h-3 w-3" />{wf.blockers} blocker{wf.blockers > 1 ? 's' : ''}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">{wf.opportunityName} · {wf.owner} · {wf.deadline}</p>
+                </div>
+                <div className="flex items-center gap-6 shrink-0">
+                  {/* Stage progression — geometric blocks */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-[2px]">
+                      {stageOrder.map((_, i) => (
+                        <div key={i} className={`h-3 w-[5px] rounded-[1px] ${i <= stageIndex ? 'bg-foreground' : 'bg-border'}`} />
+                      ))}
                     </div>
-                  </td>
-                  <td className="py-3.5 pr-4 text-[13px] text-muted-foreground hidden lg:table-cell">{wf.owner}</td>
-                  <td className="py-3.5 pr-4"><ReadinessBar score={wf.readinessScore} /></td>
-                  <td className="py-3.5 pr-4 text-[13px] text-muted-foreground hidden sm:table-cell" style={{ fontVariantNumeric: 'tabular-nums' }}>{wf.deadline}</td>
-                  <td className="py-3.5 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      {wf.blockers > 0 && (
-                        <span className="text-[11px] text-destructive flex items-center gap-1">
-                          <AlertTriangle className="h-3 w-3" />{wf.blockers}
-                        </span>
-                      )}
-                      <StatusChip status={wf.status} />
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    <span className="text-[11px] text-muted-foreground w-24">{wf.stage}</span>
+                  </div>
+                  <ReadinessBar score={wf.readinessScore} segments={8} />
+                  <StatusChip status={wf.status} dot />
+                </div>
+              </div>
+            </Link>
+          );
+        })}
       </div>
 
       {workflows.length === 0 && (
-        <p className="py-20 text-center text-sm text-muted-foreground">No active workflows</p>
+        <div className="py-24 text-center">
+          <p className="text-[13px] text-foreground font-semibold">No active workflows</p>
+          <p className="text-[12px] text-muted-foreground mt-1">Start from a shortlisted opportunity</p>
+        </div>
       )}
     </div>
   );

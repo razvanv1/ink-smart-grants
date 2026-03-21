@@ -3,31 +3,46 @@ import { cn } from "@/lib/utils";
 interface ScoreBadgeProps {
   score: number;
   label?: string;
+  large?: boolean;
   className?: string;
 }
 
-export function ScoreBadge({ score, label, className }: ScoreBadgeProps) {
-  const color = score >= 75 ? 'text-success' : score >= 50 ? 'text-warning' : 'text-destructive';
+export function ScoreBadge({ score, label, large, className }: ScoreBadgeProps) {
+  const color = score >= 75 ? 'text-success' : score >= 50 ? 'text-foreground' : 'text-destructive';
   return (
-    <span className={cn("text-[12px] font-semibold", color, className)} style={{ fontVariantNumeric: 'tabular-nums' }}>
-      {score}{label ? ` ${label}` : ''}
+    <span className={cn(
+      large ? "ink-score" : "text-[13px] font-bold",
+      color,
+      className
+    )} style={{ fontVariantNumeric: 'tabular-nums' }}>
+      {score}
+      {label && <span className="text-[11px] font-normal text-muted-foreground ml-1">{label}</span>}
     </span>
   );
 }
 
+/**
+ * INK Readiness — segmented geometric blocks
+ * The ownable readiness visualization for INK
+ */
 interface ReadinessBarProps {
   score: number;
+  segments?: number;
   className?: string;
 }
 
-export function ReadinessBar({ score, className }: ReadinessBarProps) {
-  const color = score >= 75 ? 'bg-success' : score >= 50 ? 'bg-warning' : 'bg-destructive';
+export function ReadinessBar({ score, segments = 10, className }: ReadinessBarProps) {
+  const filled = Math.round((score / 100) * segments);
+  const variant = score >= 65 ? 'filled' : score >= 40 ? 'filled-warn' : 'filled-danger';
+
   return (
-    <div className={cn("flex items-center gap-2", className)}>
-      <div className="flex-1 h-1 rounded-full bg-secondary overflow-hidden">
-        <div className={cn("h-full rounded-full transition-all duration-500", color)} style={{ width: `${score}%` }} />
+    <div className={cn("flex items-center gap-2.5", className)}>
+      <div className="ink-segments">
+        {Array.from({ length: segments }).map((_, i) => (
+          <div key={i} className={`ink-segment ${i < filled ? variant : ''}`} />
+        ))}
       </div>
-      <span className="text-[11px] font-medium text-muted-foreground w-7 text-right" style={{ fontVariantNumeric: 'tabular-nums' }}>{score}%</span>
+      <span className="text-[11px] font-semibold text-muted-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>{score}</span>
     </div>
   );
 }
@@ -38,16 +53,21 @@ interface UrgencyIndicatorProps {
 }
 
 export function UrgencyIndicator({ urgency, className }: UrgencyIndicatorProps) {
-  const colors = {
-    low: 'bg-muted-foreground/30',
-    medium: 'bg-warning',
-    high: 'bg-primary',
-    critical: 'bg-destructive',
-  };
+  const bars = { low: 1, medium: 2, high: 3, critical: 4 };
+  const color = urgency === 'critical' ? 'bg-destructive' : urgency === 'high' ? 'bg-primary' : urgency === 'medium' ? 'bg-warning' : 'bg-muted-foreground/30';
+
   return (
-    <div className={cn("flex items-center gap-1.5", className)}>
-      <div className={cn("h-1.5 w-1.5 rounded-full", colors[urgency])} />
-      <span className="text-[11px] text-muted-foreground capitalize">{urgency}</span>
+    <div className={cn("flex items-end gap-[2px] h-3.5", className)} title={urgency}>
+      {[1, 2, 3, 4].map(i => (
+        <div
+          key={i}
+          className={cn(
+            "w-[3px] rounded-sm transition-colors",
+            i <= bars[urgency] ? color : 'bg-border',
+          )}
+          style={{ height: `${40 + i * 15}%` }}
+        />
+      ))}
     </div>
   );
 }
