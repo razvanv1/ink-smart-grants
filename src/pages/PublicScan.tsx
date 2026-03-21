@@ -130,6 +130,9 @@ const PublicScan = () => {
                 Descrie-ți proiectul, ideea sau nevoia de finanțare cât mai detaliat. Cu cât oferi mai multe detalii despre obiective, grup țintă și domeniu, cu atât AI-ul nostru va face un matchmaking mai precis cu call-urile active.
               </p>
               <form onSubmit={handleScan} className="space-y-5">
+                <div>
+                  <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Project Description</label>
+                  <textarea value={projectIntent} onChange={e => setProjectIntent(e.target.value)} placeholder="e.g. We want to build an AI-powered training platform for healthcare professionals across 3 EU countries, targeting upskilling in digital health tools..." rows={3} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all resize-none" />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
