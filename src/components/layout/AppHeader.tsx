@@ -1,8 +1,30 @@
-import { Search, Bell, ChevronDown } from "lucide-react";
+import { Search, Bell, ChevronDown, LogOut } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { currentOrganization } from "@/data/sampleData";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function AppHeader() {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const initials = user?.email ? user.email.slice(0, 2).toUpperCase() : "??";
+
+  const openCommandPalette = () => {
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }));
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth");
+  };
+
   return (
     <header className="h-12 flex items-center justify-between px-6 border-b border-border">
       <div className="flex items-center gap-4">
@@ -14,7 +36,10 @@ export function AppHeader() {
       </div>
 
       <div className="flex items-center gap-0.5">
-        <button className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-[12px] text-muted-foreground hover:text-foreground transition-colors rounded hover:bg-secondary">
+        <button
+          onClick={openCommandPalette}
+          className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-[12px] text-muted-foreground hover:text-foreground transition-colors rounded hover:bg-secondary"
+        >
           <Search className="h-3.5 w-3.5" />
           <span>Search</span>
           <kbd className="hidden lg:inline text-[10px] px-1.5 py-0.5 rounded border border-border text-muted-foreground/60 font-mono ml-2">⌘K</kbd>
@@ -23,9 +48,23 @@ export function AppHeader() {
           <Bell className="h-[15px] w-[15px]" strokeWidth={1.6} />
           <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-primary" />
         </button>
-        <div className="ml-2 h-7 w-7 rounded-sm bg-foreground flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity">
-          <span className="text-[11px] font-bold text-background">EP</span>
-        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="ml-2 h-7 w-7 rounded-sm bg-foreground flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity">
+              <span className="text-[11px] font-bold text-background">{initials}</span>
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem className="text-[12px] text-muted-foreground" disabled>
+              {user?.email}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSignOut} className="text-[12px]">
+              <LogOut className="mr-2 h-3.5 w-3.5" />
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
