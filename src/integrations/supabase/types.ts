@@ -14,13 +14,145 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      funding_profiles: {
+        Row: {
+          budget_range: string | null
+          completeness: number
+          created_at: string
+          excluded_themes: string[] | null
+          funding_goals: string | null
+          geography_preferences: string[] | null
+          id: string
+          internal_capacity: string | null
+          notes: string | null
+          organization_id: string
+          partnership_readiness: string | null
+          preferred_sources: string[] | null
+          preferred_types: string[] | null
+          prior_experience: string | null
+          updated_at: string
+        }
+        Insert: {
+          budget_range?: string | null
+          completeness?: number
+          created_at?: string
+          excluded_themes?: string[] | null
+          funding_goals?: string | null
+          geography_preferences?: string[] | null
+          id?: string
+          internal_capacity?: string | null
+          notes?: string | null
+          organization_id: string
+          partnership_readiness?: string | null
+          preferred_sources?: string[] | null
+          preferred_types?: string[] | null
+          prior_experience?: string | null
+          updated_at?: string
+        }
+        Update: {
+          budget_range?: string | null
+          completeness?: number
+          created_at?: string
+          excluded_themes?: string[] | null
+          funding_goals?: string | null
+          geography_preferences?: string[] | null
+          id?: string
+          internal_capacity?: string | null
+          notes?: string | null
+          organization_id?: string
+          partnership_readiness?: string | null
+          preferred_sources?: string[] | null
+          preferred_types?: string[] | null
+          prior_experience?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "funding_profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_members: {
+        Row: {
+          created_at: string
+          id: string
+          organization_id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          organization_id: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          organization_id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_members_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          country: string | null
+          created_at: string
+          domain_focus: string[] | null
+          id: string
+          name: string
+          onboarding_complete: boolean
+          size: string | null
+          type: string | null
+          updated_at: string
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          domain_focus?: string[] | null
+          id?: string
+          name: string
+          onboarding_complete?: boolean
+          size?: string | null
+          type?: string | null
+          updated_at?: string
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          domain_focus?: string[] | null
+          id?: string
+          name?: string
+          onboarding_complete?: boolean
+          size?: string | null
+          type?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_org_member: {
+        Args: { _org_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
