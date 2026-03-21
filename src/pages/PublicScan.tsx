@@ -104,13 +104,18 @@ const PublicScan = () => {
             </p>
           </div>
 
-          {/* ═══ HOW IT WORKS — before scan form ═══ */}
+          {/* ═══ HOW IT WORKS ═══ */}
           {!showResults && (
-            <ScrollReveal delay={120} className="max-w-[780px] mx-auto mb-10">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <ScrollReveal delay={180}><HowItWorksStep step={1} icon={<FileText className="h-4 w-4" />} title="Describe your project" description="Tell us what you want to fund in one sentence" /></ScrollReveal>
-                <ScrollReveal delay={240}><HowItWorksStep step={2} icon={<Target className="h-4 w-4" />} title="Get matched calls" description="AI matches your profile against 940+ live calls" /></ScrollReveal>
-                <ScrollReveal delay={300}><HowItWorksStep step={3} icon={<Zap className="h-4 w-4" />} title="Start your application" description="Turn the best match into an active workflow" /></ScrollReveal>
+            <ScrollReveal delay={120} className="max-w-[780px] mx-auto mb-14">
+              <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info text-center mb-2">How It Works</p>
+              <h2 className="text-[22px] sm:text-[26px] font-extrabold text-foreground tracking-[-0.03em] text-center mb-2">Get matched in 3 simple steps</h2>
+              <p className="text-[13px] text-foreground/70 text-center mb-8 max-w-[480px] mx-auto leading-relaxed">
+                Our AI scans 940+ live EU & national funding calls and matches them to your project profile — no expertise needed.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                <ScrollReveal delay={180}><HowItWorksStep step={1} title="Describe your project" description="Tell us what you want to fund — a training program, research project, or innovation idea. One sentence is enough." /></ScrollReveal>
+                <ScrollReveal delay={260}><HowItWorksStep step={2} title="Get matched calls" description="Our AI instantly compares your profile against all active calls and ranks them by fit score, deadline & budget." /></ScrollReveal>
+                <ScrollReveal delay={340}><HowItWorksStep step={3} title="Start your application" description="Pick your best match and turn it into an active workflow with checklists, AI drafting, and deadline tracking." /></ScrollReveal>
               </div>
             </ScrollReveal>
           )}
@@ -257,17 +262,19 @@ const PublicScan = () => {
 };
 
 /* ── How It Works step ── */
-function HowItWorksStep({ step, icon, title, description }: { step: number; icon: React.ReactNode; title: string; description: string }) {
+function HowItWorksStep({ step, title, description }: { step: number; title: string; description: string }) {
+  const colors = [
+    "from-info/20 to-info/5 text-info border-info/30",
+    "from-warning/20 to-warning/5 text-warning border-warning/30",
+    "from-success/20 to-success/5 text-success border-success/30",
+  ];
   return (
-    <div className="flex items-start gap-3 p-3.5 rounded-[6px] border border-border bg-card hover:border-info/40 hover:shadow-sm hover:shadow-info/10 transition-all duration-200">
-      <div className="h-8 w-8 rounded-[4px] bg-info/12 flex items-center justify-center shrink-0 text-info">
-        {icon}
+    <div className="relative flex flex-col items-center text-center p-5 rounded-[8px] border border-border bg-card hover:shadow-md hover:shadow-info/[0.08] transition-all duration-300 group">
+      <div className={`h-12 w-12 rounded-full bg-gradient-to-br ${colors[step - 1]} border flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+        <span className="text-[20px] font-extrabold leading-none">{step}</span>
       </div>
-      <div className="min-w-0">
-        <p className="text-[12px] font-bold text-foreground leading-snug">{title}</p>
-        <p className="text-[11px] text-foreground/70 leading-relaxed mt-0.5">{description}</p>
-      </div>
-      <span className="text-[10px] font-extrabold text-info/55 shrink-0 pt-0.5">{step}</span>
+      <p className="text-[14px] font-bold text-foreground leading-snug mb-1.5">{title}</p>
+      <p className="text-[12px] text-foreground/70 leading-relaxed">{description}</p>
     </div>
   );
 }
