@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, Building2, Radar, GitBranch, Layers,
-  BookOpen, Bot, Settings, PanelLeftClose, PanelLeft,
+  BookOpen, Bot, Settings, PanelLeftClose, PanelLeft, Search,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
@@ -10,6 +10,7 @@ import {
 
 const navItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Scan", url: "/scan", icon: Search },
   { title: "Funding Profile", url: "/funding-profile", icon: Building2 },
   { title: "Opportunities", url: "/opportunities", icon: Radar },
   { title: "Workflows", url: "/workflows", icon: GitBranch },

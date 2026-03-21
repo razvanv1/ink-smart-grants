@@ -20,6 +20,8 @@ import SettingsPage from "./pages/Settings";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import Onboarding from "./pages/Onboarding";
+import PublicScan from "./pages/PublicScan";
+import ScanPage from "./pages/Scan";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +41,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/auth" element={user ? <Navigate to="/" replace /> : <Auth />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/scan-public" element={<PublicScan />} />
       <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
       <Route
         path="/*"
@@ -48,6 +51,7 @@ function AppRoutes() {
               <CommandPalette />
               <Routes>
                 <Route path="/" element={<Index />} />
+                <Route path="/scan" element={<ScanPage />} />
                 <Route path="/opportunities" element={<Opportunities />} />
                 <Route path="/opportunities/:id" element={<OpportunityDetail />} />
                 <Route path="/workflows" element={<Workflows />} />
