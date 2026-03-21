@@ -83,7 +83,7 @@ const PublicScan = () => {
         </div>
 
         <div className="relative w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pt-20 sm:pt-28 pb-20 sm:pb-24 lg:pb-28">
-          <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1.02fr)_minmax(620px,0.98fr)] 2xl:grid-cols-[minmax(0,1fr)_minmax(700px,0.95fr)] gap-10 xl:gap-20 items-center max-w-[1760px] mx-auto">
+          <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(760px,1fr)] 2xl:grid-cols-[minmax(0,1fr)_minmax(860px,1fr)] gap-10 xl:gap-16 items-center max-w-[1880px] mx-auto">
             <div>
               <button
                 onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
@@ -126,14 +126,14 @@ const PublicScan = () => {
             </div>
 
             <div className="hidden xl:flex justify-end opacity-0 animate-fade-in-up" style={{ animationDelay: "0.28s" }}>
-              <div className="relative w-full max-w-[700px] 2xl:max-w-[780px]">
+              <div className="relative w-full max-w-[820px] 2xl:max-w-[900px]">
                 <div className="absolute inset-0 rounded-full bg-info/12 blur-3xl scale-[0.88]" />
                 <img
                   src={octopusImg}
                   alt="INK octopus mascot"
-                  className="relative w-full max-w-[620px] 2xl:max-w-[700px] h-auto ml-auto drop-shadow-[0_28px_56px_hsl(var(--foreground)/0.2)]"
+                  className="relative w-full max-w-[760px] 2xl:max-w-[840px] h-auto ml-auto drop-shadow-[0_28px_56px_hsl(var(--foreground)/0.2)]"
                 />
-                <p className="absolute bottom-8 right-2 text-[22px] 2xl:text-[24px] font-extrabold text-foreground/70 tracking-[-0.01em] italic leading-snug text-right">
+                <p className="absolute bottom-10 right-2 text-[24px] 2xl:text-[28px] font-extrabold text-foreground/70 tracking-[-0.01em] italic leading-snug text-right">
                   "I can slap<br />8 grants at once."
                 </p>
               </div>
@@ -152,7 +152,7 @@ const PublicScan = () => {
 
       {/* ═══ HOW IT WORKS + SCAN FORM ═══ */}
       <div className="w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pb-20">
-        <div className="max-w-[1760px] mx-auto">
+        <div className="max-w-[1880px] mx-auto">
           {/* ═══ HOW IT WORKS ═══ */}
           {!showResults && (
             <ScrollReveal id="how-it-works" delay={120} className="mb-16 sm:mb-20">
@@ -256,7 +256,7 @@ const PublicScan = () => {
       </div>
 
       {/* ═══ RESULTS + PRICING + FOOTER ═══ */}
-      <div className="w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 max-w-[1760px] mx-auto">
+      <div className="w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 max-w-[1880px] mx-auto">
         {showResults && (
           <div ref={resultsRef} className="space-y-8 relative z-10 mb-20">
             <div className="flex items-center justify-between opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
