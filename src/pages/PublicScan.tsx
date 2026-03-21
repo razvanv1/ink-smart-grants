@@ -107,8 +107,8 @@ const PublicScan = () => {
               />
             </h1>
 
-            <p className="text-[14px] sm:text-[16px] text-foreground/80 leading-relaxed max-w-[560px] mx-auto mb-0 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-              Describe your project. Get matched against 940+ live EU & national calls in 60 seconds.
+            <p className="text-[14px] sm:text-[16px] text-foreground/80 leading-relaxed max-w-[600px] mx-auto mb-0 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+              A funding operations platform that monitors opportunities, decides what's worth pursuing, builds applications faster and pushes execution all the way to submission.
             </p>
           </div>
 
