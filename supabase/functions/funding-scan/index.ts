@@ -35,7 +35,7 @@ CRITICAL MATCHING RULES:
 - Use realistic deadlines (3-12 months from now), budgets that match programme norms, and correct eligibility criteria
 - Match based on thematic alignment, eligible organization types, TRL levels, and geographic scope
 - The more detailed the user's project description, the more precise and differentiated the matching should be
-- Score fitScore honestly — a 95%+ match should only happen when project intent perfectly aligns with the call topic
+- Score fitScore honestly: a 95%+ match should only happen when project intent perfectly aligns with the call topic
 - Include a mix of high-fit (80%+) and moderate-fit (50-79%) calls to show breadth
 
 Return 8 matched calls ranked by fit score (highest first). Make the matching logic transparent — explain WHY each call matches or doesn't fully match.`;
