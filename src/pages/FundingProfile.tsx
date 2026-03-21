@@ -1,27 +1,12 @@
-const profileData = {
-  orgName: 'The Unlearning School',
-  orgType: 'Non-Profit / Social Enterprise',
-  country: 'Greece',
-  primaryDomains: ['Digital Skills', 'Workforce Development', 'Education Innovation'],
-  secondaryDomains: ['Green Transition', 'Civic Engagement'],
-  fundingGoals: 'Expand training delivery across Southern and Eastern Europe. Build AI literacy programming. Strengthen consortium leadership capacity.',
-  budgetRange: '€150K – €4M',
-  teamCapacity: '3–4 concurrent workflows',
-  priorExperience: '6 successful applications (Erasmus+ KA2, ESF+, national innovation grants)',
-  partnershipReadiness: 'Active network of 14 partners across 8 EU countries',
-  preferredSources: ['Horizon Europe', 'Erasmus+', 'Digital Europe', 'ESF+'],
-  preferredTypes: ['RIA', 'Cooperation Partnership', 'CSA', 'National Grant'],
-  excludedThemes: ['Military/defense', 'Nuclear energy', 'Fossil fuel extraction'],
-  notes: 'Prioritizing digital skills and AI literacy calls. Seeking coordination roles.',
-  completeness: 85,
-  lastUpdated: '2026-03-15',
-};
-
-const missing = ['Staff competency matrix', 'Organizational chart', 'Financial sustainability statement'];
-
+import { fundingProfile, currentOrganization } from "@/data/sampleData";
 import { ReadinessBar } from "@/components/shared/ScoreBadge";
+import { useState } from "react";
+
+const missingFields = ['Staff competency matrix', 'Organizational chart', 'Financial sustainability statement'];
 
 const FundingProfile = () => {
+  const [editing, setEditing] = useState(false);
+
   return (
     <div className="p-8 max-w-[860px] mx-auto space-y-10">
       <div className="flex items-end justify-between border-b border-border pb-6">
@@ -29,56 +14,58 @@ const FundingProfile = () => {
           <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Organization Identity</p>
           <h1 className="ink-page-title">Funding Profile</h1>
         </div>
-        <button className="px-3 py-1.5 bg-foreground text-background text-[11px] font-bold tracking-wider uppercase rounded-sm hover:opacity-90 transition-opacity active:scale-[0.97]">
-          Edit
+        <button
+          onClick={() => setEditing(!editing)}
+          className="px-3 py-1.5 bg-foreground text-background text-[11px] font-bold tracking-wider uppercase rounded-sm hover:opacity-90 transition-opacity active:scale-[0.97]"
+        >
+          {editing ? 'Save' : 'Edit'}
         </button>
       </div>
 
-      {/* Completeness with INK readiness segments */}
       <div className="border-b border-border pb-6">
         <div className="flex items-center justify-between mb-3">
           <span className="text-[10px] text-muted-foreground tracking-[0.12em] uppercase font-semibold">Profile Completeness</span>
-          <ReadinessBar score={profileData.completeness} segments={12} />
+          <ReadinessBar score={fundingProfile.completeness} segments={12} />
         </div>
         <div className="space-y-1 mt-3">
-          {missing.map((m, i) => (
+          {missingFields.map((m, i) => (
             <p key={i} className="text-[11px] text-muted-foreground">Missing: {m}</p>
           ))}
         </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-y-6 gap-x-12">
-        <Field label="Organization" value={profileData.orgName} />
-        <Field label="Type" value={profileData.orgType} />
-        <Field label="Country" value={profileData.country} />
-        <Field label="Budget Range" value={profileData.budgetRange} />
-        <Field label="Team Capacity" value={profileData.teamCapacity} />
-        <Field label="Prior Experience" value={profileData.priorExperience} />
+        <Field label="Organization" value={currentOrganization.name} />
+        <Field label="Type" value={currentOrganization.type} />
+        <Field label="Country" value={currentOrganization.country} />
+        <Field label="Budget Range" value={fundingProfile.budgetRange} />
+        <Field label="Team Capacity" value={fundingProfile.internalCapacity} />
+        <Field label="Prior Experience" value={fundingProfile.priorExperience} />
       </div>
 
       <div className="ink-rule" />
 
-      <Field label="Funding Goals" value={profileData.fundingGoals} />
-      <Field label="Partnership Readiness" value={profileData.partnershipReadiness} />
+      <Field label="Funding Goals" value={fundingProfile.fundingGoals} />
+      <Field label="Partnership Readiness" value={fundingProfile.partnershipReadiness} />
 
       <div className="ink-rule" />
 
       <div className="grid md:grid-cols-2 gap-y-6 gap-x-12">
-        <Tags label="Primary Domains" tags={profileData.primaryDomains} />
-        <Tags label="Secondary Domains" tags={profileData.secondaryDomains} />
-        <Tags label="Preferred Sources" tags={profileData.preferredSources} />
-        <Tags label="Preferred Types" tags={profileData.preferredTypes} />
+        <Tags label="Primary Domains" tags={currentOrganization.domainFocus} />
+        <Tags label="Geography Preferences" tags={fundingProfile.geographyPreferences} />
+        <Tags label="Preferred Sources" tags={fundingProfile.preferredSources} />
+        <Tags label="Preferred Types" tags={fundingProfile.preferredTypes} />
       </div>
 
       <div className="ink-rule" />
 
-      <Tags label="Excluded" tags={profileData.excludedThemes} muted />
+      <Tags label="Excluded Themes" tags={fundingProfile.excludedThemes} muted />
 
       <div className="ink-rule" />
 
       <div>
-        <Field label="Notes" value={profileData.notes} />
-        <p className="text-[10px] text-muted-foreground mt-3">Updated {profileData.lastUpdated}</p>
+        <Field label="Notes" value={fundingProfile.notes} />
+        <p className="text-[10px] text-muted-foreground mt-3">Updated {fundingProfile.updatedAt}</p>
       </div>
     </div>
   );

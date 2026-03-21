@@ -1,42 +1,54 @@
 import { cn } from "@/lib/utils";
 
 const colorMap: Record<string, string> = {
+  // Opportunity status
   new: 'text-info',
   watchlist: 'text-muted-foreground',
   shortlisted: 'text-warning',
-  active: 'text-primary',
   'active-workflow': 'text-primary',
+  ignored: 'text-muted-foreground',
+  rejected: 'text-muted-foreground',
+  // Workflow status
+  active: 'text-primary',
   'at-risk': 'text-destructive',
   completed: 'text-success',
-  rejected: 'text-muted-foreground',
-  submitted: 'text-success',
-  pending: 'text-muted-foreground',
-  'in-progress': 'text-primary',
-  overdue: 'text-destructive',
   paused: 'text-muted-foreground',
+  submitted: 'text-success',
+  // Task status
+  todo: 'text-muted-foreground',
+  'in-progress': 'text-primary',
+  waiting: 'text-warning',
   done: 'text-success',
-  drafted: 'text-success',
+  blocked: 'text-destructive',
+  // Severity
   info: 'text-info',
-  warning: 'text-warning',
-  success: 'text-success',
-  alert: 'text-destructive',
+  attention: 'text-warning',
+  risk: 'text-destructive',
   critical: 'text-destructive',
+  // Priority
   high: 'text-destructive',
   medium: 'text-warning',
   low: 'text-muted-foreground',
+  // Misc
+  drafted: 'text-success',
+  pending: 'text-muted-foreground',
+  overdue: 'text-destructive',
   pass: 'text-success',
+  warning: 'text-warning',
   missing: 'text-destructive',
+  success: 'text-success',
 };
 
-// Dot indicator map
 const dotMap: Record<string, string> = {
   'at-risk': 'bg-destructive',
   'active-workflow': 'bg-primary',
   active: 'bg-primary',
+  blocked: 'bg-destructive',
   overdue: 'bg-destructive',
   critical: 'bg-destructive',
   'in-progress': 'bg-primary',
-  alert: 'bg-destructive',
+  risk: 'bg-destructive',
+  attention: 'bg-warning',
   warning: 'bg-warning',
 };
 

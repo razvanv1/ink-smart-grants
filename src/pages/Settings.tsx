@@ -1,3 +1,11 @@
+import { currentOrganization } from "@/data/sampleData";
+
+const teamMembers = [
+  { name: 'Elena P.', role: 'Admin', email: 'elena@unlearning.school' },
+  { name: 'Maria K.', role: 'Grant Manager', email: 'maria@unlearning.school' },
+  { name: 'Nikos T.', role: 'Member', email: 'nikos@unlearning.school' },
+];
+
 const SettingsPage = () => {
   return (
     <div className="p-8 max-w-[800px] mx-auto space-y-10">
@@ -8,19 +16,15 @@ const SettingsPage = () => {
 
       <Section title="Organization">
         <div className="grid sm:grid-cols-2 gap-y-5 gap-x-10">
-          <Field label="Name" value="The Unlearning School" />
-          <Field label="Entity Type" value="Non-Profit Association" />
-          <Field label="Country" value="Greece" />
+          <Field label="Name" value={currentOrganization.name} />
+          <Field label="Entity Type" value={currentOrganization.type} />
+          <Field label="Country" value={currentOrganization.country} />
           <Field label="PIC Number" value="998745632" />
         </div>
       </Section>
 
       <Section title="Team" action="Invite">
-        {[
-          { name: 'Elena P.', role: 'Admin', email: 'elena@unlearning.school' },
-          { name: 'Maria K.', role: 'Grant Manager', email: 'maria@unlearning.school' },
-          { name: 'Nikos T.', role: 'Member', email: 'nikos@unlearning.school' },
-        ].map(u => (
+        {teamMembers.map(u => (
           <div key={u.email} className="flex items-center justify-between py-3 border-b border-border/40 last:border-0">
             <div>
               <p className="text-[13px] font-semibold text-foreground">{u.name}</p>

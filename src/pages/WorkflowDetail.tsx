@@ -1,21 +1,19 @@
 import { useParams, Link } from "react-router-dom";
-import { workflows, tasks as allTasks, agentEvents } from "@/data/sampleData";
+import { workflows, tasks as allTasks, agentEvents, workflowStages } from "@/data/sampleData";
 import { StatusChip } from "@/components/shared/StatusChip";
-import { ReadinessBar, ScoreBadge } from "@/components/shared/ScoreBadge";
+import { ReadinessBar } from "@/components/shared/ScoreBadge";
 import { ArrowLeft, AlertTriangle } from "lucide-react";
 import { useState } from "react";
 
 const tabs = ['Overview', 'Draft', 'Inputs', 'Tasks', 'Compliance', 'Docs', 'Activity'];
-
-const stageOrder = ['Created', 'Scoping', 'Drafting', 'Inputs Pending', 'Review', 'Compliance Check', 'Ready to Submit', 'Submitted'];
 
 const draftSections = [
   { name: 'Problem / Need', status: 'drafted', readiness: 78, source: 'KA2 Application 2024' },
   { name: 'Objectives', status: 'drafted', readiness: 85, source: 'Capability Statement' },
   { name: 'Activities & Work Packages', status: 'in-progress', readiness: 52 },
   { name: 'Impact', status: 'drafted', readiness: 71, source: 'Impact Report 2024' },
-  { name: 'Budget Logic', status: 'pending', readiness: 20 },
-  { name: 'Partnership', status: 'pending', readiness: 15 },
+  { name: 'Budget Logic', status: 'todo', readiness: 20 },
+  { name: 'Partnership', status: 'todo', readiness: 15 },
   { name: 'Implementation Timeline', status: 'in-progress', readiness: 40 },
   { name: 'Risk / Mitigation', status: 'drafted', readiness: 90, source: 'Risk Framework' },
 ];
@@ -38,16 +36,17 @@ const complianceChecks = [
 ];
 
 const documents = [
-  { name: 'Draft Proposal v3.docx', meta: 'Proposal · 2.4 MB', date: '2026-03-18' },
-  { name: 'Budget Annex.xlsx', meta: 'Budget · 890 KB', date: '2026-03-15' },
-  { name: 'Partner Letters of Intent.pdf', meta: 'Partnership · 1.1 MB', date: '2026-03-10' },
+  { name: 'Draft Proposal v3.docx', meta: 'Proposal · 2.4 MB', date: '2026-03-18', uploadedBy: 'Maria K.' },
+  { name: 'Budget Annex.xlsx', meta: 'Budget · 890 KB', date: '2026-03-15', uploadedBy: 'Maria K.' },
+  { name: 'Partner Letters of Intent.pdf', meta: 'Partnership · 1.1 MB', date: '2026-03-10', uploadedBy: 'Elena P.' },
 ];
 
 const WorkflowDetail = () => {
   const { id } = useParams();
   const wf = workflows.find(w => w.id === id) || workflows[0];
   const wfTasks = allTasks.filter(t => t.workflowId === wf.id);
-  const stageIndex = stageOrder.indexOf(wf.stage);
+  const wfEvents = agentEvents.filter(e => e.workflowId === wf.id);
+  const stageIndex = workflowStages.indexOf(wf.stage);
   const [activeTab, setActiveTab] = useState('Overview');
 
   return (
@@ -56,7 +55,6 @@ const WorkflowDetail = () => {
         <ArrowLeft className="h-3 w-3" /> Workflows
       </Link>
 
-      {/* Hero header */}
       <div className="border-b border-border pb-8">
         <div className="flex items-center gap-3 mb-3">
           <StatusChip status={wf.status} dot />
@@ -69,11 +67,10 @@ const WorkflowDetail = () => {
         <h1 className="ink-page-title mb-2">{wf.name}</h1>
         <p className="text-[13px] text-muted-foreground">{wf.opportunityName} · {wf.owner}</p>
 
-        {/* Stage progression + readiness — prominent */}
         <div className="flex items-center gap-8 mt-6">
           <div className="flex items-center gap-3">
             <div className="flex gap-[3px]">
-              {stageOrder.map((stage, i) => (
+              {workflowStages.map((stage, i) => (
                 <div
                   key={i}
                   className={`h-4 w-[7px] rounded-[1px] transition-colors ${i <= stageIndex ? 'bg-foreground' : 'bg-border'}`}
@@ -94,7 +91,6 @@ const WorkflowDetail = () => {
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="flex gap-0 overflow-x-auto">
         {tabs.map(tab => (
           <button
@@ -113,7 +109,6 @@ const WorkflowDetail = () => {
 
       <div className="ink-rule" />
 
-      {/* Content */}
       <div>
         {activeTab === 'Overview' && (
           <div className="grid md:grid-cols-5 gap-10">
@@ -122,7 +117,7 @@ const WorkflowDetail = () => {
                 Proposal drafting underway. Impact and objectives drafted from prior KA2 application. Budget and partnership sections pending external inputs. Co-financing letter required within 5 days.
               </p>
               <div className="space-y-3">
-                <Signal label="Next" value="Complete budget annex" />
+                <Signal label="Next" value={wf.nextMilestone} />
                 <Signal label="Blocker" value="Partner budget inputs overdue" highlight />
                 <Signal label="Recommended" value="Follow up with TU Berlin" />
               </div>
@@ -130,9 +125,9 @@ const WorkflowDetail = () => {
             <div className="md:col-span-2 border-l border-border pl-8">
               <div className="grid grid-cols-2 gap-y-5 gap-x-6">
                 <Stat label="Sections" value="5/8" />
-                <Stat label="Tasks" value={`${wfTasks.filter(t=>t.status==='done').length}/${wfTasks.length}`} />
-                <Stat label="Missing" value="5" />
-                <Stat label="Compliance" value="3/6" />
+                <Stat label="Tasks" value={`${wfTasks.filter(t => t.status === 'done').length}/${wfTasks.length}`} />
+                <Stat label="Missing" value={String(missingInputs.length)} />
+                <Stat label="Compliance" value={`${complianceChecks.filter(c => c.status === 'pass').length}/${complianceChecks.length}`} />
               </div>
             </div>
           </div>
@@ -166,6 +161,9 @@ const WorkflowDetail = () => {
                 <StatusChip status={input.priority} />
               </div>
             ))}
+            {missingInputs.length === 0 && (
+              <p className="py-16 text-center text-[13px] text-muted-foreground">All inputs received</p>
+            )}
           </div>
         )}
 
@@ -175,7 +173,10 @@ const WorkflowDetail = () => {
               <div key={task.id} className="flex items-center justify-between py-3.5 border-b border-border/40">
                 <div>
                   <p className="text-[13px] text-foreground">{task.title}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">{task.owner} · {task.dueDate}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    {task.owner} · {task.dueDate}
+                    {task.dependency && <span className="text-warning"> · Depends on: {task.dependency}</span>}
+                  </p>
                 </div>
                 <StatusChip status={task.status} dot />
               </div>
@@ -196,7 +197,7 @@ const WorkflowDetail = () => {
                     <p className="text-[11px] text-muted-foreground mt-0.5">{c.result}</p>
                   </div>
                 </div>
-                <StatusChip status={c.status === 'pass' ? 'done' : c.status === 'warning' ? 'warning' : 'at-risk'} />
+                <StatusChip status={c.status === 'pass' ? 'done' : c.status === 'warning' ? 'attention' : 'risk'} />
               </div>
             ))}
           </div>
@@ -208,25 +209,31 @@ const WorkflowDetail = () => {
               <div key={i} className="flex items-center justify-between py-3.5 border-b border-border/40 cursor-pointer hover:bg-secondary/30 -mx-2 px-2 rounded transition-colors">
                 <div>
                   <p className="text-[13px] font-semibold text-foreground">{doc.name}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">{doc.meta}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{doc.meta} · {doc.uploadedBy}</p>
                 </div>
                 <span className="text-[11px] text-muted-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>{doc.date}</span>
               </div>
             ))}
+            <button className="mt-4 text-[11px] text-primary font-semibold tracking-wide uppercase hover:underline">
+              Upload Document
+            </button>
           </div>
         )}
 
         {activeTab === 'Activity' && (
           <div>
-            {agentEvents.slice(0, 6).map(event => (
+            {wfEvents.length > 0 ? wfEvents.map(event => (
               <div key={event.id} className="ink-signal py-3.5 mb-1.5">
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className="text-[10px] font-bold text-primary tracking-wider uppercase">{event.agent}</span>
-                  <span className="text-[10px] text-muted-foreground">{event.timestamp}</span>
+                  <span className="text-[10px] text-muted-foreground">· {event.eventType}</span>
+                  <span className="text-[10px] text-muted-foreground ml-auto">{event.timestamp}</span>
                 </div>
                 <p className="text-[12px] text-foreground/75 leading-relaxed">{event.detail}</p>
               </div>
-            ))}
+            )) : (
+              <p className="py-16 text-center text-[13px] text-muted-foreground">No activity yet</p>
+            )}
           </div>
         )}
       </div>

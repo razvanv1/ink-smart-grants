@@ -26,15 +26,20 @@ const KnowledgeVault = () => {
           <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Institutional Memory</p>
           <h1 className="ink-page-title">Knowledge Vault</h1>
         </div>
-        <div className="flex items-center gap-2 border-b border-border w-48 pb-1">
-          <Search className="h-3.5 w-3.5 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search…"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="bg-transparent outline-none text-foreground placeholder:text-muted-foreground w-full text-[12px]"
-          />
+        <div className="flex items-center gap-4">
+          <button className="px-3 py-1.5 bg-foreground text-background text-[11px] font-bold tracking-wider uppercase rounded-sm hover:opacity-90 transition-opacity active:scale-[0.97]">
+            Upload
+          </button>
+          <div className="flex items-center gap-2 border-b border-border w-48 pb-1">
+            <Search className="h-3.5 w-3.5 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="bg-transparent outline-none text-foreground placeholder:text-muted-foreground w-full text-[12px]"
+            />
+          </div>
         </div>
       </div>
 
@@ -55,18 +60,23 @@ const KnowledgeVault = () => {
               <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
                 <span className="uppercase tracking-wider font-medium">{typeLabels[asset.type]}</span>
                 <span>·</span>
+                <span>{asset.uploadedBy}</span>
+                <span>·</span>
                 {asset.tags.slice(0, 3).map(tag => (
                   <span key={tag}>{tag}</span>
                 ))}
               </div>
             </div>
-            <span className="text-[11px] text-muted-foreground shrink-0 pt-0.5" style={{ fontVariantNumeric: 'tabular-nums' }}>{asset.dateAdded}</span>
+            <span className="text-[11px] text-muted-foreground shrink-0 pt-0.5" style={{ fontVariantNumeric: 'tabular-nums' }}>{asset.createdAt}</span>
           </div>
         ))}
       </div>
 
       {filtered.length === 0 && (
-        <p className="py-20 text-center text-[13px] text-muted-foreground">No assets uploaded yet</p>
+        <div className="py-20 text-center">
+          <p className="text-[13px] text-foreground font-semibold">No assets uploaded yet</p>
+          <p className="text-[12px] text-muted-foreground mt-1">Upload past applications, reports, or templates to build institutional memory</p>
+        </div>
       )}
     </div>
   );

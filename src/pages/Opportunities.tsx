@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
 import { useState } from "react";
 
-const statusOptions = ['All', 'New', 'Watchlist', 'Shortlisted', 'Active Workflow', 'Rejected'];
+const statusOptions = ['All', 'New', 'Watchlist', 'Shortlisted', 'Active Workflow', 'Ignored', 'Rejected'];
 
 const Opportunities = () => {
   const [statusFilter, setStatusFilter] = useState('All');
@@ -21,16 +21,14 @@ const Opportunities = () => {
 
   return (
     <div className="p-8 max-w-[1300px] mx-auto space-y-8">
-      {/* Editorial header */}
       <div className="flex items-end justify-between border-b border-border pb-6">
         <div>
-          <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Funding Calls</p>
+          <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Matched Opportunities</p>
           <h1 className="ink-page-title">Opportunities</h1>
         </div>
         <span className="text-[11px] text-muted-foreground pb-1">{filtered.length} calls</span>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-wrap items-center gap-5">
         <div className="flex items-center gap-2 border-b border-border w-56 pb-1">
           <Search className="h-3.5 w-3.5 text-muted-foreground" />
@@ -59,7 +57,6 @@ const Opportunities = () => {
         </div>
       </div>
 
-      {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -70,6 +67,7 @@ const Opportunities = () => {
               <th className="text-right py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase w-16 hidden lg:table-cell">Effort</th>
               <th className="text-center py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase w-16">Urgency</th>
               <th className="text-left py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase">Deadline</th>
+              <th className="text-left py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase hidden md:table-cell">Status</th>
               <th className="text-right py-3 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase hidden xl:table-cell">Action</th>
             </tr>
           </thead>
@@ -86,6 +84,7 @@ const Opportunities = () => {
                 <td className="py-3.5 pr-6 text-right hidden lg:table-cell"><ScoreBadge score={opp.effortScore} /></td>
                 <td className="py-3.5 pr-6"><div className="flex justify-center"><UrgencyIndicator urgency={opp.urgency} /></div></td>
                 <td className="py-3.5 pr-6 text-[12px] text-muted-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>{opp.deadline}</td>
+                <td className="py-3.5 pr-6 hidden md:table-cell"><StatusChip status={opp.status} /></td>
                 <td className="py-3.5 text-right hidden xl:table-cell">
                   <span className="text-[11px] text-primary font-semibold tracking-wide uppercase">{opp.recommendedAction}</span>
                 </td>
@@ -96,7 +95,10 @@ const Opportunities = () => {
       </div>
 
       {filtered.length === 0 && (
-        <p className="py-20 text-center text-[13px] text-muted-foreground">No matches</p>
+        <div className="py-20 text-center">
+          <p className="text-[13px] text-foreground font-semibold">No matches found</p>
+          <p className="text-[12px] text-muted-foreground mt-1">Adjust filters or run a new scan</p>
+        </div>
       )}
     </div>
   );
