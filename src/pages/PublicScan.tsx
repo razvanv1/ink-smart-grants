@@ -11,9 +11,7 @@ import octopusImg from "@/assets/ink-octopus.png";
 import { ScrollReveal } from "@/components/shared/ScrollReveal";
 import { Footer } from "@/components/Footer";
 
-const orgTypes = ["NGO / Non-profit", "SME / Startup", "Educational institution", "Research / University", "Public Sector"];
-const domains = ["Digital / AI / Tech", "Education / Training", "Innovation / R&D", "Environment / Climate", "Health / Social", "Culture / Creative", "Agriculture / Rural"];
-const budgetRanges = ["Up to €100K", "€100K – €500K", "€500K – €2M", "€2M – €5M", "€5M+"];
+import { orgTypes, domains, budgetRanges, grantTypes, fundingStatuses, geographies } from "@/data/scanConfig";
 
 interface ScanMatch {
   callId: string; callName: string; programme: string; fitScore: number; effortScore: number;
@@ -30,6 +28,8 @@ const PublicScan = () => {
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [budgetRange, setBudgetRange] = useState("");
   const [geography, setGeography] = useState("");
+  const [grantType, setGrantType] = useState("");
+  const [fundingStatus, setFundingStatus] = useState("");
   const [isScanning, setIsScanning] = useState(false);
   const [matches, setMatches] = useState<ScanMatch[]>([]);
   const [email, setEmail] = useState("");
@@ -46,7 +46,7 @@ const PublicScan = () => {
     setShowResults(false);
     try {
       const { data, error } = await supabase.functions.invoke("funding-scan", {
-        body: { projectIntent, organizationType, primaryDomain, filters: { budgetRange: budgetRange || undefined, geography: geography || undefined } },
+        body: { projectIntent, organizationType, primaryDomain, filters: { budgetRange: budgetRange || undefined, geography: geography || undefined, grantType: grantType || undefined, fundingStatus: fundingStatus || undefined } },
       });
       if (error) throw error;
       if (data?.error) { toast.error(data.error); return; }
@@ -172,6 +172,20 @@ const PublicScan = () => {
                 {showAdvanced && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                     <div>
+                      <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Grant Type</label>
+                      <select value={grantType} onChange={e => setGrantType(e.target.value)} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
+                        <option value="">All types</option>
+                        {grantTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Funding Status</label>
+                      <select value={fundingStatus} onChange={e => setFundingStatus(e.target.value)} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
+                        <option value="">All statuses</option>
+                        {fundingStatuses.map(s => <option key={s} value={s}>{s}</option>)}
+                      </select>
+                    </div>
+                    <div>
                       <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Budget Range</label>
                       <select value={budgetRange} onChange={e => setBudgetRange(e.target.value)} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
                         <option value="">Any budget</option>
@@ -182,9 +196,7 @@ const PublicScan = () => {
                       <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Geography</label>
                       <select value={geography} onChange={e => setGeography(e.target.value)} className="w-full px-4 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
                         <option value="">Any geography</option>
-                        <option value="EU-wide">EU-wide</option>
-                        <option value="National">National</option>
-                        <option value="Widening Countries">Widening Countries</option>
+                        {geographies.map(g => <option key={g} value={g}>{g}</option>)}
                       </select>
                     </div>
                   </div>

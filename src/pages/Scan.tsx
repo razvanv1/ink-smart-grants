@@ -6,10 +6,7 @@ import { toast } from "sonner";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ReadinessBar } from "@/components/shared/ScoreBadge";
 import { AgentActionRow } from "@/components/shared/AgentAction";
-
-const orgTypes = ["NGO / Non-profit", "SME / Startup", "Educational institution", "Research / University", "Public Sector"];
-const domains = ["Digital / AI / Tech", "Education / Training", "Innovation / R&D", "Environment / Climate", "Health / Social", "Culture / Creative", "Agriculture / Rural"];
-const budgetRanges = ["Up to €100K", "€100K – €500K", "€500K – €2M", "€2M – €5M", "€5M+"];
+import { orgTypes, domains, budgetRanges, grantTypes, fundingStatuses, geographies } from "@/data/scanConfig";
 
 interface ScanMatch {
   callId: string;
@@ -258,9 +255,8 @@ const ScanPage = () => {
                   onChange={e => setFundingStatus(e.target.value)}
                   className="w-full px-4 py-3 bg-background border border-border rounded-sm text-[14px] text-foreground focus:outline-none focus:border-foreground transition-colors appearance-none"
                 >
-                  <option value="Open Now">Open Now</option>
-                  <option value="Forthcoming">Forthcoming</option>
-                  <option value="All">All</option>
+                  <option value="">All statuses</option>
+                  {fundingStatuses.map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
               <div>
@@ -273,11 +269,7 @@ const ScanPage = () => {
                   className="w-full px-4 py-3 bg-background border border-border rounded-sm text-[14px] text-foreground focus:outline-none focus:border-foreground transition-colors appearance-none"
                 >
                   <option value="">All types</option>
-                  <option value="Direct call for proposals">Direct call for proposals</option>
-                  <option value="Cooperation Partnership">Cooperation Partnership</option>
-                  <option value="RIA">RIA</option>
-                  <option value="CSA">CSA</option>
-                  <option value="National Grant">National Grant</option>
+                  {grantTypes.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
               </div>
               <div>
@@ -303,9 +295,7 @@ const ScanPage = () => {
                   className="w-full px-4 py-3 bg-background border border-border rounded-sm text-[14px] text-foreground focus:outline-none focus:border-foreground transition-colors appearance-none"
                 >
                   <option value="">Any geography</option>
-                  <option value="EU-wide">EU-wide</option>
-                  <option value="National">National</option>
-                  <option value="Widening Countries">Widening Countries</option>
+                  {geographies.map(g => <option key={g} value={g}>{g}</option>)}
                 </select>
               </div>
             </div>
