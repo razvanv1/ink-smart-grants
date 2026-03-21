@@ -4,6 +4,7 @@ import { Search, ChevronDown, ChevronUp, Lock, ArrowRight, Loader2, AlertTriangl
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import inkLogo from "@/assets/ink-octopus-logo.png";
+import inkMascot from "@/assets/ink-mascot.png";
 import { LandingHeader } from "@/components/landing/LandingHeader";
 import { TypewriterText } from "@/components/landing/TypewriterText";
 import { PricingSection } from "@/components/landing/PricingSection";
@@ -116,13 +117,16 @@ const PublicScan = () => {
 
             {/* Right: Octopus logo + How it works */}
             <div className="relative flex flex-col items-center opacity-0 animate-scale-in" style={{ animationDelay: "0.4s" }}>
-              <div className="animate-float mb-8">
+              <div className="animate-float mb-6 relative">
                 <img
-                  src={inkLogo}
-                  alt="INK — agentic funding platform"
-                  className="w-[180px] lg:w-[220px] h-auto drop-shadow-lg"
+                  src={inkMascot}
+                  alt="INK — I can slap 8 grants at once"
+                  className="w-[260px] lg:w-[340px] h-auto drop-shadow-2xl"
                 />
               </div>
+              <p className="text-[13px] lg:text-[15px] font-extrabold text-foreground/90 tracking-[-0.02em] italic text-center mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
+                "I can slap 8 grants at once."
+              </p>
 
               {/* How it works — 3 steps */}
               <div className="w-full max-w-[320px] space-y-3 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.7s" }}>
@@ -247,7 +251,7 @@ const PublicScan = () => {
                 {/* Unlock CTA */}
                 <div className="px-8 py-16 text-center bg-gradient-to-b from-card to-info/[0.08]">
                   <div className="animate-float inline-block mb-6">
-                    <img src={inkLogo} alt="" className="h-20 w-auto" />
+                    <img src={inkMascot} alt="" className="h-28 w-auto drop-shadow-xl" />
                   </div>
                   <h3 className="text-[24px] font-extrabold text-foreground tracking-[-0.03em] mb-3">
                     Unlock {lockedCount} more matches & full platform
