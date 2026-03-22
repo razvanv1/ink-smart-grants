@@ -153,8 +153,7 @@ const PublicScan = () => {
                     alt=""
                     width={900}
                     height={674}
-                    loading="eager"
-                    fetchPriority="high"
+                    loading="lazy"
                     decoding="async"
                     className="w-full max-w-[1100px] h-auto opacity-[0.22] sm:opacity-[0.28] lg:opacity-[0.32] select-none object-contain"
                   />
