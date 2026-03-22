@@ -86,7 +86,7 @@ export function PricingSection() {
             )}
 
             <div className="mb-6">
-              <p className="text-[13px] font-bold text-foreground mb-2">{plan.name}</p>
+              <h3 className="text-[15px] font-bold text-foreground mb-2">{plan.name}</h3>
               <div className="flex items-baseline gap-1.5">
                 <span className="text-[36px] font-extrabold text-foreground tracking-[-0.04em] leading-none">{plan.price}</span>
                 {plan.price !== "Custom" && (
