@@ -329,15 +329,24 @@ const OpportunityDetail = () => {
                     </div>
                   </div>
                   {hasError && (
-                    <div className="mt-2 ml-7 flex items-center gap-2">
-                      <p className="text-[11px] text-destructive font-mono truncate flex-1">{doc.download_error}</p>
-                      <button
-                        onClick={handleDownloadDocs}
-                        disabled={downloadDocs.isPending}
-                        className="text-[11px] font-bold text-foreground hover:text-primary transition-colors inline-flex items-center gap-1 shrink-0"
-                      >
-                        <RotateCcw className="h-3 w-3" /> Retry
-                      </button>
+                    <div className="mt-2 ml-7 space-y-2">
+                      <p className="text-[11px] text-destructive font-mono truncate">{doc.download_error}</p>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={handleDownloadDocs}
+                          disabled={downloadDocs.isPending}
+                          className="text-[11px] font-bold text-foreground hover:text-primary transition-colors inline-flex items-center gap-1 shrink-0"
+                        >
+                          <RotateCcw className="h-3 w-3" /> Retry
+                        </button>
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={uploadDoc.isPending}
+                          className="text-[11px] font-bold text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1 shrink-0"
+                        >
+                          <Upload className="h-3 w-3" /> Upload manually
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -345,8 +354,16 @@ const OpportunityDetail = () => {
             }) : (
               <div className="py-16 text-center">
                 <FileText className="h-6 w-6 text-muted-foreground/30 mx-auto mb-3" />
-                <p className="text-[13px] text-foreground font-semibold">No documents downloaded</p>
-                <p className="text-[12px] text-muted-foreground mt-1">Download official call documents to enable accurate assessment</p>
+                <p className="text-[13px] text-foreground font-semibold">No documents yet</p>
+                <p className="text-[12px] text-muted-foreground mt-1 mb-4">Download official call documents or upload them manually</p>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadDoc.isPending}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold tracking-wide text-foreground border border-border rounded-sm hover:bg-secondary transition-colors active:scale-[0.97] disabled:opacity-50"
+                >
+                  {uploadDoc.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
+                  UPLOAD DOCUMENT
+                </button>
               </div>
             )}
 
