@@ -161,7 +161,7 @@ const ScanPage = () => {
   };
 
   return (
-    <div className="p-8 max-w-[960px] mx-auto">
+    <div className="p-8 lg:p-10 xl:p-12 max-w-[1200px] mx-auto">
       <div className="mb-8">
         <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary mb-2">Funding Intelligence</p>
         <h1 className="ink-page-title mb-2">Scan</h1>
