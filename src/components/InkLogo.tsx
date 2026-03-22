@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import octopusImg from "@/assets/ink-octopus.png";
+import octopusImg from "@/assets/ink-octopus-sm.webp";
 
 interface InkLogoProps {
   size?: number;
