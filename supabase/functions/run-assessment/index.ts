@@ -64,8 +64,8 @@ interface ExecutionResult {
 const OPENCLAW_TIMEOUT_MS = 120_000; // 2 minutes
 
 async function executeAssessment(ctx: AssessmentContext): Promise<ExecutionResult> {
-  const openclawUrl = Deno.env.get("OPENCLAW_API_URL");
-  const openclawKey = Deno.env.get("OPENCLAW_API_KEY");
+  const openclawUrl = Deno.env.get("OPENCLAW_API_URL")?.trim()?.replace(/\/+$/, "");
+  const openclawKey = Deno.env.get("OPENCLAW_API_KEY")?.trim();
   const allowFallback = Deno.env.get("ASSESSMENT_ALLOW_FALLBACK") === "true";
   const lovableKey = Deno.env.get("LOVABLE_API_KEY");
 
