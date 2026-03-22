@@ -109,16 +109,16 @@ const PublicScan = () => {
                 A funding operations platform that monitors opportunities, decides what's worth pursuing, builds applications faster and pushes execution all the way to submission.
               </p>
 
-              <div className="flex flex-wrap items-center gap-4 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
+              <div className="flex flex-wrap items-center gap-3 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
                 <button
                   onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                  className="px-9 py-4.5 bg-foreground text-background text-[16px] font-bold rounded-[4px] hover:bg-foreground/90 active:scale-[0.97] transition-all shadow-sm"
+                  className="px-7 py-3 bg-info text-info-foreground text-[14px] font-bold rounded-full hover:bg-info/85 active:scale-[0.96] transition-all shadow-lg shadow-info/25 hover:shadow-xl hover:shadow-info/30"
                 >
                   Start Scanning
                 </button>
                 <button
                   onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="px-8 py-4 text-[15px] font-semibold text-foreground/75 hover:text-foreground transition-colors"
+                  className="px-5 py-3 text-[13px] font-semibold text-foreground/65 hover:text-foreground rounded-full border border-border hover:border-foreground/30 hover:bg-secondary/60 transition-all active:scale-[0.96]"
                 >
                   View Pricing
                 </button>
