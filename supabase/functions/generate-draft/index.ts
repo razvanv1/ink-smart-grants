@@ -107,22 +107,22 @@ Return a JSON object with a "sections" array. Each section must have:
 Generate 6-8 sections appropriate for this type of funding call. Make guidance specific to the opportunity, not generic.`;
 
     const userPrompt = `Funding Opportunity:
-- Call: ${opportunity.callName}
-- Programme: ${opportunity.programme}
-- Thematic Area: ${opportunity.thematicArea}
-- Funding Type: ${opportunity.fundingType}
-- Funding Range: ${opportunity.fundingRange}
-- Geography: ${opportunity.geography}
-- Summary: ${opportunity.summary}
-- Why it fits: ${opportunity.whyItFits}
-- Partner required: ${opportunity.partnerRequired ? "Yes" : "No"}
-- Complexity: ${opportunity.complexity}
+- Call: ${safeOpp.callName}
+- Programme: ${safeOpp.programme}
+- Thematic Area: ${safeOpp.thematicArea}
+- Funding Type: ${safeOpp.fundingType}
+- Funding Range: ${safeOpp.fundingRange}
+- Geography: ${safeOpp.geography}
+- Summary: ${safeOpp.summary}
+- Why it fits: ${safeOpp.whyItFits}
+- Partner required: ${safeOpp.partnerRequired ? "Yes" : "No"}
+- Complexity: ${safeOpp.complexity}
 
-Workflow: ${workflow.name}
-Stage: ${workflow.stage}
-Deadline: ${workflow.deadline}
+Workflow: ${safeWorkflow.name}
+Stage: ${safeWorkflow.stage}
+Deadline: ${safeWorkflow.deadline}
 
-${existingSections?.length ? `Existing sections already in progress: ${existingSections.map((s: any) => s.name).join(", ")}` : "No existing sections yet."}
+${safeSections.length ? `Existing sections already in progress: ${safeSections.map((s: any) => s.name).join(", ")}` : "No existing sections yet."}
 
 Generate the proposal section structure now.`;
 
