@@ -320,9 +320,9 @@ function IntRow({ name, description, comingSoon }: { name: string; description: 
       {comingSoon ? (
         <span className="text-[10px] tracking-wider uppercase font-semibold text-muted-foreground/40">Coming soon</span>
       ) : (
-        <button className="flex items-center gap-1 text-[11px] text-primary font-semibold hover:underline tracking-wide uppercase active:scale-[0.97] transition-transform">
-          Connect <ExternalLink className="h-3 w-3" />
-        </button>
+        <span className="inline-flex items-center gap-1 text-[10px] tracking-wider uppercase font-semibold text-warning">
+          <ExternalLink className="h-3 w-3" /> Placeholder
+        </span>
       )}
     </div>
   );
