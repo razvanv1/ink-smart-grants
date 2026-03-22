@@ -323,3 +323,62 @@ export function useDownloadDocuments() {
     },
   });
 }
+
+export function useUploadDocument() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ opportunityId, organizationId, file, callName }: {
+      opportunityId: string;
+      organizationId: string;
+      file: File;
+      callName: string;
+    }) => {
+      const ext = file.name.match(/\.[^.]+$/)?.[0] || '.pdf';
+      const sanitizedName = callName.replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 80);
+      const timestamp = Date.now();
+      const storagePath = `${organizationId}/${opportunityId}/${sanitizedName}_upload_${timestamp}${ext}`;
+
+      // Upload to storage
+      const { error: uploadErr } = await supabase.storage
+        .from('call-documents')
+        .upload(storagePath, file, {
+          contentType: file.type || 'application/pdf',
+          upsert: false,
+        });
+
+      if (uploadErr) throw new Error(`Upload failed: ${uploadErr.message}`);
+
+      // Insert document record
+      const docType = file.type.includes('pdf') ? 'guide' :
+                      file.type.includes('html') ? 'webpage' : 'other';
+
+      const { error: insertErr } = await supabase.from('call_documents').insert({
+        opportunity_id: opportunityId,
+        name: file.name,
+        doc_type: docType,
+        storage_path: storagePath,
+        file_size: file.size,
+        content_type: file.type || 'application/pdf',
+        downloaded_at: new Date().toISOString(),
+        parsed: false,
+        download_error: null,
+      });
+
+      if (insertErr) throw new Error(`Record creation failed: ${insertErr.message}`);
+
+      // Update opportunity docs_status
+      await supabase.from('opportunities').update({
+        docs_status: 'docs_pending' as DocsStatus,
+      }).eq('id', opportunityId);
+
+      return { storagePath, fileName: file.name, fileSize: file.size };
+    },
+    onSuccess: (_data, variables) => {
+      qc.invalidateQueries({ queryKey: ['opportunities'] });
+      qc.invalidateQueries({ queryKey: ['saved-calls'] });
+      qc.invalidateQueries({ queryKey: ['opportunity'] });
+      qc.invalidateQueries({ queryKey: ['opportunity', variables.opportunityId] });
+    },
+  });
+}

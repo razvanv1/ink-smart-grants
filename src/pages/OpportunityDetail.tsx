@@ -1,10 +1,10 @@
 import { useParams, Link } from "react-router-dom";
-import { useOpportunityDetail, useUpdateOpportunity, useAddNote, useUpdateActionItem, useDownloadDocuments } from "@/hooks/useOpportunities";
+import { useOpportunityDetail, useUpdateOpportunity, useAddNote, useUpdateActionItem, useDownloadDocuments, useUploadDocument } from "@/hooks/useOpportunities";
 import { useRunAssessment } from "@/hooks/useRunAssessment";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
-import { ArrowLeft, ArrowRight, FileText, Download, AlertTriangle, CheckCircle, Clock, XCircle, Loader2, ExternalLink, Play, RotateCcw } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, ArrowRight, FileText, Download, AlertTriangle, CheckCircle, Clock, XCircle, Loader2, ExternalLink, Play, RotateCcw, Upload } from "lucide-react";
+import { useState, useRef } from "react";
 import { toast } from "sonner";
 
 const tabs = ['Overview', 'Documents', 'Assessment', 'Action Plan', 'Notes'];
@@ -18,10 +18,11 @@ const OpportunityDetail = () => {
   const addNote = useAddNote();
   const updateAction = useUpdateActionItem();
   const downloadDocs = useDownloadDocuments();
+  const uploadDoc = useUploadDocument();
   const runAssessment = useRunAssessment();
   const [activeTab, setActiveTab] = useState('Overview');
   const [newNote, setNewNote] = useState('');
-
+  const fileInputRef = useRef<HTMLInputElement>(null);
   if (isLoading) {
     return (
       <div className="p-8 max-w-[1060px] mx-auto flex items-center justify-center min-h-[400px]">
@@ -63,6 +64,28 @@ const OpportunityDetail = () => {
         onError: (err) => toast.error((err as Error).message || 'Failed to ingest documents'),
       }
     );
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    Array.from(files).forEach(file => {
+      if (file.size > 50 * 1024 * 1024) {
+        toast.error(`${file.name} is too large (max 50 MB)`);
+        return;
+      }
+      uploadDoc.mutate(
+        { opportunityId: opp.id, organizationId: opp.organization_id, file, callName: opp.call_name },
+        {
+          onSuccess: (res) => toast.success(`Uploaded ${res.fileName} (${formatFileSize(res.fileSize)})`),
+          onError: (err) => toast.error((err as Error).message || `Failed to upload ${file.name}`),
+        }
+      );
+    });
+
+    // Reset input so the same file can be re-selected
+    e.target.value = '';
   };
 
   const handleRunAssessment = () => {
@@ -231,14 +254,32 @@ const OpportunityDetail = () => {
               <p className="text-[10px] text-muted-foreground tracking-[0.12em] uppercase font-semibold">
                 Official Documents · <StatusChip status={opp.docs_status} />
               </p>
-              <button
-                onClick={handleDownloadDocs}
-                disabled={downloadDocs.isPending}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold tracking-wide text-foreground border border-border rounded-sm hover:bg-secondary transition-colors active:scale-[0.97] disabled:opacity-50"
-              >
-                {downloadDocs.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Download className="h-3 w-3" />}
-                {opp.documents.length > 0 ? 'RE-DOWNLOAD' : 'DOWNLOAD'}
-              </button>
+              <div className="flex items-center gap-2">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.html,.xml,.zip,.xlsx"
+                  multiple
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadDoc.isPending}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold tracking-wide text-foreground border border-border rounded-sm hover:bg-secondary transition-colors active:scale-[0.97] disabled:opacity-50"
+                >
+                  {uploadDoc.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
+                  UPLOAD
+                </button>
+                <button
+                  onClick={handleDownloadDocs}
+                  disabled={downloadDocs.isPending}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold tracking-wide text-foreground border border-border rounded-sm hover:bg-secondary transition-colors active:scale-[0.97] disabled:opacity-50"
+                >
+                  {downloadDocs.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Download className="h-3 w-3" />}
+                  {opp.documents.length > 0 ? 'RE-DOWNLOAD' : 'DOWNLOAD'}
+                </button>
+              </div>
             </div>
 
             {opp.documents.length > 0 ? opp.documents.map(doc => {
@@ -288,15 +329,24 @@ const OpportunityDetail = () => {
                     </div>
                   </div>
                   {hasError && (
-                    <div className="mt-2 ml-7 flex items-center gap-2">
-                      <p className="text-[11px] text-destructive font-mono truncate flex-1">{doc.download_error}</p>
-                      <button
-                        onClick={handleDownloadDocs}
-                        disabled={downloadDocs.isPending}
-                        className="text-[11px] font-bold text-foreground hover:text-primary transition-colors inline-flex items-center gap-1 shrink-0"
-                      >
-                        <RotateCcw className="h-3 w-3" /> Retry
-                      </button>
+                    <div className="mt-2 ml-7 space-y-2">
+                      <p className="text-[11px] text-destructive font-mono truncate">{doc.download_error}</p>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={handleDownloadDocs}
+                          disabled={downloadDocs.isPending}
+                          className="text-[11px] font-bold text-foreground hover:text-primary transition-colors inline-flex items-center gap-1 shrink-0"
+                        >
+                          <RotateCcw className="h-3 w-3" /> Retry
+                        </button>
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={uploadDoc.isPending}
+                          className="text-[11px] font-bold text-primary hover:text-primary/80 transition-colors inline-flex items-center gap-1 shrink-0"
+                        >
+                          <Upload className="h-3 w-3" /> Upload manually
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -304,8 +354,16 @@ const OpportunityDetail = () => {
             }) : (
               <div className="py-16 text-center">
                 <FileText className="h-6 w-6 text-muted-foreground/30 mx-auto mb-3" />
-                <p className="text-[13px] text-foreground font-semibold">No documents downloaded</p>
-                <p className="text-[12px] text-muted-foreground mt-1">Download official call documents to enable accurate assessment</p>
+                <p className="text-[13px] text-foreground font-semibold">No documents yet</p>
+                <p className="text-[12px] text-muted-foreground mt-1 mb-4">Download official call documents or upload them manually</p>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadDoc.isPending}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-[11px] font-bold tracking-wide text-foreground border border-border rounded-sm hover:bg-secondary transition-colors active:scale-[0.97] disabled:opacity-50"
+                >
+                  {uploadDoc.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
+                  UPLOAD DOCUMENT
+                </button>
               </div>
             )}
 
