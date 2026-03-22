@@ -64,7 +64,9 @@ function ProtectedRoute({ children, skipOrgCheck }: { children: React.ReactNode;
 function AppRoutes() {
   const { user, loading } = useAuth();
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+  const fallback = <div className="min-h-screen flex items-center justify-center"><div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+
+  if (loading) return fallback;
 
   return (
     <Routes>
