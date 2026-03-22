@@ -2,7 +2,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useOrganizationId } from "./useOrganizationId";
-import { toast } from "sonner";
 
 // ── Types matching DB schema ─────────────────────────────────────
 
@@ -92,6 +91,14 @@ export interface NoteRow {
   created_at: string;
 }
 
+export interface DownloadDocumentsResponse {
+  success: boolean;
+  message: string;
+  created_documents: number;
+  total_documents: number;
+  opportunity_id: string;
+}
+
 // Full opportunity with relations
 export interface OpportunityFull extends OpportunityRow {
   assessment: AssessmentRow | null;
@@ -113,6 +120,31 @@ const lifecycleLabels: Record<CallLifecycle, string> = {
 
 export function getLifecycleLabel(lifecycle: string): string {
   return lifecycleLabels[lifecycle as CallLifecycle] || lifecycle;
+}
+
+async function extractFunctionError(error: unknown, fallback: string): Promise<string> {
+  const err = error as { context?: Response; message?: string };
+
+  if (err?.context) {
+    try {
+      const payload = await err.context.json();
+      if (payload?.error && typeof payload.error === 'string') {
+        return payload.error;
+      }
+    } catch {
+      // ignore parse failure
+    }
+  }
+
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+
+  if (typeof err?.message === 'string' && err.message.length > 0) {
+    return err.message;
+  }
+
+  return fallback;
 }
 
 // ── Hooks ─────────────────────────────────────────────────────────
@@ -253,6 +285,37 @@ export function useUpdateActionItem() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['opportunity'] });
       qc.invalidateQueries({ queryKey: ['saved-calls'] });
+    },
+  });
+}
+
+export function useDownloadDocuments() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ opportunityId }: { opportunityId: string }): Promise<DownloadDocumentsResponse> => {
+      const { data, error } = await supabase.functions.invoke('download-call-documents', {
+        body: { opportunityId },
+      });
+
+      if (error) {
+        const message = await extractFunctionError(error, 'Failed to start document ingestion');
+        throw new Error(message);
+      }
+
+      return (data ?? {
+        success: true,
+        message: 'Document ingestion started',
+        created_documents: 0,
+        total_documents: 0,
+        opportunity_id: opportunityId,
+      }) as DownloadDocumentsResponse;
+    },
+    onSuccess: (_data, variables) => {
+      qc.invalidateQueries({ queryKey: ['opportunities'] });
+      qc.invalidateQueries({ queryKey: ['saved-calls'] });
+      qc.invalidateQueries({ queryKey: ['opportunity'] });
+      qc.invalidateQueries({ queryKey: ['opportunity', variables.opportunityId] });
     },
   });
 }
