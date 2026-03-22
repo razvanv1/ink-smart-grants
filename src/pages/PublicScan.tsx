@@ -332,7 +332,7 @@ function HowItWorksStep({ step, title, description }: { step: number; title: str
   return (
     <div className="relative flex flex-col items-center text-center p-8 sm:p-9 rounded-[12px] border border-border bg-card hover:shadow-lg hover:shadow-info/[0.08] transition-all duration-300 group min-h-[240px] justify-center">
       <span className="text-[58px] sm:text-[64px] font-light leading-none mb-5 select-none text-primary" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>{step}</span>
-      <p className="text-[18px] font-bold text-foreground leading-snug mb-2">{title}</p>
+      <h3 className="text-[18px] font-bold text-foreground leading-snug mb-2">{title}</h3>
       <p className="text-[14px] text-foreground/65 leading-relaxed max-w-[360px]">{description}</p>
     </div>
   );
