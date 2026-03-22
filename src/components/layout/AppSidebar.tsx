@@ -18,6 +18,7 @@ const navItems = [
   { title: "Pipeline", url: "/pipeline", icon: Layers },
   { title: "Knowledge Vault", url: "/knowledge-vault", icon: BookOpen },
   { title: "Agent Activity", url: "/agent-activity", icon: Bot },
+  { title: "Agent Tasks", url: "/agent-tasks", icon: Cpu },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 

@@ -64,6 +64,8 @@ function AppRoutes() {
                 <Route path="/pipeline" element={<Pipeline />} />
                 <Route path="/knowledge-vault" element={<KnowledgeVault />} />
                 <Route path="/agent-activity" element={<AgentActivity />} />
+                <Route path="/agent-tasks" element={<AgentTasks />} />
+                <Route path="/agent-tasks/:taskId" element={<AgentTaskDetail />} />
                 <Route path="/funding-profile" element={<FundingProfile />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="*" element={<NotFound />} />
