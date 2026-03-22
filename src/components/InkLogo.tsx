@@ -9,7 +9,7 @@ interface InkLogoProps {
   textClassName?: string;
 }
 
-export function InkLogo({ size = 28, className, showText = true, textClassName }: InkLogoProps) {
+export function InkLogo({ size = 28, className, showText = true, showTagline = false, textClassName }: InkLogoProps) {
   return (
     <div className={cn("flex items-center gap-1", className)}>
       <img
@@ -21,9 +21,16 @@ export function InkLogo({ size = 28, className, showText = true, textClassName }
         style={{ width: size, height: size }}
       />
       {showText && (
-        <span className={cn("font-extrabold text-foreground tracking-[-0.04em] text-[17px]", textClassName)}>
-          INK
-        </span>
+        <div className="flex items-baseline gap-1.5">
+          <span className={cn("font-extrabold text-foreground tracking-[-0.04em] text-[17px]", textClassName)}>
+            INK
+          </span>
+          {showTagline && (
+            <span className="text-[11px] font-semibold text-foreground/50 tracking-[-0.01em]">
+              Smart Grants
+            </span>
+          )}
+        </div>
       )}
     </div>
   );
