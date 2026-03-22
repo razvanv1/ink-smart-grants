@@ -1,31 +1,67 @@
-import { opportunities } from "@/data/sampleData";
+import { useOpportunities, getLifecycleLabel } from "@/hooks/useOpportunities";
+import type { OpportunityRow } from "@/hooks/useOpportunities";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
 import { Link } from "react-router-dom";
-import { Search, Bookmark, X, FileText, AlertTriangle } from "lucide-react";
+import { Search, Bookmark, X, FileText, AlertTriangle, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { getLifecycleStageLabel } from "@/data/sampleData";
+import { useUpdateOpportunity } from "@/hooks/useOpportunities";
 
 const lifecycleFilters = ['All', 'Discovered', 'Saved', 'Docs Pending', 'Assessed', 'Shortlisted', 'In Preparation', 'Rejected'];
 
 const Opportunities = () => {
+  const { data: opportunities = [], isLoading, error } = useOpportunities();
+  const updateOpp = useUpdateOpportunity();
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
 
-  const filtered = opportunities.filter(opp => {
+  const filtered = opportunities.filter((opp: OpportunityRow) => {
     if (filter !== 'All') {
-      const label = getLifecycleStageLabel(opp.lifecycle).toLowerCase();
+      const label = getLifecycleLabel(opp.lifecycle).toLowerCase();
       if (!label.includes(filter.toLowerCase())) return false;
     }
-    const matchesSearch = opp.callName.toLowerCase().includes(search.toLowerCase()) ||
-      opp.programme.toLowerCase().includes(search.toLowerCase()) ||
-      opp.thematicArea.toLowerCase().includes(search.toLowerCase());
-    return matchesSearch;
+    const q = search.toLowerCase();
+    return opp.call_name.toLowerCase().includes(q) ||
+      opp.programme.toLowerCase().includes(q) ||
+      opp.thematic_area.toLowerCase().includes(q);
   });
 
-  const needsDocs = filtered.filter(o => o.docsStatus === 'not_downloaded' || o.docsStatus === 'docs_pending').length;
+  const needsDocs = filtered.filter(o => o.docs_status === 'not_downloaded' || o.docs_status === 'docs_pending').length;
   const discovered = filtered.filter(o => o.lifecycle === 'discovered').length;
+
+  if (isLoading) {
+    return (
+      <div className="p-8 max-w-[1300px] mx-auto flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-8 max-w-[1300px] mx-auto">
+        <div className="py-20 text-center">
+          <p className="text-[13px] text-destructive font-semibold">Failed to load opportunities</p>
+          <p className="text-[12px] text-muted-foreground mt-1">{(error as Error).message}</p>
+        </div>
+      </div>
+    );
+  }
+
+  const handleSave = (opp: OpportunityRow) => {
+    updateOpp.mutate(
+      { id: opp.id, updates: { lifecycle: 'saved' } },
+      { onSuccess: () => toast.success('Saved to pipeline') }
+    );
+  };
+
+  const handleReject = (opp: OpportunityRow) => {
+    updateOpp.mutate(
+      { id: opp.id, updates: { lifecycle: 'rejected' } },
+      { onSuccess: () => toast.success('Rejected') }
+    );
+  };
 
   return (
     <div className="p-8 max-w-[1300px] mx-auto space-y-8">
@@ -81,7 +117,6 @@ const Opportunities = () => {
               <th className="text-center py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase w-16">Fit</th>
               <th className="text-center py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase w-20">Status</th>
               <th className="text-center py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase w-16">Docs</th>
-              <th className="text-center py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase w-16 hidden lg:table-cell">Judgment</th>
               <th className="text-center py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase w-16">Urgency</th>
               <th className="text-left py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase">Deadline</th>
               <th className="text-right py-3 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase hidden xl:table-cell">Actions</th>
@@ -89,12 +124,12 @@ const Opportunities = () => {
           </thead>
           <tbody>
             {filtered.map(opp => {
-              const hasBlockers = opp.blockers.length > 0;
+              const hasBlockers = (opp.blockers?.length ?? 0) > 0;
               return (
                 <tr key={opp.id} className="border-b border-border/40 hover:bg-secondary/30 transition-colors group">
                   <td className="py-3.5 pr-6">
                     <Link to={`/opportunities/${opp.id}`} className="text-[13px] font-semibold text-foreground group-hover:text-primary transition-colors">
-                      {opp.callName}
+                      {opp.call_name}
                     </Link>
                     {hasBlockers && (
                       <span className="ml-2 text-[10px] text-destructive font-semibold inline-flex items-center gap-0.5">
@@ -103,27 +138,24 @@ const Opportunities = () => {
                     )}
                   </td>
                   <td className="py-3.5 pr-6 text-[12px] text-muted-foreground">{opp.programme}</td>
-                  <td className="py-3.5 pr-6 text-center"><ScoreBadge score={opp.fitScore} /></td>
+                  <td className="py-3.5 pr-6 text-center"><ScoreBadge score={opp.fit_score} /></td>
                   <td className="py-3.5 pr-6 text-center"><StatusChip status={opp.lifecycle} /></td>
-                  <td className="py-3.5 pr-6 text-center"><StatusChip status={opp.docsStatus === 'docs_ready' ? 'docs_ready' : opp.docsStatus === 'docs_pending' ? 'docs_pending' : 'missing'} /></td>
-                  <td className="py-3.5 pr-6 text-center hidden lg:table-cell">
-                    {opp.assessment ? <StatusChip status={opp.assessment.judgment} dot /> : <span className="text-[11px] text-muted-foreground">—</span>}
-                  </td>
+                  <td className="py-3.5 pr-6 text-center"><StatusChip status={opp.docs_status === 'docs_ready' ? 'docs_ready' : opp.docs_status === 'docs_pending' ? 'docs_pending' : 'missing'} /></td>
                   <td className="py-3.5 pr-6"><div className="flex justify-center"><UrgencyIndicator urgency={opp.urgency} /></div></td>
-                  <td className="py-3.5 pr-6 text-[12px] text-muted-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>{opp.deadline}</td>
+                  <td className="py-3.5 pr-6 text-[12px] text-muted-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>{opp.deadline || '—'}</td>
                   <td className="py-3.5 text-right hidden xl:table-cell">
                     <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       {opp.lifecycle === 'discovered' && (
                         <>
                           <button
-                            onClick={(e) => { e.preventDefault(); toast.info('Saved to pipeline'); }}
+                            onClick={(e) => { e.preventDefault(); handleSave(opp); }}
                             className="p-1 rounded hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
                             title="Save"
                           >
                             <Bookmark className="h-3.5 w-3.5" />
                           </button>
                           <button
-                            onClick={(e) => { e.preventDefault(); toast.info('Rejected'); }}
+                            onClick={(e) => { e.preventDefault(); handleReject(opp); }}
                             className="p-1 rounded hover:bg-secondary transition-colors text-muted-foreground hover:text-destructive"
                             title="Reject"
                           >
@@ -131,9 +163,9 @@ const Opportunities = () => {
                           </button>
                         </>
                       )}
-                      {opp.docsStatus !== 'docs_ready' && opp.lifecycle !== 'rejected' && (
+                      {opp.docs_status !== 'docs_ready' && opp.lifecycle !== 'rejected' && (
                         <button
-                          onClick={(e) => { e.preventDefault(); toast.info('Downloading documents…'); }}
+                          onClick={(e) => { e.preventDefault(); toast.info('Document download requires backend integration'); }}
                           className="p-1 rounded hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
                           title="Download docs"
                         >
@@ -149,10 +181,14 @@ const Opportunities = () => {
         </table>
       </div>
 
-      {filtered.length === 0 && (
+      {filtered.length === 0 && !isLoading && (
         <div className="py-20 text-center">
-          <p className="text-[13px] text-foreground font-semibold">No matches found</p>
-          <p className="text-[12px] text-muted-foreground mt-1">Adjust filters or run a new scan</p>
+          <p className="text-[13px] text-foreground font-semibold">
+            {opportunities.length === 0 ? 'No opportunities yet' : 'No matches found'}
+          </p>
+          <p className="text-[12px] text-muted-foreground mt-1">
+            {opportunities.length === 0 ? 'Opportunities will appear here once scanning is configured' : 'Adjust filters or run a new scan'}
+          </p>
         </div>
       )}
     </div>

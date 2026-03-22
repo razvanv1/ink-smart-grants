@@ -1,14 +1,34 @@
-import { getSavedCalls, getLifecycleStageLabel } from "@/data/sampleData";
+import { useSavedCalls, getLifecycleLabel } from "@/hooks/useOpportunities";
+import type { OpportunityFull } from "@/hooks/useOpportunities";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
 import { Link } from "react-router-dom";
-import { AlertTriangle, ArrowRight } from "lucide-react";
+import { AlertTriangle, ArrowRight, Loader2 } from "lucide-react";
 
 const Pipeline = () => {
-  const saved = getSavedCalls();
-  const withBlockers = saved.filter(o => o.blockers.length > 0);
+  const { data: saved = [], isLoading, error } = useSavedCalls();
+  const withBlockers = saved.filter(o => (o.blockers?.length ?? 0) > 0);
   const urgent = saved.filter(o => o.urgency === 'critical' || o.urgency === 'high');
-  const needsDocs = saved.filter(o => o.docsStatus !== 'docs_ready');
+  const needsDocs = saved.filter(o => o.docs_status !== 'docs_ready');
+
+  if (isLoading) {
+    return (
+      <div className="p-8 max-w-[1300px] mx-auto flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-8 max-w-[1300px] mx-auto">
+        <div className="py-20 text-center">
+          <p className="text-[13px] text-destructive font-semibold">Failed to load pipeline</p>
+          <p className="text-[12px] text-muted-foreground mt-1">{(error as Error).message}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8 max-w-[1300px] mx-auto space-y-8">
@@ -24,7 +44,6 @@ const Pipeline = () => {
         </div>
       </div>
 
-      {/* Summary strip */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         <SummaryCard label="Urgent" value={urgent.length} accent={urgent.length > 0} />
         <SummaryCard label="Blocked" value={withBlockers.length} accent={withBlockers.length > 0} />
@@ -32,18 +51,19 @@ const Pipeline = () => {
         <SummaryCard label="Go Decisions" value={saved.filter(o => o.assessment?.judgment === 'go').length} />
       </div>
 
-      {/* Main list */}
       <div>
-        {saved
+        {[...saved]
           .sort((a, b) => {
             const prio = { high: 0, medium: 1, low: 2 };
             if (prio[a.priority] !== prio[b.priority]) return prio[a.priority] - prio[b.priority];
-            return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+            const da = a.deadline ? new Date(a.deadline).getTime() : Infinity;
+            const db = b.deadline ? new Date(b.deadline).getTime() : Infinity;
+            return da - db;
           })
           .map(opp => {
-            const daysLeft = Math.max(0, Math.ceil((new Date(opp.deadline).getTime() - Date.now()) / 86400000));
-            const hasBlockers = opp.blockers.length > 0;
-            const nextAction = opp.actionPlan.find(a => a.status !== 'done');
+            const daysLeft = opp.deadline ? Math.max(0, Math.ceil((new Date(opp.deadline).getTime() - Date.now()) / 86400000)) : null;
+            const hasBlockers = (opp.blockers?.length ?? 0) > 0;
+            const nextAction = opp.action_items?.find(a => a.status !== 'done');
             return (
               <Link
                 key={opp.id}
@@ -54,7 +74,7 @@ const Pipeline = () => {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-3 mb-1">
                       <p className="text-[14px] font-bold text-foreground group-hover:text-primary transition-colors tracking-tight truncate">
-                        {opp.callName}
+                        {opp.call_name}
                       </p>
                       {hasBlockers && (
                         <span className="text-[10px] text-destructive font-bold flex items-center gap-1 shrink-0 uppercase tracking-wider">
@@ -63,7 +83,7 @@ const Pipeline = () => {
                       )}
                     </div>
                     <p className="text-[11px] text-muted-foreground">
-                      {opp.programme} · {opp.fundingRange}
+                      {opp.programme} · {opp.funding_range}
                     </p>
                     {nextAction && (
                       <p className="text-[11px] text-foreground/60 mt-1.5 flex items-center gap-1">
@@ -76,7 +96,7 @@ const Pipeline = () => {
                   <div className="flex items-center gap-5 shrink-0">
                     <div className="text-center w-12">
                       <p className="text-[9px] text-muted-foreground tracking-wider uppercase mb-0.5">Fit</p>
-                      <ScoreBadge score={opp.fitScore} />
+                      <ScoreBadge score={opp.fit_score} />
                     </div>
                     <div className="text-center w-16">
                       <p className="text-[9px] text-muted-foreground tracking-wider uppercase mb-0.5">Status</p>
@@ -92,12 +112,14 @@ const Pipeline = () => {
                       <p className="text-[9px] text-muted-foreground tracking-wider uppercase mb-0.5">Urgency</p>
                       <UrgencyIndicator urgency={opp.urgency} />
                     </div>
-                    <div className="text-right w-14">
-                      <p className={`text-[13px] font-bold ${daysLeft <= 7 ? 'text-destructive' : daysLeft <= 21 ? 'text-warning' : 'text-foreground'}`} style={{ fontVariantNumeric: 'tabular-nums' }}>
-                        {daysLeft}d
-                      </p>
-                      <p className="text-[10px] text-muted-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>{opp.deadline}</p>
-                    </div>
+                    {daysLeft !== null && (
+                      <div className="text-right w-14">
+                        <p className={`text-[13px] font-bold ${daysLeft <= 7 ? 'text-destructive' : daysLeft <= 21 ? 'text-warning' : 'text-foreground'}`} style={{ fontVariantNumeric: 'tabular-nums' }}>
+                          {daysLeft}d
+                        </p>
+                        <p className="text-[10px] text-muted-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>{opp.deadline}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </Link>
