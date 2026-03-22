@@ -57,7 +57,7 @@ export function Footer({ variant = "landing" }: FooterProps) {
         <div className={`flex flex-col sm:flex-row items-center justify-between gap-3 ${!isApp ? "pt-6 border-t border-border/30" : ""}`}>
           <div className="flex items-center gap-3">
             {isApp && <InkLogo size={18} />}
-            <p className="text-[10px] text-foreground/50">
+            <p className="text-[10px] text-foreground/70">
               © {new Date().getFullYear()} INK. All rights reserved.
             </p>
           </div>
