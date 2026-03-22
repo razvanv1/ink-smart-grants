@@ -236,8 +236,8 @@ const PublicScan = () => {
                     </div>
                   </div>
                 )}
-                <button type="submit" disabled={isScanning} className="w-full py-4.5 bg-info text-info-foreground text-[16px] font-bold tracking-wide rounded-[6px] hover:bg-info/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2.5 active:scale-[0.97] shadow-lg shadow-info/25">
-                  {isScanning ? <><Loader2 className="h-4.5 w-4.5 animate-spin" /> Scanning 940+ calls…</> : <><Search className="h-4.5 w-4.5" /> Scan Opportunities</>}
+                <button type="submit" disabled={isScanning} className="w-full py-3.5 bg-info text-info-foreground text-[15px] font-bold tracking-wide rounded-full hover:bg-info/85 transition-all disabled:opacity-50 flex items-center justify-center gap-2.5 active:scale-[0.96] shadow-lg shadow-info/25 hover:shadow-xl hover:shadow-info/30">
+                  {isScanning ? <><Loader2 className="h-4 w-4 animate-spin" /> Scanning 940+ calls…</> : <><Search className="h-4 w-4" /> Scan Opportunities</>}
                 </button>
                 <p className="text-[12px] text-foreground/50 text-center">Free · No account required · Real EU data</p>
               </form>
