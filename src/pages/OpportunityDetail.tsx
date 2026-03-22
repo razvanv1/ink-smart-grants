@@ -1,12 +1,15 @@
 import { useParams, Link } from "react-router-dom";
 import { useOpportunityDetail, useUpdateOpportunity, useAddNote, useUpdateActionItem, useDownloadDocuments } from "@/hooks/useOpportunities";
+import { useRunAssessment } from "@/hooks/useRunAssessment";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
-import { ArrowLeft, ArrowRight, FileText, Download, AlertTriangle, CheckCircle, Clock, XCircle, Loader2, ExternalLink } from "lucide-react";
+import { ArrowLeft, ArrowRight, FileText, Download, AlertTriangle, CheckCircle, Clock, XCircle, Loader2, ExternalLink, Play, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 const tabs = ['Overview', 'Documents', 'Assessment', 'Action Plan', 'Notes'];
+
+type AssessmentRunStatus = 'not_started' | 'queued' | 'running' | 'completed' | 'failed';
 
 const OpportunityDetail = () => {
   const { id } = useParams();
@@ -15,6 +18,7 @@ const OpportunityDetail = () => {
   const addNote = useAddNote();
   const updateAction = useUpdateActionItem();
   const downloadDocs = useDownloadDocuments();
+  const runAssessment = useRunAssessment();
   const [activeTab, setActiveTab] = useState('Overview');
   const [newNote, setNewNote] = useState('');
 
@@ -39,6 +43,10 @@ const OpportunityDetail = () => {
 
   const assessment = opp.assessment;
   const hasBlockers = (opp.blockers?.length ?? 0) > 0;
+  const runStatus = ((opp as any).assessment_run_status ?? 'not_started') as AssessmentRunStatus;
+  const runError = (opp as any).assessment_run_error as string | null;
+  const docsReady = opp.docs_status === 'docs_ready';
+  const isRunning = runAssessment.isPending || runStatus === 'running' || runStatus === 'queued';
 
   const handlePriorityChange = (priority: 'high' | 'medium' | 'low') => {
     updateOpp.mutate(
@@ -53,6 +61,20 @@ const OpportunityDetail = () => {
       {
         onSuccess: (res) => toast.success(res.message || 'Document ingestion started'),
         onError: (err) => toast.error((err as Error).message || 'Failed to ingest documents'),
+      }
+    );
+  };
+
+  const handleRunAssessment = () => {
+    runAssessment.mutate(
+      { opportunityId: opp.id },
+      {
+        onSuccess: (res) => {
+          if (res.status === 'completed') {
+            toast.success(`Assessment complete — Judgment: ${res.judgment?.toUpperCase() ?? 'Done'}`);
+          }
+        },
+        onError: (err) => toast.error((err as Error).message || 'Assessment failed'),
       }
     );
   };
@@ -80,6 +102,17 @@ const OpportunityDetail = () => {
           {hasBlockers && (
             <span className="text-[10px] text-destructive font-bold flex items-center gap-1 uppercase tracking-wider">
               <AlertTriangle className="h-3 w-3" />{opp.blockers.length} blocker{opp.blockers.length > 1 ? 's' : ''}
+            </span>
+          )}
+          {/* Assessment run status badge */}
+          {runStatus === 'running' && (
+            <span className="text-[10px] text-info font-bold flex items-center gap-1 uppercase tracking-wider">
+              <Loader2 className="h-3 w-3 animate-spin" /> Assessing…
+            </span>
+          )}
+          {runStatus === 'failed' && (
+            <span className="text-[10px] text-destructive font-bold flex items-center gap-1 uppercase tracking-wider">
+              <XCircle className="h-3 w-3" /> Assessment failed
             </span>
           )}
         </div>
@@ -261,6 +294,61 @@ const OpportunityDetail = () => {
 
         {activeTab === 'Assessment' && (
           <div className="space-y-8">
+            {/* Run Assessment controls */}
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[10px] text-muted-foreground tracking-[0.12em] uppercase font-semibold">
+                  Assessment
+                  {runStatus === 'completed' && assessment && (
+                    <span className="ml-2 text-success">· Complete</span>
+                  )}
+                </p>
+              </div>
+              <button
+                onClick={handleRunAssessment}
+                disabled={isRunning}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold tracking-wide text-foreground border border-border rounded-sm hover:bg-secondary transition-colors active:scale-[0.97] disabled:opacity-50"
+              >
+                {isRunning ? (
+                  <><Loader2 className="h-3 w-3 animate-spin" /> RUNNING…</>
+                ) : assessment ? (
+                  <><RotateCcw className="h-3 w-3" /> RE-ASSESS</>
+                ) : (
+                  <><Play className="h-3 w-3" /> RUN ASSESSMENT</>
+                )}
+              </button>
+            </div>
+
+            {/* Docs warning — assessment will still run but marked as summary-based */}
+            {!docsReady && (
+              <div className="border border-warning/20 rounded-sm p-4">
+                <p className="text-[11px] text-warning font-semibold flex items-center gap-1">
+                  <AlertTriangle className="h-3 w-3" /> Official documents not ready
+                </p>
+                <p className="text-[12px] text-muted-foreground mt-1">
+                  Assessment will run on summary data only. Results will be marked as incomplete. Download official documents first for a reliable assessment.
+                </p>
+              </div>
+            )}
+
+            {/* Last run error */}
+            {runStatus === 'failed' && runError && (
+              <div className="border border-destructive/20 rounded-sm p-4">
+                <p className="text-[11px] text-destructive font-semibold flex items-center gap-1">
+                  <XCircle className="h-3 w-3" /> Assessment failed
+                </p>
+                <p className="text-[12px] text-muted-foreground mt-1 font-mono break-all">{runError}</p>
+                <button
+                  onClick={handleRunAssessment}
+                  disabled={isRunning}
+                  className="mt-3 inline-flex items-center gap-1 text-[11px] font-bold text-foreground hover:text-primary transition-colors"
+                >
+                  <RotateCcw className="h-3 w-3" /> Retry
+                </button>
+              </div>
+            )}
+
+            {/* Assessment results */}
             {assessment ? (
               <>
                 {!assessment.based_on_docs && (
@@ -269,7 +357,7 @@ const OpportunityDetail = () => {
                       <AlertTriangle className="h-3 w-3" /> Assessment based on public summary only
                     </p>
                     <p className="text-[12px] text-muted-foreground mt-1">
-                      Official documents have not been downloaded or parsed.
+                      Official documents have not been downloaded or parsed. Confidence is lower.
                     </p>
                   </div>
                 )}
@@ -307,13 +395,22 @@ const OpportunityDetail = () => {
                   <p className="text-[14px] text-foreground font-medium leading-relaxed">{assessment.recommendation}</p>
                 </div>
               </>
-            ) : (
+            ) : !isRunning && runStatus !== 'failed' ? (
               <div className="py-16 text-center">
                 <p className="text-[13px] text-foreground font-semibold">No assessment available</p>
                 <p className="text-[12px] text-muted-foreground mt-1">
-                  {opp.docs_status !== 'docs_ready'
-                    ? 'Download official documents first to enable assessment'
-                    : 'Run an assessment to evaluate eligibility, fit, and risks'}
+                  Click "Run Assessment" above to evaluate eligibility, fit, and risks
+                </p>
+              </div>
+            ) : null}
+
+            {/* Running state */}
+            {isRunning && !assessment && (
+              <div className="py-16 text-center">
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground mx-auto mb-3" />
+                <p className="text-[13px] text-foreground font-semibold">Assessment in progress…</p>
+                <p className="text-[12px] text-muted-foreground mt-1">
+                  Analyzing eligibility, fit, risks, and generating recommendation
                 </p>
               </div>
             )}
