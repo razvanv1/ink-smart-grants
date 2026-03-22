@@ -87,7 +87,7 @@ const PublicScan = () => {
             <div>
               <button
                 onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-info/35 bg-info/[0.08] text-[11px] sm:text-[12px] font-bold tracking-wide uppercase text-info hover:bg-info/[0.15] active:scale-[0.97] transition-all mb-7 opacity-0 animate-fade-in-up"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-info/30 bg-info/[0.07] text-[11px] font-bold tracking-wide uppercase text-info hover:bg-info/[0.14] hover:border-info/50 active:scale-[0.96] transition-all mb-7 opacity-0 animate-fade-in-up"
                 style={{ animationDelay: "0.1s" }}
               >
                 Free Funding Scan · No Account Required
