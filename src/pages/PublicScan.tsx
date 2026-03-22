@@ -7,7 +7,7 @@ import { LandingHeader } from "@/components/landing/LandingHeader";
 import { TypewriterText } from "@/components/landing/TypewriterText";
 import { PricingSection } from "@/components/landing/PricingSection";
 
-import octopusImg from "@/assets/ink-octopus.png";
+import octopusImg from "@/assets/ink-octopus.webp";
 import { ScrollReveal } from "@/components/shared/ScrollReveal";
 import { Footer } from "@/components/Footer";
 
@@ -89,8 +89,8 @@ const PublicScan = () => {
           <img
             src={octopusImg}
             alt=""
-            width={1920}
-            height={1436}
+            width={900}
+            height={674}
             className="absolute right-[5%] top-[50%] -translate-y-[50%] w-[80vw] max-w-[900px] h-auto max-h-[90%] opacity-[0.16] sm:opacity-[0.18] lg:opacity-[0.22] select-none object-contain"
           />
         </div>
