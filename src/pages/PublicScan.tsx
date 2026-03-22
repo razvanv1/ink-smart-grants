@@ -84,17 +84,6 @@ const PublicScan = () => {
           <div className="absolute -top-28 right-[8%] h-[420px] w-[420px] rounded-full bg-info/10 blur-3xl" />
         </div>
 
-        {/* Giant mascot as background watermark — centered, contained */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center" aria-hidden="true">
-          <img
-            src={octopusImg}
-            alt=""
-            width={900}
-            height={674}
-            fetchPriority="high"
-            className="absolute right-[5%] top-[50%] -translate-y-[50%] w-[80vw] max-w-[900px] h-auto max-h-[90%] opacity-[0.16] sm:opacity-[0.18] lg:opacity-[0.22] select-none object-contain"
-          />
-        </div>
 
         <div className="relative w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pt-20 sm:pt-28 lg:pt-32 pb-24 sm:pb-28 lg:pb-36">
           <div className="max-w-[1880px] mx-auto relative">
@@ -156,10 +145,22 @@ const PublicScan = () => {
         <div className="max-w-[1880px] mx-auto">
           {/* ═══ HOW IT WORKS ═══ */}
           {!showResults && (
-            <ScrollReveal id="how-it-works" delay={120} className="mb-16 sm:mb-20">
-              <p className="text-[13px] sm:text-[14px] font-bold tracking-[0.18em] uppercase text-info text-center mb-4">How It Works</p>
-              <h2 className="text-[36px] sm:text-[48px] lg:text-[58px] xl:text-[64px] font-extrabold text-foreground tracking-[-0.04em] text-center mb-5 leading-[1.02]">Get matched in 3 simple steps</h2>
-              <p className="text-[15px] sm:text-[16px] text-foreground/65 text-center mb-12 max-w-[660px] mx-auto leading-relaxed">
+            <ScrollReveal id="how-it-works" delay={120} className="mb-16 sm:mb-20 relative overflow-hidden">
+              {/* Octopus watermark — lazy loaded, no LCP impact */}
+              <div className="absolute inset-0 pointer-events-none flex items-center justify-center" aria-hidden="true">
+                <img
+                  src={octopusImg}
+                  alt=""
+                  width={900}
+                  height={674}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute right-[5%] top-[50%] -translate-y-[50%] w-[80vw] max-w-[900px] h-auto max-h-[90%] opacity-[0.10] sm:opacity-[0.14] lg:opacity-[0.18] select-none object-contain"
+                />
+              </div>
+              <p className="relative text-[13px] sm:text-[14px] font-bold tracking-[0.18em] uppercase text-info text-center mb-4">How It Works</p>
+              <h2 className="relative text-[36px] sm:text-[48px] lg:text-[58px] xl:text-[64px] font-extrabold text-foreground tracking-[-0.04em] text-center mb-5 leading-[1.02]">Get matched in 3 simple steps</h2>
+              <p className="relative text-[15px] sm:text-[16px] text-foreground/65 text-center mb-12 max-w-[660px] mx-auto leading-relaxed">
                 Our AI scans 940+ live EU & national funding calls and matches them to your project profile. No expertise needed.
               </p>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
