@@ -38,11 +38,11 @@ export function AppHeader() {
       <div className="flex items-center gap-0.5">
         <button
           onClick={openCommandPalette}
-          className="hidden sm:flex items-center gap-2 px-3 py-1.5 text-[12px] text-muted-foreground hover:text-foreground transition-colors rounded hover:bg-secondary"
+          className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 text-[12px] text-muted-foreground hover:text-foreground transition-all rounded-full hover:bg-secondary active:scale-[0.96]"
         >
           <Search className="h-3.5 w-3.5" />
           <span>Search</span>
-          <kbd className="hidden lg:inline text-[10px] px-1.5 py-0.5 rounded border border-border text-muted-foreground/60 font-mono ml-2">⌘K</kbd>
+          <kbd className="hidden lg:inline text-[10px] px-1.5 py-0.5 rounded-full border border-border text-muted-foreground/60 font-mono ml-2">⌘K</kbd>
         </button>
         <button className="relative p-2.5 text-muted-foreground hover:text-foreground transition-colors rounded hover:bg-secondary">
           <Bell className="h-[15px] w-[15px]" strokeWidth={1.6} />
