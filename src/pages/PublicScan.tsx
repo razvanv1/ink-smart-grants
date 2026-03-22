@@ -153,8 +153,8 @@ const PublicScan = () => {
           {/* ═══ HOW IT WORKS ═══ */}
           {!showResults && (
             <ScrollReveal id="how-it-works" delay={120} className="mb-16 sm:mb-20">
-              <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info text-center mb-3">How It Works</p>
-              <h2 className="text-[32px] sm:text-[42px] lg:text-[50px] font-extrabold text-foreground tracking-[-0.04em] text-center mb-4 leading-[1.05]">Get matched in 3 simple steps</h2>
+              <p className="text-[13px] sm:text-[14px] font-bold tracking-[0.18em] uppercase text-info text-center mb-4">How It Works</p>
+              <h2 className="text-[36px] sm:text-[48px] lg:text-[58px] xl:text-[64px] font-extrabold text-foreground tracking-[-0.04em] text-center mb-5 leading-[1.02]">Get matched in 3 simple steps</h2>
               <p className="text-[15px] sm:text-[16px] text-foreground/65 text-center mb-12 max-w-[660px] mx-auto leading-relaxed">
                 Our AI scans 940+ live EU & national funding calls and matches them to your project profile. No expertise needed.
               </p>
