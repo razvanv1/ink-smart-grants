@@ -112,7 +112,7 @@ const PublicScan = () => {
               <div className="flex flex-wrap items-center gap-3 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
                 <button
                   onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                  className="px-7 py-3 bg-info text-info-foreground text-[14px] font-bold rounded-full hover:bg-info/85 active:scale-[0.96] transition-all shadow-lg shadow-info/25 hover:shadow-xl hover:shadow-info/30"
+                  className="ink-glow-info px-7 py-3 bg-info text-info-foreground text-[14px] font-bold rounded-full shadow-lg shadow-info/25"
                 >
                   Start Scanning
                 </button>
