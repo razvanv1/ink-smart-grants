@@ -324,6 +324,7 @@ const PublicScan = () => {
         {/* ═══ FOOTER ═══ */}
         <Footer variant="landing" />
       </div>
+      </main>
     </div>
   );
 };
