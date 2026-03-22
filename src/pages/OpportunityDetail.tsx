@@ -254,14 +254,32 @@ const OpportunityDetail = () => {
               <p className="text-[10px] text-muted-foreground tracking-[0.12em] uppercase font-semibold">
                 Official Documents · <StatusChip status={opp.docs_status} />
               </p>
-              <button
-                onClick={handleDownloadDocs}
-                disabled={downloadDocs.isPending}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold tracking-wide text-foreground border border-border rounded-sm hover:bg-secondary transition-colors active:scale-[0.97] disabled:opacity-50"
-              >
-                {downloadDocs.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Download className="h-3 w-3" />}
-                {opp.documents.length > 0 ? 'RE-DOWNLOAD' : 'DOWNLOAD'}
-              </button>
+              <div className="flex items-center gap-2">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.html,.xml,.zip,.xlsx"
+                  multiple
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploadDoc.isPending}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold tracking-wide text-foreground border border-border rounded-sm hover:bg-secondary transition-colors active:scale-[0.97] disabled:opacity-50"
+                >
+                  {uploadDoc.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Upload className="h-3 w-3" />}
+                  UPLOAD
+                </button>
+                <button
+                  onClick={handleDownloadDocs}
+                  disabled={downloadDocs.isPending}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold tracking-wide text-foreground border border-border rounded-sm hover:bg-secondary transition-colors active:scale-[0.97] disabled:opacity-50"
+                >
+                  {downloadDocs.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Download className="h-3 w-3" />}
+                  {opp.documents.length > 0 ? 'RE-DOWNLOAD' : 'DOWNLOAD'}
+                </button>
+              </div>
             </div>
 
             {opp.documents.length > 0 ? opp.documents.map(doc => {
