@@ -69,40 +69,44 @@ function AppRoutes() {
   if (loading) return fallback;
 
   return (
-    <Routes>
-      <Route path="/auth" element={user ? <Navigate to={new URLSearchParams(window.location.search).get("redirect") || "/"} replace /> : <Auth />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/scan-public" element={user ? <Navigate to="/" replace /> : <PublicScan />} />
-      <Route path="/landing" element={user ? <Navigate to="/" replace /> : <PublicScan />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/onboarding" element={<ProtectedRoute skipOrgCheck><Onboarding /></ProtectedRoute>} />
-      <Route
-        path="/*"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <CommandPalette />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/scan" element={<ScanPage />} />
-                <Route path="/opportunities" element={<Opportunities />} />
-                <Route path="/opportunities/:id" element={<OpportunityDetail />} />
-                <Route path="/workflows" element={<Workflows />} />
-                <Route path="/workflows/:id" element={<WorkflowDetail />} />
-                <Route path="/pipeline" element={<Pipeline />} />
-                <Route path="/knowledge-vault" element={<KnowledgeVault />} />
-                <Route path="/agent-activity" element={<AgentActivity />} />
-                <Route path="/agent-tasks" element={<AgentTasks />} />
-                <Route path="/agent-tasks/:taskId" element={<AgentTaskDetail />} />
-                <Route path="/funding-profile" element={<FundingProfile />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <Suspense fallback={fallback}>
+      <Routes>
+        <Route path="/auth" element={user ? <Navigate to={new URLSearchParams(window.location.search).get("redirect") || "/"} replace /> : <Auth />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/scan-public" element={user ? <Navigate to="/" replace /> : <PublicScan />} />
+        <Route path="/landing" element={user ? <Navigate to="/" replace /> : <PublicScan />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/onboarding" element={<ProtectedRoute skipOrgCheck><Onboarding /></ProtectedRoute>} />
+        <Route
+          path="/*"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <CommandPalette />
+                <Suspense fallback={fallback}>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/scan" element={<ScanPage />} />
+                    <Route path="/opportunities" element={<Opportunities />} />
+                    <Route path="/opportunities/:id" element={<OpportunityDetail />} />
+                    <Route path="/workflows" element={<Workflows />} />
+                    <Route path="/workflows/:id" element={<WorkflowDetail />} />
+                    <Route path="/pipeline" element={<Pipeline />} />
+                    <Route path="/knowledge-vault" element={<KnowledgeVault />} />
+                    <Route path="/agent-activity" element={<AgentActivity />} />
+                    <Route path="/agent-tasks" element={<AgentTasks />} />
+                    <Route path="/agent-tasks/:taskId" element={<AgentTaskDetail />} />
+                    <Route path="/funding-profile" element={<FundingProfile />} />
+                    <Route path="/settings" element={<SettingsPage />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Suspense>
   );
 }
 
