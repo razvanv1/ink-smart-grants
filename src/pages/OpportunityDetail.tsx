@@ -66,6 +66,28 @@ const OpportunityDetail = () => {
     );
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    Array.from(files).forEach(file => {
+      if (file.size > 50 * 1024 * 1024) {
+        toast.error(`${file.name} is too large (max 50 MB)`);
+        return;
+      }
+      uploadDoc.mutate(
+        { opportunityId: opp.id, organizationId: opp.organization_id, file, callName: opp.call_name },
+        {
+          onSuccess: (res) => toast.success(`Uploaded ${res.fileName} (${formatFileSize(res.fileSize)})`),
+          onError: (err) => toast.error((err as Error).message || `Failed to upload ${file.name}`),
+        }
+      );
+    });
+
+    // Reset input so the same file can be re-selected
+    e.target.value = '';
+  };
+
   const handleRunAssessment = () => {
     runAssessment.mutate(
       { opportunityId: opp.id },
