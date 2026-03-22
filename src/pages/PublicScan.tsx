@@ -195,7 +195,7 @@ const PublicScan = () => {
                   </div>
                   <div>
                     <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">Primary Domain</label>
-                    <select value={primaryDomain} onChange={e => setPrimaryDomain(e.target.value)} className="w-full px-5 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
+                    <select aria-label="Primary Domain" value={primaryDomain} onChange={e => setPrimaryDomain(e.target.value)} className="w-full px-5 py-4 bg-background border border-border rounded-[6px] text-[15px] text-foreground focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all appearance-none">
                       <option value="">Select domain</option>
                       {domains.map(d => <option key={d} value={d}>{d}</option>)}
                     </select>
