@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useOpportunityDetail, useUpdateOpportunity, useAddNote, useUpdateActionItem, useDownloadDocuments } from "@/hooks/useOpportunities";
+import { useOpportunityDetail, useUpdateOpportunity, useAddNote, useUpdateActionItem, useDownloadDocuments, useUploadDocument } from "@/hooks/useOpportunities";
 import { useRunAssessment } from "@/hooks/useRunAssessment";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
