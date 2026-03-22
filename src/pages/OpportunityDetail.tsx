@@ -231,49 +231,77 @@ const OpportunityDetail = () => {
               <p className="text-[10px] text-muted-foreground tracking-[0.12em] uppercase font-semibold">
                 Official Documents · <StatusChip status={opp.docs_status} />
               </p>
-              {opp.docs_status !== 'docs_ready' && (
-                <button
-                  onClick={handleDownloadDocs}
-                  disabled={downloadDocs.isPending}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold tracking-wide text-foreground border border-border rounded-sm hover:bg-secondary transition-colors active:scale-[0.97] disabled:opacity-50"
-                >
-                  {downloadDocs.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Download className="h-3 w-3" />} DOWNLOAD ALL
-                </button>
-              )}
+              <button
+                onClick={handleDownloadDocs}
+                disabled={downloadDocs.isPending}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold tracking-wide text-foreground border border-border rounded-sm hover:bg-secondary transition-colors active:scale-[0.97] disabled:opacity-50"
+              >
+                {downloadDocs.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Download className="h-3 w-3" />}
+                {opp.documents.length > 0 ? 'RE-DOWNLOAD' : 'DOWNLOAD'}
+              </button>
             </div>
 
-            {opp.documents.length > 0 ? opp.documents.map(doc => (
-              <div key={doc.id} className="flex items-center justify-between py-3 border-b border-border/40 gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-[13px] font-semibold text-foreground truncate">{doc.name}</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
-                      {doc.doc_type.replace(/_/g, ' ')}
-                      {doc.pages && ` · ${doc.pages} pages`}
-                      {doc.downloaded_at && ` · Downloaded ${new Date(doc.downloaded_at).toLocaleDateString()}`}
-                    </p>
+            {opp.documents.length > 0 ? opp.documents.map(doc => {
+              const hasError = !!doc.download_error;
+              const isStored = !!doc.storage_path;
+              const sizeLabel = doc.file_size ? formatFileSize(doc.file_size) : null;
+
+              return (
+                <div key={doc.id} className={`py-3 border-b gap-3 ${hasError ? 'border-destructive/20' : 'border-border/40'}`}>
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <FileText className={`h-4 w-4 shrink-0 ${hasError ? 'text-destructive' : 'text-muted-foreground'}`} />
+                      <div className="min-w-0">
+                        <p className="text-[13px] font-semibold text-foreground truncate">{doc.name}</p>
+                        <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
+                          {doc.doc_type.replace(/_/g, ' ')}
+                          {doc.content_type && ` · ${doc.content_type.split('/').pop()}`}
+                          {sizeLabel && ` · ${sizeLabel}`}
+                          {doc.pages && ` · ${doc.pages} pages`}
+                          {doc.downloaded_at && ` · ${new Date(doc.downloaded_at).toLocaleDateString()}`}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                      {doc.url && (
+                        <a
+                          href={doc.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-[11px] text-primary font-semibold inline-flex items-center gap-1 hover:underline"
+                        >
+                          Source <ExternalLink className="h-3 w-3" />
+                        </a>
+                      )}
+                      {isStored ? (
+                        <span className="text-[11px] text-success font-semibold flex items-center gap-1"><CheckCircle className="h-3 w-3" /> Stored</span>
+                      ) : hasError ? (
+                        <span className="text-[11px] text-destructive font-semibold flex items-center gap-1"><XCircle className="h-3 w-3" /> Failed</span>
+                      ) : (
+                        <span className="text-[11px] text-warning font-semibold flex items-center gap-1"><Clock className="h-3 w-3" /> Pending</span>
+                      )}
+                      {doc.parsed ? (
+                        <span className="text-[11px] text-success font-semibold flex items-center gap-1"><CheckCircle className="h-3 w-3" /> Parsed</span>
+                      ) : isStored ? (
+                        <span className="text-[11px] text-muted-foreground font-semibold flex items-center gap-1"><Clock className="h-3 w-3" /> Not parsed</span>
+                      ) : null}
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3 shrink-0">
-                  {doc.url && (
-                    <a
-                      href={doc.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[11px] text-primary font-semibold inline-flex items-center gap-1 hover:underline"
-                    >
-                      Open <ExternalLink className="h-3 w-3" />
-                    </a>
-                  )}
-                  {doc.parsed ? (
-                    <span className="text-[11px] text-success font-semibold flex items-center gap-1"><CheckCircle className="h-3 w-3" /> Parsed</span>
-                  ) : (
-                    <span className="text-[11px] text-warning font-semibold flex items-center gap-1"><Clock className="h-3 w-3" /> Not parsed</span>
+                  {hasError && (
+                    <div className="mt-2 ml-7 flex items-center gap-2">
+                      <p className="text-[11px] text-destructive font-mono truncate flex-1">{doc.download_error}</p>
+                      <button
+                        onClick={handleDownloadDocs}
+                        disabled={downloadDocs.isPending}
+                        className="text-[11px] font-bold text-foreground hover:text-primary transition-colors inline-flex items-center gap-1 shrink-0"
+                      >
+                        <RotateCcw className="h-3 w-3" /> Retry
+                      </button>
+                    </div>
                   )}
                 </div>
-              </div>
-            )) : (
+              );
+            }) : (
               <div className="py-16 text-center">
                 <FileText className="h-6 w-6 text-muted-foreground/30 mx-auto mb-3" />
                 <p className="text-[13px] text-foreground font-semibold">No documents downloaded</p>
@@ -289,9 +317,16 @@ const OpportunityDetail = () => {
                 </p>
               </div>
             )}
+
+            {!isStored(opp.documents) && opp.documents.length > 0 && (
+              <div className="border border-muted rounded-sm p-4">
+                <p className="text-[11px] text-muted-foreground">
+                  <strong>Parsing not implemented yet.</strong> Document text extraction will be handled by the OpenClaw backend when connected.
+                </p>
+              </div>
+            )}
           </div>
         )}
-
         {activeTab === 'Assessment' && (
           <div className="space-y-8">
             {/* Run Assessment controls */}
@@ -494,6 +529,16 @@ function Detail({ label, value }: { label: string; value: string }) {
       <p className="text-[13px] font-medium text-foreground mt-0.5 capitalize">{value || '—'}</p>
     </div>
   );
+}
+
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function isStored(docs: any[]): boolean {
+  return docs.some(d => !!d.storage_path);
 }
 
 export default OpportunityDetail;
