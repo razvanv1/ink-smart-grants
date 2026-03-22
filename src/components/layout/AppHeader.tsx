@@ -57,10 +57,16 @@ export function AppHeader() {
           <span>Search</span>
           <kbd className="hidden lg:inline text-[10px] px-1.5 py-0.5 rounded-full border border-border text-muted-foreground/60 font-mono ml-2">⌘K</kbd>
         </button>
-        <button className="relative p-2.5 text-muted-foreground hover:text-foreground transition-all rounded-full hover:bg-secondary active:scale-[0.96]">
-          <Bell className="h-[15px] w-[15px]" strokeWidth={1.6} />
-          <span className="absolute top-2 right-2 h-1.5 w-1.5 rounded-full bg-primary" />
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button className="relative p-2.5 text-muted-foreground hover:text-foreground transition-all rounded-full hover:bg-secondary active:scale-[0.96]">
+              <Bell className="h-[15px] w-[15px]" strokeWidth={1.6} />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64 p-3">
+            <p className="text-[11px] text-muted-foreground text-center py-4">No notifications yet</p>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
