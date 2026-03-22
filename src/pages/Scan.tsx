@@ -305,7 +305,7 @@ const ScanPage = () => {
             <button
               type="submit"
               disabled={isScanning}
-              className="px-7 py-2.5 bg-info text-info-foreground text-[13px] font-bold rounded-full hover:bg-info/85 transition-all disabled:opacity-50 inline-flex items-center gap-2 active:scale-[0.96] shadow-md shadow-info/20 hover:shadow-lg hover:shadow-info/25"
+              className="ink-glow-info px-7 py-2.5 bg-info text-info-foreground text-[13px] font-bold rounded-full disabled:opacity-50 inline-flex items-center gap-2 shadow-md shadow-info/20"
             >
               {isScanning ? (
                 <>

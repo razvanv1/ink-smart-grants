@@ -112,7 +112,7 @@ const PublicScan = () => {
               <div className="flex flex-wrap items-center gap-3 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
                 <button
                   onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                  className="px-7 py-3 bg-info text-info-foreground text-[14px] font-bold rounded-full hover:bg-info/85 active:scale-[0.96] transition-all shadow-lg shadow-info/25 hover:shadow-xl hover:shadow-info/30"
+                  className="ink-glow-info px-7 py-3 bg-info text-info-foreground text-[14px] font-bold rounded-full shadow-lg shadow-info/25"
                 >
                   Start Scanning
                 </button>
@@ -239,7 +239,7 @@ const PublicScan = () => {
                   </div>
                 )}
                 <div className="flex justify-center pt-2">
-                  <button type="submit" disabled={isScanning} className="px-8 py-3 bg-info text-info-foreground text-[13px] font-bold rounded-full hover:bg-info/85 transition-all disabled:opacity-50 inline-flex items-center gap-2 active:scale-[0.96] shadow-lg shadow-info/25 hover:shadow-xl hover:shadow-info/30">
+                  <button type="submit" disabled={isScanning} className="ink-glow-info px-8 py-3 bg-info text-info-foreground text-[13px] font-bold rounded-full disabled:opacity-50 inline-flex items-center gap-2 shadow-lg shadow-info/25">
                     {isScanning ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Scanning…</> : <><Search className="h-3.5 w-3.5" /> Scan Opportunities</>}
                   </button>
                 </div>
@@ -309,7 +309,7 @@ const PublicScan = () => {
                   </p>
                   <div className="flex gap-3 max-w-[440px] mx-auto">
                     <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Your email address" className="flex-1 px-4 py-3.5 bg-background border border-border rounded-[4px] text-[14px] text-foreground placeholder:text-foreground/45 focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all" />
-                    <button onClick={handleUnlock} className="px-6 py-3 bg-info text-info-foreground text-[13px] font-bold tracking-wide rounded-full hover:bg-info/85 transition-all flex items-center gap-2 active:scale-[0.96] whitespace-nowrap shadow-lg shadow-info/25 hover:shadow-xl hover:shadow-info/30">
+                    <button onClick={handleUnlock} className="ink-glow-info px-6 py-3 bg-info text-info-foreground text-[13px] font-bold rounded-full flex items-center gap-2 whitespace-nowrap shadow-lg shadow-info/25">
                       Unlock Platform <ArrowRight className="h-3.5 w-3.5" />
                     </button>
                   </div>

@@ -131,3 +131,24 @@
   border-left: 2px solid hsl(var(--primary) / 0.4);
   padding-left: 0.75rem;
 }
+
+/* Button glow on hover */
+.ink-glow-info {
+  transition: box-shadow 0.3s ease, background-color 0.2s ease, transform 0.15s ease;
+}
+.ink-glow-info:hover {
+  box-shadow: 0 0 18px 4px hsl(var(--info) / 0.3), 0 4px 14px -2px hsl(var(--info) / 0.2);
+}
+.ink-glow-info:active {
+  transform: scale(0.96);
+}
+
+.ink-glow-foreground {
+  transition: box-shadow 0.3s ease, background-color 0.2s ease, transform 0.15s ease;
+}
+.ink-glow-foreground:hover {
+  box-shadow: 0 0 14px 3px hsl(var(--foreground) / 0.15), 0 4px 12px -2px hsl(var(--foreground) / 0.1);
+}
+.ink-glow-foreground:active {
+  transform: scale(0.96);
+}
