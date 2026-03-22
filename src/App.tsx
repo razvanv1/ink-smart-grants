@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -7,25 +8,26 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { CommandPalette } from "@/components/CommandPalette";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import Opportunities from "./pages/Opportunities";
-import OpportunityDetail from "./pages/OpportunityDetail";
-import Workflows from "./pages/Workflows";
-import WorkflowDetail from "./pages/WorkflowDetail";
-import Pipeline from "./pages/Pipeline";
-import KnowledgeVault from "./pages/KnowledgeVault";
-import AgentActivity from "./pages/AgentActivity";
-import AgentTasks from "./pages/AgentTasks";
-import AgentTaskDetail from "./pages/AgentTaskDetail";
-import FundingProfile from "./pages/FundingProfile";
-import SettingsPage from "./pages/Settings";
-import Auth from "./pages/Auth";
-import ResetPassword from "./pages/ResetPassword";
-import Onboarding from "./pages/Onboarding";
-import PublicScan from "./pages/PublicScan";
-import ScanPage from "./pages/Scan";
-import Contact from "./pages/Contact";
+
+const Index = lazy(() => import("./pages/Index"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Opportunities = lazy(() => import("./pages/Opportunities"));
+const OpportunityDetail = lazy(() => import("./pages/OpportunityDetail"));
+const Workflows = lazy(() => import("./pages/Workflows"));
+const WorkflowDetail = lazy(() => import("./pages/WorkflowDetail"));
+const Pipeline = lazy(() => import("./pages/Pipeline"));
+const KnowledgeVault = lazy(() => import("./pages/KnowledgeVault"));
+const AgentActivity = lazy(() => import("./pages/AgentActivity"));
+const AgentTasks = lazy(() => import("./pages/AgentTasks"));
+const AgentTaskDetail = lazy(() => import("./pages/AgentTaskDetail"));
+const FundingProfile = lazy(() => import("./pages/FundingProfile"));
+const SettingsPage = lazy(() => import("./pages/Settings"));
+const Auth = lazy(() => import("./pages/Auth"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const Onboarding = lazy(() => import("./pages/Onboarding"));
+const PublicScan = lazy(() => import("./pages/PublicScan"));
+const ScanPage = lazy(() => import("./pages/Scan"));
+const Contact = lazy(() => import("./pages/Contact"));
 
 const queryClient = new QueryClient();
 
@@ -62,43 +64,49 @@ function ProtectedRoute({ children, skipOrgCheck }: { children: React.ReactNode;
 function AppRoutes() {
   const { user, loading } = useAuth();
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+  const fallback = <div className="min-h-screen flex items-center justify-center"><div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+
+  if (loading) return fallback;
 
   return (
-    <Routes>
-      <Route path="/auth" element={user ? <Navigate to={new URLSearchParams(window.location.search).get("redirect") || "/"} replace /> : <Auth />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/scan-public" element={user ? <Navigate to="/" replace /> : <PublicScan />} />
-      <Route path="/landing" element={user ? <Navigate to="/" replace /> : <PublicScan />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/onboarding" element={<ProtectedRoute skipOrgCheck><Onboarding /></ProtectedRoute>} />
-      <Route
-        path="/*"
-        element={
-          <ProtectedRoute>
-            <AppLayout>
-              <CommandPalette />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/scan" element={<ScanPage />} />
-                <Route path="/opportunities" element={<Opportunities />} />
-                <Route path="/opportunities/:id" element={<OpportunityDetail />} />
-                <Route path="/workflows" element={<Workflows />} />
-                <Route path="/workflows/:id" element={<WorkflowDetail />} />
-                <Route path="/pipeline" element={<Pipeline />} />
-                <Route path="/knowledge-vault" element={<KnowledgeVault />} />
-                <Route path="/agent-activity" element={<AgentActivity />} />
-                <Route path="/agent-tasks" element={<AgentTasks />} />
-                <Route path="/agent-tasks/:taskId" element={<AgentTaskDetail />} />
-                <Route path="/funding-profile" element={<FundingProfile />} />
-                <Route path="/settings" element={<SettingsPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </AppLayout>
-          </ProtectedRoute>
-        }
-      />
-    </Routes>
+    <Suspense fallback={fallback}>
+      <Routes>
+        <Route path="/auth" element={user ? <Navigate to={new URLSearchParams(window.location.search).get("redirect") || "/"} replace /> : <Auth />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/scan-public" element={user ? <Navigate to="/" replace /> : <PublicScan />} />
+        <Route path="/landing" element={user ? <Navigate to="/" replace /> : <PublicScan />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/onboarding" element={<ProtectedRoute skipOrgCheck><Onboarding /></ProtectedRoute>} />
+        <Route
+          path="/*"
+          element={
+            <ProtectedRoute>
+              <AppLayout>
+                <CommandPalette />
+                <Suspense fallback={fallback}>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/scan" element={<ScanPage />} />
+                    <Route path="/opportunities" element={<Opportunities />} />
+                    <Route path="/opportunities/:id" element={<OpportunityDetail />} />
+                    <Route path="/workflows" element={<Workflows />} />
+                    <Route path="/workflows/:id" element={<WorkflowDetail />} />
+                    <Route path="/pipeline" element={<Pipeline />} />
+                    <Route path="/knowledge-vault" element={<KnowledgeVault />} />
+                    <Route path="/agent-activity" element={<AgentActivity />} />
+                    <Route path="/agent-tasks" element={<AgentTasks />} />
+                    <Route path="/agent-tasks/:taskId" element={<AgentTaskDetail />} />
+                    <Route path="/funding-profile" element={<FundingProfile />} />
+                    <Route path="/settings" element={<SettingsPage />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </Suspense>
+              </AppLayout>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Suspense>
   );
 }
 
