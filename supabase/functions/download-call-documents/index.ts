@@ -98,6 +98,14 @@ serve(async (req) => {
       });
     }
 
+    // SSRF protection: validate URL before fetching
+    if (!isUrlSafe(opp.source_url)) {
+      return new Response(
+        JSON.stringify({ error: "Source URL is not allowed (private/internal address or unsupported scheme)." }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     // Mark as downloading
     await supabase
       .from("opportunities")
