@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, Building2, Radar, GitBranch, Layers,
-  BookOpen, Bot, Settings, PanelLeftClose, PanelLeft, Search,
+  BookOpen, Bot, Settings, PanelLeftClose, PanelLeft, Search, Cpu,
 } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import {
