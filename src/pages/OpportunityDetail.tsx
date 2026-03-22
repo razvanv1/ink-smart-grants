@@ -530,4 +530,14 @@ function Detail({ label, value }: { label: string; value: string }) {
   );
 }
 
+function formatFileSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function isStored(docs: any[]): boolean {
+  return docs.some(d => !!d.storage_path);
+}
+
 export default OpportunityDetail;
