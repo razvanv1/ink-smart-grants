@@ -119,36 +119,48 @@ export type Database = {
       }
       call_documents: {
         Row: {
+          content_type: string | null
           created_at: string
           doc_type: string
+          download_error: string | null
           downloaded_at: string | null
+          file_size: number | null
           id: string
           name: string
           opportunity_id: string
           pages: number | null
           parsed: boolean | null
+          storage_path: string | null
           url: string | null
         }
         Insert: {
+          content_type?: string | null
           created_at?: string
           doc_type?: string
+          download_error?: string | null
           downloaded_at?: string | null
+          file_size?: number | null
           id?: string
           name: string
           opportunity_id: string
           pages?: number | null
           parsed?: boolean | null
+          storage_path?: string | null
           url?: string | null
         }
         Update: {
+          content_type?: string | null
           created_at?: string
           doc_type?: string
+          download_error?: string | null
           downloaded_at?: string | null
+          file_size?: number | null
           id?: string
           name?: string
           opportunity_id?: string
           pages?: number | null
           parsed?: boolean | null
+          storage_path?: string | null
           url?: string | null
         }
         Relationships: [
