@@ -148,14 +148,14 @@ const PublicScan = () => {
       </section>
 
       {/* ═══ HOW IT WORKS + SCAN FORM ═══ */}
-      <div className="w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pb-20">
+      <div className="w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pb-20 pt-8 sm:pt-12">
         <div className="max-w-[1880px] mx-auto">
           {/* ═══ HOW IT WORKS ═══ */}
           {!showResults && (
             <ScrollReveal id="how-it-works" delay={120} className="mb-16 sm:mb-20">
-              <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info text-center mb-2">How It Works</p>
-              <h2 className="text-[28px] sm:text-[34px] lg:text-[40px] font-extrabold text-foreground tracking-[-0.04em] text-center mb-3">Get matched in 3 simple steps</h2>
-              <p className="text-[15px] sm:text-[16px] text-foreground/65 text-center mb-10 max-w-[660px] mx-auto leading-relaxed">
+              <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info text-center mb-3">How It Works</p>
+              <h2 className="text-[32px] sm:text-[42px] lg:text-[50px] font-extrabold text-foreground tracking-[-0.04em] text-center mb-4 leading-[1.05]">Get matched in 3 simple steps</h2>
+              <p className="text-[15px] sm:text-[16px] text-foreground/65 text-center mb-12 max-w-[660px] mx-auto leading-relaxed">
                 Our AI scans 940+ live EU & national funding calls and matches them to your project profile. No expertise needed.
               </p>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
