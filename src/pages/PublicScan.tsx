@@ -74,6 +74,7 @@ const PublicScan = () => {
   return (
     <div className="min-h-screen bg-background relative overflow-x-hidden">
       <LandingHeader />
+      <main>
 
       {/* ═══ HERO ═══ */}
       <section className="relative pt-14 overflow-hidden">
