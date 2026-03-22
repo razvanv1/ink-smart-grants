@@ -30,7 +30,7 @@ export function AppSidebar() {
       {/* Brand mark */}
       <div className="flex h-14 items-center px-4 border-b border-sidebar-border">
         {!collapsed ? (
-          <InkLogo size={28} textClassName="text-[15px]" />
+          <InkLogo size={28} showTagline textClassName="text-[15px]" />
         ) : (
           <div className="mx-auto">
             <InkLogo size={24} showText={false} />

@@ -84,7 +84,7 @@ export default function Auth() {
       <div className="w-full max-w-[400px] bg-card border border-border rounded-[10px] shadow-xl shadow-foreground/[0.06] p-6 sm:p-7 relative z-10">
         {/* Brand */}
         <div className="mb-8">
-          <InkLogo size={34} />
+          <InkLogo size={34} showTagline />
         </div>
 
         <h1 className="text-xl font-semibold tracking-tight text-foreground mb-1">

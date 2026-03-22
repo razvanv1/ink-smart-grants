@@ -7,7 +7,7 @@ export function LandingHeader() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border/80">
       <div className="w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 h-16 flex items-center justify-between max-w-[1880px] mx-auto">
-        <InkLogo size={30} />
+        <InkLogo size={30} showTagline />
         <div className="flex items-center gap-3">
           <a href="#pricing" className="text-[12px] font-semibold text-foreground/65 hover:text-foreground transition-colors hidden sm:block px-3 py-1.5">
             Pricing
