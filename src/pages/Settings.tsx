@@ -233,7 +233,7 @@ const SettingsPage = () => {
 
       {/* ── Integrations ────────────────────────────────────── */}
       <Section title="Integrations">
-        <p className="text-[12px] text-muted-foreground mb-4">Connect external services to enhance your workflow.</p>
+        <p className="text-[12px] text-muted-foreground mb-4">Integrations below are placeholders for now and are not connected to live services yet.</p>
         <div className="space-y-3">
           <IntRow name="Google Drive" description="Sync documents and templates" />
           <IntRow name="Slack" description="Get notifications and alerts" />
