@@ -51,7 +51,7 @@ export function AppHeader() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className="ml-2 h-7 w-7 rounded-sm bg-foreground flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity">
+            <div className="ml-2 h-7 w-7 rounded-full bg-foreground flex items-center justify-center cursor-pointer hover:opacity-80 transition-all hover:shadow-md hover:shadow-foreground/15 active:scale-[0.96]">
               <span className="text-[11px] font-bold text-background">{initials}</span>
             </div>
           </DropdownMenuTrigger>

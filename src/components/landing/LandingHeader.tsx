@@ -14,7 +14,7 @@ export function LandingHeader() {
           </a>
           <button
             onClick={() => navigate("/auth")}
-            className="text-[13px] font-bold text-info-foreground bg-info hover:bg-info/85 transition-all px-5 py-2 rounded-full shadow-md shadow-info/25 hover:shadow-lg hover:shadow-info/30 active:scale-[0.96]"
+            className="ink-glow-info text-[13px] font-bold text-info-foreground bg-info hover:bg-info/85 px-5 py-2 rounded-full shadow-md shadow-info/25"
           >
             Sign in
           </button>

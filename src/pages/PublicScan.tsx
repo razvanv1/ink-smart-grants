@@ -309,7 +309,7 @@ const PublicScan = () => {
                   </p>
                   <div className="flex gap-3 max-w-[440px] mx-auto">
                     <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Your email address" className="flex-1 px-4 py-3.5 bg-background border border-border rounded-[4px] text-[14px] text-foreground placeholder:text-foreground/45 focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all" />
-                    <button onClick={handleUnlock} className="px-6 py-3 bg-info text-info-foreground text-[13px] font-bold tracking-wide rounded-full hover:bg-info/85 transition-all flex items-center gap-2 active:scale-[0.96] whitespace-nowrap shadow-lg shadow-info/25 hover:shadow-xl hover:shadow-info/30">
+                    <button onClick={handleUnlock} className="ink-glow-info px-6 py-3 bg-info text-info-foreground text-[13px] font-bold rounded-full flex items-center gap-2 whitespace-nowrap shadow-lg shadow-info/25">
                       Unlock Platform <ArrowRight className="h-3.5 w-3.5" />
                     </button>
                   </div>
