@@ -69,6 +69,10 @@ export interface DocumentRow {
   name: string;
   doc_type: string;
   url: string | null;
+  storage_path: string | null;
+  file_size: number | null;
+  content_type: string | null;
+  download_error: string | null;
   downloaded_at: string | null;
   parsed: boolean;
   pages: number | null;
