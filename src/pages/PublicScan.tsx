@@ -263,7 +263,7 @@ const PublicScan = () => {
             <div className="flex items-center justify-between opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
               <div>
                 <p className="text-[10px] font-bold tracking-[0.15em] uppercase text-info mb-1">Scan Results</p>
-                <p className="text-[26px] font-extrabold text-foreground tracking-tight">{matches.length} calls matched</p>
+                <h2 className="text-[26px] font-extrabold text-foreground tracking-tight">{matches.length} calls matched</h2>
                 <p className="text-[13px] text-foreground/70 mt-0.5">for "{projectIntent}"</p>
               </div>
               <button onClick={() => { setShowResults(false); setMatches([]); }} className="text-[12px] font-bold text-foreground/80 hover:text-foreground transition-all px-4 py-2 rounded-full border border-border hover:border-foreground/30 hover:bg-secondary/60 active:scale-[0.96]">New Scan</button>
