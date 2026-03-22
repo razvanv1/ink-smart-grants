@@ -408,25 +408,25 @@ const ScanPage = () => {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => toast.success(`${match.callName} saved to Opportunities`)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-primary/20 bg-primary/[0.03] text-[11px] font-bold tracking-wide text-foreground hover:border-primary/40 hover:bg-primary/[0.06] transition-all active:scale-[0.97]"
+                            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/[0.04] text-[11px] font-bold text-foreground hover:border-primary/40 hover:bg-primary/[0.08] transition-all active:scale-[0.96]"
                           >
-                            <Plus className="h-3 w-3" /> Save to Opportunities
+                            <Plus className="h-3 w-3" /> Save
                           </button>
                           <button
                             onClick={() => toast.info(`${match.callName} added to Watchlist`)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-[11px] font-semibold tracking-wide text-muted-foreground hover:text-foreground hover:bg-secondary transition-all active:scale-[0.97]"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary transition-all active:scale-[0.96]"
                           >
-                            Add to Watchlist
+                            Watchlist
                           </button>
                           <button
                             onClick={() => toast.info("Start Workflow: available in production")}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-[11px] font-semibold tracking-wide text-muted-foreground hover:text-foreground hover:bg-secondary transition-all active:scale-[0.97]"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary transition-all active:scale-[0.96]"
                           >
-                            <ArrowRight className="h-3 w-3" /> Start Workflow
+                            <ArrowRight className="h-3 w-3" /> Workflow
                           </button>
                           <button
                             onClick={() => toast.info(`${match.callName} ignored`)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-[11px] font-semibold tracking-wide text-muted-foreground/50 hover:text-muted-foreground transition-all active:scale-[0.97] ml-auto"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold text-muted-foreground/50 hover:text-muted-foreground transition-all active:scale-[0.96] ml-auto"
                           >
                             Ignore
                           </button>
