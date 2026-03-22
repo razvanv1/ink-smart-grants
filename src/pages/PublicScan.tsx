@@ -84,17 +84,6 @@ const PublicScan = () => {
           <div className="absolute -top-28 right-[8%] h-[420px] w-[420px] rounded-full bg-info/10 blur-3xl" />
         </div>
 
-        {/* Giant mascot as background watermark — centered, contained */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center" aria-hidden="true">
-          <img
-            src={octopusImg}
-            alt=""
-            width={900}
-            height={674}
-            fetchPriority="high"
-            className="absolute right-[5%] top-[50%] -translate-y-[50%] w-[80vw] max-w-[900px] h-auto max-h-[90%] opacity-[0.16] sm:opacity-[0.18] lg:opacity-[0.22] select-none object-contain"
-          />
-        </div>
 
         <div className="relative w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pt-20 sm:pt-28 lg:pt-32 pb-24 sm:pb-28 lg:pb-36">
           <div className="max-w-[1880px] mx-auto relative">
