@@ -1,43 +1,46 @@
 import { opportunities } from "@/data/sampleData";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
-import { AgentAction } from "@/components/shared/AgentAction";
 import { Link } from "react-router-dom";
-import { Search } from "lucide-react";
+import { Search, Bookmark, X, FileText, AlertTriangle } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import { getLifecycleStageLabel } from "@/data/sampleData";
 
-const statusOptions = ['All', 'New', 'Watchlist', 'Shortlisted', 'Active Workflow', 'Ignored', 'Rejected'];
+const lifecycleFilters = ['All', 'Discovered', 'Saved', 'Docs Pending', 'Assessed', 'Shortlisted', 'In Preparation', 'Rejected'];
 
 const Opportunities = () => {
-  const [statusFilter, setStatusFilter] = useState('All');
+  const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
 
   const filtered = opportunities.filter(opp => {
-    const matchesStatus = statusFilter === 'All' || opp.status.replace(/-/g, ' ').toLowerCase() === statusFilter.toLowerCase();
+    if (filter !== 'All') {
+      const label = getLifecycleStageLabel(opp.lifecycle).toLowerCase();
+      if (!label.includes(filter.toLowerCase())) return false;
+    }
     const matchesSearch = opp.callName.toLowerCase().includes(search.toLowerCase()) ||
       opp.programme.toLowerCase().includes(search.toLowerCase()) ||
       opp.thematicArea.toLowerCase().includes(search.toLowerCase());
-    return matchesStatus && matchesSearch;
+    return matchesSearch;
   });
 
-  const shortlisted = opportunities.filter(o => o.status === 'shortlisted').length;
-  const partnerNeeded = filtered.filter(o => o.partnerRequired).length;
+  const needsDocs = filtered.filter(o => o.docsStatus === 'not_downloaded' || o.docsStatus === 'docs_pending').length;
+  const discovered = filtered.filter(o => o.lifecycle === 'discovered').length;
 
   return (
     <div className="p-8 max-w-[1300px] mx-auto space-y-8">
       <div className="flex items-end justify-between border-b border-border pb-6">
         <div>
-          <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Matched Opportunities</p>
+          <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Call Intelligence</p>
           <h1 className="ink-page-title">Opportunities</h1>
         </div>
         <div className="flex items-center gap-3 pb-1">
-          {partnerNeeded > 0 && (
-            <AgentAction label={`Find partners (${partnerNeeded} need consortium)`} variant="coordination" />
+          {needsDocs > 0 && (
+            <span className="text-[11px] text-warning font-semibold flex items-center gap-1">
+              <FileText className="h-3 w-3" />{needsDocs} need docs
+            </span>
           )}
-          {shortlisted > 0 && (
-            <AgentAction label={`Compare ${shortlisted} shortlisted`} variant="strategic" />
-          )}
-          <span className="text-[11px] text-muted-foreground ml-1">{filtered.length} calls</span>
+          <span className="text-[11px] text-muted-foreground">{filtered.length} calls · {discovered} new</span>
         </div>
       </div>
 
@@ -46,19 +49,19 @@ const Opportunities = () => {
           <Search className="h-3.5 w-3.5 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Search…"
+            placeholder="Search calls…"
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="bg-transparent outline-none text-foreground placeholder:text-muted-foreground w-full text-[12px]"
           />
         </div>
         <div className="flex items-center gap-0.5">
-          {statusOptions.map(s => (
+          {lifecycleFilters.map(s => (
             <button
               key={s}
-              onClick={() => setStatusFilter(s)}
+              onClick={() => setFilter(s)}
               className={`px-2 py-1 rounded-sm text-[11px] font-semibold tracking-wide transition-colors ${
-                statusFilter === s
+                filter === s
                   ? 'bg-foreground text-background'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
@@ -75,33 +78,73 @@ const Opportunities = () => {
             <tr className="border-b border-border">
               <th className="text-left py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase">Call</th>
               <th className="text-left py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase">Programme</th>
-              <th className="text-right py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase w-16">Fit</th>
-              <th className="text-right py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase w-16 hidden lg:table-cell">Effort</th>
+              <th className="text-center py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase w-16">Fit</th>
+              <th className="text-center py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase w-20">Status</th>
+              <th className="text-center py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase w-16">Docs</th>
+              <th className="text-center py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase w-16 hidden lg:table-cell">Judgment</th>
               <th className="text-center py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase w-16">Urgency</th>
               <th className="text-left py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase">Deadline</th>
-              <th className="text-left py-3 pr-6 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase hidden md:table-cell">Status</th>
-              <th className="text-right py-3 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase hidden xl:table-cell">Action</th>
+              <th className="text-right py-3 text-[10px] font-semibold text-muted-foreground tracking-[0.12em] uppercase hidden xl:table-cell">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map(opp => (
-              <tr key={opp.id} className="border-b border-border/40 hover:bg-secondary/30 transition-colors group">
-                <td className="py-3.5 pr-6">
-                  <Link to={`/opportunities/${opp.id}`} className="text-[13px] font-semibold text-foreground group-hover:text-primary transition-colors">
-                    {opp.callName}
-                  </Link>
-                </td>
-                <td className="py-3.5 pr-6 text-[12px] text-muted-foreground">{opp.programme}</td>
-                <td className="py-3.5 pr-6 text-right"><ScoreBadge score={opp.fitScore} /></td>
-                <td className="py-3.5 pr-6 text-right hidden lg:table-cell"><ScoreBadge score={opp.effortScore} /></td>
-                <td className="py-3.5 pr-6"><div className="flex justify-center"><UrgencyIndicator urgency={opp.urgency} /></div></td>
-                <td className="py-3.5 pr-6 text-[12px] text-muted-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>{opp.deadline}</td>
-                <td className="py-3.5 pr-6 hidden md:table-cell"><StatusChip status={opp.status} /></td>
-                <td className="py-3.5 text-right hidden xl:table-cell">
-                  <span className="text-[11px] text-primary font-semibold tracking-wide uppercase">{opp.recommendedAction}</span>
-                </td>
-              </tr>
-            ))}
+            {filtered.map(opp => {
+              const hasBlockers = opp.blockers.length > 0;
+              return (
+                <tr key={opp.id} className="border-b border-border/40 hover:bg-secondary/30 transition-colors group">
+                  <td className="py-3.5 pr-6">
+                    <Link to={`/opportunities/${opp.id}`} className="text-[13px] font-semibold text-foreground group-hover:text-primary transition-colors">
+                      {opp.callName}
+                    </Link>
+                    {hasBlockers && (
+                      <span className="ml-2 text-[10px] text-destructive font-semibold inline-flex items-center gap-0.5">
+                        <AlertTriangle className="h-2.5 w-2.5" />{opp.blockers.length}
+                      </span>
+                    )}
+                  </td>
+                  <td className="py-3.5 pr-6 text-[12px] text-muted-foreground">{opp.programme}</td>
+                  <td className="py-3.5 pr-6 text-center"><ScoreBadge score={opp.fitScore} /></td>
+                  <td className="py-3.5 pr-6 text-center"><StatusChip status={opp.lifecycle} /></td>
+                  <td className="py-3.5 pr-6 text-center"><StatusChip status={opp.docsStatus === 'docs_ready' ? 'docs_ready' : opp.docsStatus === 'docs_pending' ? 'docs_pending' : 'missing'} /></td>
+                  <td className="py-3.5 pr-6 text-center hidden lg:table-cell">
+                    {opp.assessment ? <StatusChip status={opp.assessment.judgment} dot /> : <span className="text-[11px] text-muted-foreground">—</span>}
+                  </td>
+                  <td className="py-3.5 pr-6"><div className="flex justify-center"><UrgencyIndicator urgency={opp.urgency} /></div></td>
+                  <td className="py-3.5 pr-6 text-[12px] text-muted-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>{opp.deadline}</td>
+                  <td className="py-3.5 text-right hidden xl:table-cell">
+                    <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {opp.lifecycle === 'discovered' && (
+                        <>
+                          <button
+                            onClick={(e) => { e.preventDefault(); toast.info('Saved to pipeline'); }}
+                            className="p-1 rounded hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
+                            title="Save"
+                          >
+                            <Bookmark className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            onClick={(e) => { e.preventDefault(); toast.info('Rejected'); }}
+                            className="p-1 rounded hover:bg-secondary transition-colors text-muted-foreground hover:text-destructive"
+                            title="Reject"
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </>
+                      )}
+                      {opp.docsStatus !== 'docs_ready' && opp.lifecycle !== 'rejected' && (
+                        <button
+                          onClick={(e) => { e.preventDefault(); toast.info('Downloading documents…'); }}
+                          className="p-1 rounded hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
+                          title="Download docs"
+                        >
+                          <FileText className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

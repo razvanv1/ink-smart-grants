@@ -1,81 +1,127 @@
-import { pipelineStages, getOpportunitiesByStage, workflows } from "@/data/sampleData";
+import { getSavedCalls, getLifecycleStageLabel } from "@/data/sampleData";
+import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
-import { AgentActionPanel } from "@/components/shared/AgentAction";
 import { Link } from "react-router-dom";
+import { AlertTriangle, ArrowRight } from "lucide-react";
 
 const Pipeline = () => {
-  const atRisk = workflows.filter(w => w.status === 'at-risk').length;
-  const totalActive = workflows.filter(w => w.status !== 'completed').length;
-  const submitted = workflows.filter(w => w.status === 'completed').length;
+  const saved = getSavedCalls();
+  const withBlockers = saved.filter(o => o.blockers.length > 0);
+  const urgent = saved.filter(o => o.urgency === 'critical' || o.urgency === 'high');
+  const needsDocs = saved.filter(o => o.docsStatus !== 'docs_ready');
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-8 max-w-[1300px] mx-auto space-y-8">
       <div className="flex items-end justify-between border-b border-border pb-6">
         <div>
-          <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Execution Pipeline</p>
+          <p className="text-[10px] text-muted-foreground tracking-[0.15em] uppercase font-medium mb-2">Saved Calls & Progress</p>
           <h1 className="ink-page-title">Pipeline</h1>
         </div>
         <div className="flex items-center gap-4 pb-1">
-          <span className="text-[11px] text-muted-foreground">{totalActive} active · {submitted} submitted · {atRisk} at risk</span>
+          <span className="text-[11px] text-muted-foreground">
+            {saved.length} saved · {urgent.length} urgent · {withBlockers.length} blocked
+          </span>
         </div>
       </div>
 
-      <AgentActionPanel
-        context={`${atRisk} workflow${atRisk !== 1 ? 's' : ''} at risk · Nearest deadline in ${Math.max(0, Math.ceil((new Date(workflows.filter(w => w.status !== 'completed').sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime())[0]?.deadline || Date.now()).getTime() - Date.now()) / 86400000))} days`}
-        actions={[
-          { label: 'Prioritize this week', variant: 'strategic', primary: true },
-          ...(atRisk > 0 ? [{ label: 'Flag at-risk workflows', variant: 'compliance' as const, primary: true }] : []),
-          { label: 'Detect capacity overload', variant: 'coordination' },
-        ]}
-      />
-
-      <div className="flex gap-5 overflow-x-auto pb-4">
-        {pipelineStages.map(stage => {
-          const opps = getOpportunitiesByStage(stage);
-          const hasItems = opps.length > 0;
-          return (
-            <div key={stage} className="flex-shrink-0 w-48">
-              <div className="flex items-center gap-2 mb-4">
-                <div className={`h-2.5 w-2.5 rounded-[2px] ${hasItems ? 'bg-foreground' : 'bg-border'}`} />
-                <h3 className="text-[10px] font-bold text-foreground tracking-[0.12em] uppercase">{stage}</h3>
-                <span className="text-[10px] text-muted-foreground ml-auto" style={{ fontVariantNumeric: 'tabular-nums' }}>{opps.length}</span>
-              </div>
-
-              <div className="space-y-2 min-h-[200px]">
-                {opps.map(opp => {
-                  const wf = workflows.find(w => w.opportunityId === opp.id);
-                  const isAtRisk = wf?.status === 'at-risk';
-                  return (
-                    <Link
-                      key={opp.id}
-                      to={`/opportunities/${opp.id}`}
-                      className={`block border-l-2 ${isAtRisk ? 'border-destructive' : 'border-foreground'} pl-3 py-2.5 hover:bg-secondary/30 transition-colors rounded-r`}
-                    >
-                      <p className="text-[12px] font-semibold text-foreground leading-snug mb-1">{opp.callName}</p>
-                      <p className="text-[10px] text-muted-foreground mb-2">{opp.programme}</p>
-                      <div className="flex items-center justify-between">
-                        <ScoreBadge score={opp.fitScore} />
-                        <UrgencyIndicator urgency={opp.urgency} />
-                      </div>
-                      <p className="text-[10px] text-muted-foreground mt-1.5" style={{ fontVariantNumeric: 'tabular-nums' }}>{opp.deadline}</p>
-                      {isAtRisk && (
-                        <p className="text-[10px] text-destructive font-semibold mt-1">{wf.blockers} blocker{wf.blockers > 1 ? 's' : ''}</p>
-                      )}
-                    </Link>
-                  );
-                })}
-                {opps.length === 0 && (
-                  <div className="flex items-center justify-center h-20 text-[10px] text-muted-foreground/50 border-l border-dashed border-border pl-3">
-                    -
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
+      {/* Summary strip */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <SummaryCard label="Urgent" value={urgent.length} accent={urgent.length > 0} />
+        <SummaryCard label="Blocked" value={withBlockers.length} accent={withBlockers.length > 0} />
+        <SummaryCard label="Docs Missing" value={needsDocs.length} />
+        <SummaryCard label="Go Decisions" value={saved.filter(o => o.assessment?.judgment === 'go').length} />
       </div>
+
+      {/* Main list */}
+      <div>
+        {saved
+          .sort((a, b) => {
+            const prio = { high: 0, medium: 1, low: 2 };
+            if (prio[a.priority] !== prio[b.priority]) return prio[a.priority] - prio[b.priority];
+            return new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
+          })
+          .map(opp => {
+            const daysLeft = Math.max(0, Math.ceil((new Date(opp.deadline).getTime() - Date.now()) / 86400000));
+            const hasBlockers = opp.blockers.length > 0;
+            const nextAction = opp.actionPlan.find(a => a.status !== 'done');
+            return (
+              <Link
+                key={opp.id}
+                to={`/opportunities/${opp.id}`}
+                className="block py-5 border-b border-border/60 hover:bg-secondary/20 -mx-4 px-4 rounded transition-colors group"
+              >
+                <div className="flex items-start justify-between gap-6">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-3 mb-1">
+                      <p className="text-[14px] font-bold text-foreground group-hover:text-primary transition-colors tracking-tight truncate">
+                        {opp.callName}
+                      </p>
+                      {hasBlockers && (
+                        <span className="text-[10px] text-destructive font-bold flex items-center gap-1 shrink-0 uppercase tracking-wider">
+                          <AlertTriangle className="h-3 w-3" />{opp.blockers.length}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-muted-foreground">
+                      {opp.programme} · {opp.fundingRange}
+                    </p>
+                    {nextAction && (
+                      <p className="text-[11px] text-foreground/60 mt-1.5 flex items-center gap-1">
+                        <ArrowRight className="h-2.5 w-2.5 text-primary" />
+                        <span className="font-medium">Next:</span> {nextAction.action}
+                        {nextAction.owner && <span className="text-muted-foreground"> · {nextAction.owner}</span>}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-5 shrink-0">
+                    <div className="text-center w-12">
+                      <p className="text-[9px] text-muted-foreground tracking-wider uppercase mb-0.5">Fit</p>
+                      <ScoreBadge score={opp.fitScore} />
+                    </div>
+                    <div className="text-center w-16">
+                      <p className="text-[9px] text-muted-foreground tracking-wider uppercase mb-0.5">Status</p>
+                      <StatusChip status={opp.lifecycle} />
+                    </div>
+                    {opp.assessment && (
+                      <div className="text-center w-14 hidden md:block">
+                        <p className="text-[9px] text-muted-foreground tracking-wider uppercase mb-0.5">Judgment</p>
+                        <StatusChip status={opp.assessment.judgment} dot />
+                      </div>
+                    )}
+                    <div className="text-center w-10 hidden md:block">
+                      <p className="text-[9px] text-muted-foreground tracking-wider uppercase mb-0.5">Urgency</p>
+                      <UrgencyIndicator urgency={opp.urgency} />
+                    </div>
+                    <div className="text-right w-14">
+                      <p className={`text-[13px] font-bold ${daysLeft <= 7 ? 'text-destructive' : daysLeft <= 21 ? 'text-warning' : 'text-foreground'}`} style={{ fontVariantNumeric: 'tabular-nums' }}>
+                        {daysLeft}d
+                      </p>
+                      <p className="text-[10px] text-muted-foreground" style={{ fontVariantNumeric: 'tabular-nums' }}>{opp.deadline}</p>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+      </div>
+
+      {saved.length === 0 && (
+        <div className="py-24 text-center">
+          <p className="text-[13px] text-foreground font-semibold">No saved calls yet</p>
+          <p className="text-[12px] text-muted-foreground mt-1">Save opportunities from the Opportunities page to track them here</p>
+        </div>
+      )}
     </div>
   );
 };
+
+function SummaryCard({ label, value, accent }: { label: string; value: number; accent?: boolean }) {
+  return (
+    <div className={accent ? 'ink-accent-border' : ''}>
+      <p className="text-[10px] text-muted-foreground tracking-[0.12em] uppercase font-medium mb-1">{label}</p>
+      <p className="ink-score">{value}</p>
+    </div>
+  );
+}
 
 export default Pipeline;
