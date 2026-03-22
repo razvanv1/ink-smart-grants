@@ -41,7 +41,7 @@ export default function Onboarding() {
       // 1. Create organization
       const { data: org, error: orgErr } = await supabase
         .from("organizations")
-        .insert({ name: orgName, type: orgType, country, size, onboarding_complete: true })
+        .insert({ name: orgName, type: orgType, country, size, onboarding_complete: true, created_by: user.id })
         .select()
         .single();
       if (orgErr) throw orgErr;

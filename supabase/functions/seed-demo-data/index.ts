@@ -39,7 +39,7 @@ serve(async (req) => {
         : 'My Organization';
       const { data: newOrg, error: orgErr } = await supabase
         .from('organizations')
-        .insert({ name: orgName, onboarding_complete: false })
+        .insert({ name: orgName, onboarding_complete: false, created_by: user.id })
         .select('id')
         .single();
       if (orgErr) throw orgErr;

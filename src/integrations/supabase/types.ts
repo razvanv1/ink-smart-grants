@@ -434,6 +434,7 @@ export type Database = {
         Row: {
           country: string | null
           created_at: string
+          created_by: string | null
           domain_focus: string[] | null
           id: string
           name: string
@@ -445,6 +446,7 @@ export type Database = {
         Insert: {
           country?: string | null
           created_at?: string
+          created_by?: string | null
           domain_focus?: string[] | null
           id?: string
           name: string
@@ -456,6 +458,7 @@ export type Database = {
         Update: {
           country?: string | null
           created_at?: string
+          created_by?: string | null
           domain_focus?: string[] | null
           id?: string
           name?: string
