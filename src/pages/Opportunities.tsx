@@ -1,4 +1,4 @@
-import { useOpportunities, getLifecycleLabel } from "@/hooks/useOpportunities";
+import { useOpportunities, getLifecycleLabel, useDownloadDocuments } from "@/hooks/useOpportunities";
 import type { OpportunityRow } from "@/hooks/useOpportunities";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
@@ -13,8 +13,10 @@ const lifecycleFilters = ['All', 'Discovered', 'Saved', 'Docs Pending', 'Assesse
 const Opportunities = () => {
   const { data: opportunities = [], isLoading, error } = useOpportunities();
   const updateOpp = useUpdateOpportunity();
+  const downloadDocs = useDownloadDocuments();
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const filtered = opportunities.filter((opp: OpportunityRow) => {
     if (filter !== 'All') {
@@ -60,6 +62,18 @@ const Opportunities = () => {
     updateOpp.mutate(
       { id: opp.id, updates: { lifecycle: 'rejected' } },
       { onSuccess: () => toast.success('Rejected') }
+    );
+  };
+
+  const handleDownloadDocs = (opp: OpportunityRow) => {
+    setDownloadingId(opp.id);
+    downloadDocs.mutate(
+      { opportunityId: opp.id },
+      {
+        onSuccess: (res) => toast.success(res.message || 'Document ingestion started'),
+        onError: (err) => toast.error((err as Error).message || 'Failed to ingest documents'),
+        onSettled: () => setDownloadingId(null),
+      }
     );
   };
 
@@ -165,11 +179,14 @@ const Opportunities = () => {
                       )}
                       {opp.docs_status !== 'docs_ready' && opp.lifecycle !== 'rejected' && (
                         <button
-                          onClick={(e) => { e.preventDefault(); toast.info('Document download requires backend integration'); }}
-                          className="p-1 rounded hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground"
-                          title="Download docs"
+                          onClick={(e) => { e.preventDefault(); handleDownloadDocs(opp); }}
+                          disabled={downloadDocs.isPending && downloadingId === opp.id}
+                          className="p-1 rounded hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground disabled:opacity-40"
+                          title={downloadDocs.isPending && downloadingId === opp.id ? 'Starting ingestion…' : 'Ingest official documents'}
                         >
-                          <FileText className="h-3.5 w-3.5" />
+                          {downloadDocs.isPending && downloadingId === opp.id
+                            ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            : <FileText className="h-3.5 w-3.5" />}
                         </button>
                       )}
                     </div>

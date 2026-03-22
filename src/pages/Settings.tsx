@@ -233,7 +233,7 @@ const SettingsPage = () => {
 
       {/* ── Integrations ────────────────────────────────────── */}
       <Section title="Integrations">
-        <p className="text-[12px] text-muted-foreground mb-4">Connect external services to enhance your workflow.</p>
+        <p className="text-[12px] text-muted-foreground mb-4">Integrations below are placeholders for now and are not connected to live services yet.</p>
         <div className="space-y-3">
           <IntRow name="Google Drive" description="Sync documents and templates" />
           <IntRow name="Slack" description="Get notifications and alerts" />
@@ -320,9 +320,9 @@ function IntRow({ name, description, comingSoon }: { name: string; description: 
       {comingSoon ? (
         <span className="text-[10px] tracking-wider uppercase font-semibold text-muted-foreground/40">Coming soon</span>
       ) : (
-        <button className="flex items-center gap-1 text-[11px] text-primary font-semibold hover:underline tracking-wide uppercase active:scale-[0.97] transition-transform">
-          Connect <ExternalLink className="h-3 w-3" />
-        </button>
+        <span className="inline-flex items-center gap-1 text-[10px] tracking-wider uppercase font-semibold text-warning">
+          <ExternalLink className="h-3 w-3" /> Placeholder
+        </span>
       )}
     </div>
   );

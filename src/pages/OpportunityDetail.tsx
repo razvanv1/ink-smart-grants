@@ -1,8 +1,8 @@
 import { useParams, Link } from "react-router-dom";
-import { useOpportunityDetail, useUpdateOpportunity, useAddNote, useUpdateActionItem, getLifecycleLabel } from "@/hooks/useOpportunities";
+import { useOpportunityDetail, useUpdateOpportunity, useAddNote, useUpdateActionItem, useDownloadDocuments } from "@/hooks/useOpportunities";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
-import { ArrowLeft, ArrowRight, FileText, Download, AlertTriangle, CheckCircle, Clock, XCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, FileText, Download, AlertTriangle, CheckCircle, Clock, XCircle, Loader2, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -14,6 +14,7 @@ const OpportunityDetail = () => {
   const updateOpp = useUpdateOpportunity();
   const addNote = useAddNote();
   const updateAction = useUpdateActionItem();
+  const downloadDocs = useDownloadDocuments();
   const [activeTab, setActiveTab] = useState('Overview');
   const [newNote, setNewNote] = useState('');
 
@@ -43,6 +44,16 @@ const OpportunityDetail = () => {
     updateOpp.mutate(
       { id: opp.id, updates: { priority } },
       { onSuccess: () => toast.success(`Priority set to ${priority}`) }
+    );
+  };
+
+  const handleDownloadDocs = () => {
+    downloadDocs.mutate(
+      { opportunityId: opp.id },
+      {
+        onSuccess: (res) => toast.success(res.message || 'Document ingestion started'),
+        onError: (err) => toast.error((err as Error).message || 'Failed to ingest documents'),
+      }
     );
   };
 
@@ -189,28 +200,39 @@ const OpportunityDetail = () => {
               </p>
               {opp.docs_status !== 'docs_ready' && (
                 <button
-                  onClick={() => toast.info('Document download requires backend integration')}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold tracking-wide text-foreground border border-border rounded-sm hover:bg-secondary transition-colors active:scale-[0.97]"
+                  onClick={handleDownloadDocs}
+                  disabled={downloadDocs.isPending}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold tracking-wide text-foreground border border-border rounded-sm hover:bg-secondary transition-colors active:scale-[0.97] disabled:opacity-50"
                 >
-                  <Download className="h-3 w-3" /> DOWNLOAD ALL
+                  {downloadDocs.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Download className="h-3 w-3" />} DOWNLOAD ALL
                 </button>
               )}
             </div>
 
             {opp.documents.length > 0 ? opp.documents.map(doc => (
-              <div key={doc.id} className="flex items-center justify-between py-3 border-b border-border/40">
-                <div className="flex items-center gap-3">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-[13px] font-semibold text-foreground">{doc.name}</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
+              <div key={doc.id} className="flex items-center justify-between py-3 border-b border-border/40 gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <div className="min-w-0">
+                    <p className="text-[13px] font-semibold text-foreground truncate">{doc.name}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
                       {doc.doc_type.replace(/_/g, ' ')}
                       {doc.pages && ` · ${doc.pages} pages`}
                       {doc.downloaded_at && ` · Downloaded ${new Date(doc.downloaded_at).toLocaleDateString()}`}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3 shrink-0">
+                  {doc.url && (
+                    <a
+                      href={doc.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[11px] text-primary font-semibold inline-flex items-center gap-1 hover:underline"
+                    >
+                      Open <ExternalLink className="h-3 w-3" />
+                    </a>
+                  )}
                   {doc.parsed ? (
                     <span className="text-[11px] text-success font-semibold flex items-center gap-1"><CheckCircle className="h-3 w-3" /> Parsed</span>
                   ) : (
