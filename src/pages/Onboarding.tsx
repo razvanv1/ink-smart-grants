@@ -64,6 +64,8 @@ export default function Onboarding() {
         });
       if (fpErr) throw fpErr;
 
+      queryClient.invalidateQueries({ queryKey: ['user-org-check'] });
+      queryClient.invalidateQueries({ queryKey: ['user-org'] });
       toast({ title: "Workspace ready" });
       navigate("/");
     } catch (err: any) {
