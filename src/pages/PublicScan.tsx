@@ -147,7 +147,9 @@ const PublicScan = () => {
                 {/* Octopus mascot — centered over the 3 cards only */}
                 <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center" aria-hidden="true">
                   <img
-                    src={octopusImg}
+                    src={octopusImgMd}
+                    srcSet={`${octopusImgMd} 640w, ${octopusImg} 900w`}
+                    sizes="(max-width: 768px) 100vw, 900px"
                     alt=""
                     width={900}
                     height={674}
