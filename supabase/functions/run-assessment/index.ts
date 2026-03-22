@@ -49,40 +49,78 @@ interface AssessmentContext {
 //   - OPENCLAW_API_URL
 //   - OPENCLAW_API_KEY
 // ─────────────────────────────────────────────────────────────
-async function executeAssessment(ctx: AssessmentContext): Promise<AssessmentResult> {
-  const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+// ─────────────────────────────────────────────────────────────
+// DEV/DEMO MODE FLAG
+// Set ASSESSMENT_ALLOW_FALLBACK=true to allow Lovable AI fallback.
+// In production, only OpenClaw is accepted.
+// ─────────────────────────────────────────────────────────────
+type ExecutionProvider = "openclaw" | "lovable_ai";
+
+interface ExecutionResult {
+  provider: ExecutionProvider;
+  result: AssessmentResult;
+}
+
+const OPENCLAW_TIMEOUT_MS = 120_000; // 2 minutes
+
+async function executeAssessment(ctx: AssessmentContext): Promise<ExecutionResult> {
   const openclawUrl = Deno.env.get("OPENCLAW_API_URL");
   const openclawKey = Deno.env.get("OPENCLAW_API_KEY");
+  const allowFallback = Deno.env.get("ASSESSMENT_ALLOW_FALLBACK") === "true";
+  const lovableKey = Deno.env.get("LOVABLE_API_KEY");
 
-  // ── OpenClaw path (preferred when configured) ──
+  // ── OpenClaw path (primary) ──
   if (openclawUrl && openclawKey) {
-    const response = await fetch(`${openclawUrl}/v1/assessments`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${openclawKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        opportunity: ctx.opportunity,
-        organization: ctx.organization,
-        funding_profile: ctx.fundingProfile,
-        documents: ctx.documents,
-        based_on_docs: ctx.basedOnDocs,
-      }),
-    });
+    console.log("[assessment] Provider: openclaw");
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), OPENCLAW_TIMEOUT_MS);
 
-    if (!response.ok) {
-      const errText = await response.text().catch(() => "Unknown error");
-      throw new Error(`OpenClaw error (${response.status}): ${errText.slice(0, 300)}`);
+    try {
+      const response = await fetch(`${openclawUrl}/v1/assessments`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${openclawKey}`,
+          "Content-Type": "application/json",
+        },
+        signal: controller.signal,
+        body: JSON.stringify({
+          opportunity: ctx.opportunity,
+          organization: ctx.organization,
+          funding_profile: ctx.fundingProfile,
+          documents: ctx.documents,
+          based_on_docs: ctx.basedOnDocs,
+        }),
+      });
+
+      if (!response.ok) {
+        const errText = await response.text().catch(() => "Unknown error");
+        throw new Error(`OpenClaw error (${response.status}): ${errText.slice(0, 300)}`);
+      }
+
+      const result = await response.json();
+      return { provider: "openclaw", result: validateResult(result) };
+    } catch (e) {
+      if (e instanceof DOMException && e.name === "AbortError") {
+        throw new Error(`OpenClaw timeout after ${OPENCLAW_TIMEOUT_MS / 1000}s`);
+      }
+      throw e;
+    } finally {
+      clearTimeout(timeout);
     }
-
-    const result = await response.json();
-    return validateResult(result);
   }
 
-  // ── Lovable AI fallback (temporary bridge) ──
+  // ── No OpenClaw configured ──
+  if (!allowFallback) {
+    throw new Error(
+      "OpenClaw not configured (OPENCLAW_API_URL / OPENCLAW_API_KEY missing). " +
+      "Set ASSESSMENT_ALLOW_FALLBACK=true to use Lovable AI in dev/demo mode."
+    );
+  }
+
+  // ── Lovable AI fallback (dev/demo only) ──
+  console.log("[assessment] Provider: lovable_ai (dev/demo fallback)");
   if (!lovableKey) {
-    throw new Error("No AI backend configured. Set OPENCLAW_API_URL + OPENCLAW_API_KEY, or LOVABLE_API_KEY as fallback.");
+    throw new Error("LOVABLE_API_KEY missing — cannot run fallback AI either.");
   }
 
   const { opportunity: opp, organization: org, fundingProfile, documents: docs, basedOnDocs } = ctx;
@@ -177,7 +215,7 @@ Provide a thorough assessment.`;
     throw new Error("AI returned no structured output");
   }
 
-  return validateResult(JSON.parse(toolCall.function.arguments));
+  return { provider: "lovable_ai" as ExecutionProvider, result: validateResult(JSON.parse(toolCall.function.arguments)) };
 }
 
 function validateResult(raw: any): AssessmentResult {
@@ -289,9 +327,9 @@ serve(async (req) => {
       basedOnDocs,
     };
 
-    let result: AssessmentResult;
+    let execution: ExecutionResult;
     try {
-      result = await executeAssessment(ctx);
+      execution = await executeAssessment(ctx);
     } catch (execErr) {
       const errMsg = execErr instanceof Error ? execErr.message : "Unknown execution error";
       console.error("Assessment execution failed:", errMsg);
@@ -306,6 +344,9 @@ serve(async (req) => {
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    const { provider, result } = execution;
+    console.log(`[assessment] Completed via ${provider} for ${opportunityId}`);
 
     // ── Persist results ──
     const { error: upsertErr } = await supabaseAdmin
@@ -349,7 +390,7 @@ serve(async (req) => {
     }).eq("id", opportunityId);
 
     return new Response(
-      JSON.stringify({ status: "completed", opportunityId, basedOnDocs, judgment: result.judgment }),
+      JSON.stringify({ status: "completed", opportunityId, basedOnDocs, judgment: result.judgment, provider }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (e) {
