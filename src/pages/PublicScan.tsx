@@ -88,7 +88,7 @@ const PublicScan = () => {
           <img
             src={octopusImg}
             alt=""
-            className="absolute right-0 top-[50%] -translate-y-[46%] w-[90vw] max-w-[1100px] h-auto opacity-[0.16] sm:opacity-[0.18] lg:opacity-[0.22] select-none object-contain"
+            className="absolute right-[5%] top-[50%] -translate-y-[50%] w-[80vw] max-w-[900px] h-auto max-h-[90%] opacity-[0.16] sm:opacity-[0.18] lg:opacity-[0.22] select-none object-contain"
           />
         </div>
 
