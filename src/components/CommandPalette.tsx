@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   CommandDialog,
@@ -9,7 +9,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Radar, GitBranch, BookOpen, LayoutDashboard, Layers, Bot, Building2, Settings } from "lucide-react";
-import { opportunities, workflows, knowledgeAssets } from "@/data/sampleData";
+import { useOpportunities } from "@/hooks/useOpportunities";
 
 const pages = [
   { name: "Dashboard", path: "/", icon: LayoutDashboard },
@@ -25,6 +25,7 @@ const pages = [
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const { data: opportunities = [] } = useOpportunities();
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -44,7 +45,7 @@ export function CommandPalette() {
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <CommandInput placeholder="Search pages, opportunities, workflows, assets…" />
+      <CommandInput placeholder="Search pages, opportunities…" />
       <CommandList>
         <CommandEmpty>No results.</CommandEmpty>
 
@@ -57,35 +58,17 @@ export function CommandPalette() {
           ))}
         </CommandGroup>
 
-        <CommandGroup heading="Opportunities">
-          {opportunities.map((o) => (
-            <CommandItem key={o.id} onSelect={() => go(`/opportunities/${o.id}`)}>
-              <Radar className="mr-2 h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.6} />
-              <span className="truncate">{o.callName}</span>
-              <span className="ml-auto text-[11px] text-muted-foreground">{o.programme}</span>
-            </CommandItem>
-          ))}
-        </CommandGroup>
-
-        <CommandGroup heading="Workflows">
-          {workflows.map((w) => (
-            <CommandItem key={w.id} onSelect={() => go(`/workflows/${w.id}`)}>
-              <GitBranch className="mr-2 h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.6} />
-              <span className="truncate">{w.name}</span>
-              <span className="ml-auto text-[11px] text-muted-foreground">{w.stage}</span>
-            </CommandItem>
-          ))}
-        </CommandGroup>
-
-        <CommandGroup heading="Knowledge Assets">
-          {knowledgeAssets.map((a) => (
-            <CommandItem key={a.id} onSelect={() => go("/knowledge-vault")}>
-              <BookOpen className="mr-2 h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.6} />
-              <span className="truncate">{a.title}</span>
-              <span className="ml-auto text-[11px] text-muted-foreground">{a.type}</span>
-            </CommandItem>
-          ))}
-        </CommandGroup>
+        {opportunities.length > 0 && (
+          <CommandGroup heading="Opportunities">
+            {opportunities.map((o) => (
+              <CommandItem key={o.id} onSelect={() => go(`/opportunities/${o.id}`)}>
+                <Radar className="mr-2 h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.6} />
+                <span className="truncate">{o.call_name}</span>
+                <span className="ml-auto text-[11px] text-muted-foreground">{o.programme}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        )}
       </CommandList>
     </CommandDialog>
   );
