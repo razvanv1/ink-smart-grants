@@ -161,7 +161,7 @@ const ScanPage = () => {
   };
 
   return (
-    <div className="p-8 max-w-[960px] mx-auto">
+    <div className="p-8 lg:p-10 xl:p-12 max-w-[1200px] mx-auto">
       <div className="mb-8">
         <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-primary mb-2">Funding Intelligence</p>
         <h1 className="ink-page-title mb-2">Scan</h1>
@@ -192,7 +192,7 @@ const ScanPage = () => {
 
       {/* New Scan */}
       {activeTab === "New Scan" && (
-        <form onSubmit={handleScan} className="space-y-6 max-w-[600px]">
+        <form onSubmit={handleScan} className="space-y-6 max-w-[720px]">
           <div>
             <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">
               What do you want to fund?
@@ -301,23 +301,25 @@ const ScanPage = () => {
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={isScanning}
-            className="w-full py-3.5 bg-foreground text-background text-[13px] font-bold tracking-wide rounded-sm hover:bg-foreground/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 active:scale-[0.98]"
-          >
-            {isScanning ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Scanning 940+ calls…
-              </>
-            ) : (
-              <>
-                <Search className="h-4 w-4" />
-                Scan Opportunities
-              </>
-            )}
-          </button>
+          <div className="flex justify-start pt-1">
+            <button
+              type="submit"
+              disabled={isScanning}
+              className="px-7 py-2.5 bg-info text-info-foreground text-[13px] font-bold rounded-full hover:bg-info/85 transition-all disabled:opacity-50 inline-flex items-center gap-2 active:scale-[0.96] shadow-md shadow-info/20 hover:shadow-lg hover:shadow-info/25"
+            >
+              {isScanning ? (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  Scanning…
+                </>
+              ) : (
+                <>
+                  <Search className="h-3.5 w-3.5" />
+                  Scan
+                </>
+              )}
+            </button>
+          </div>
 
           <p className="text-[11px] text-muted-foreground text-center">
             Real EU data · Results saved to your scan history
@@ -406,25 +408,25 @@ const ScanPage = () => {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => toast.success(`${match.callName} saved to Opportunities`)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-primary/20 bg-primary/[0.03] text-[11px] font-bold tracking-wide text-foreground hover:border-primary/40 hover:bg-primary/[0.06] transition-all active:scale-[0.97]"
+                            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-primary/20 bg-primary/[0.04] text-[11px] font-bold text-foreground hover:border-primary/40 hover:bg-primary/[0.08] transition-all active:scale-[0.96]"
                           >
-                            <Plus className="h-3 w-3" /> Save to Opportunities
+                            <Plus className="h-3 w-3" /> Save
                           </button>
                           <button
                             onClick={() => toast.info(`${match.callName} added to Watchlist`)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-[11px] font-semibold tracking-wide text-muted-foreground hover:text-foreground hover:bg-secondary transition-all active:scale-[0.97]"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary transition-all active:scale-[0.96]"
                           >
-                            Add to Watchlist
+                            Watchlist
                           </button>
                           <button
                             onClick={() => toast.info("Start Workflow: available in production")}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-[11px] font-semibold tracking-wide text-muted-foreground hover:text-foreground hover:bg-secondary transition-all active:scale-[0.97]"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary transition-all active:scale-[0.96]"
                           >
-                            <ArrowRight className="h-3 w-3" /> Start Workflow
+                            <ArrowRight className="h-3 w-3" /> Workflow
                           </button>
                           <button
                             onClick={() => toast.info(`${match.callName} ignored`)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm text-[11px] font-semibold tracking-wide text-muted-foreground/50 hover:text-muted-foreground transition-all active:scale-[0.97] ml-auto"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold text-muted-foreground/50 hover:text-muted-foreground transition-all active:scale-[0.96] ml-auto"
                           >
                             Ignore
                           </button>
