@@ -92,8 +92,14 @@ const PublicScan = () => {
           />
         </div>
 
-        <div className="relative w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pt-20 sm:pt-28 lg:pt-32 pb-20 sm:pb-24 lg:pb-28">
-          <div className="max-w-[1880px] mx-auto">
+        <div className="relative w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pt-20 sm:pt-28 lg:pt-32 pb-24 sm:pb-28 lg:pb-36">
+          <div className="max-w-[1880px] mx-auto relative">
+            {/* Slogan — top right corner, branded with INK */}
+            <div className="absolute top-0 right-0 hidden lg:flex items-center gap-2 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
+              <span className="text-[11px] font-extrabold tracking-[-0.01em] text-foreground/35 italic">"I can slap 8 grants at once."</span>
+              <span className="text-[9px] font-bold text-primary/50 uppercase tracking-wider">— INK</span>
+            </div>
+
             <button
               onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-info/30 bg-info/[0.07] text-[11px] font-bold tracking-wide uppercase text-info hover:bg-info/[0.14] hover:border-info/50 active:scale-[0.96] transition-all mb-7 opacity-0 animate-fade-in-up"
@@ -118,9 +124,9 @@ const PublicScan = () => {
               A smart funding operations platform that monitors opportunities, selects the best grants, builds proposals faster with smart agents.
             </p>
 
-            {/* Slogan inline */}
-            <p className="text-[20px] sm:text-[24px] lg:text-[28px] font-extrabold text-foreground/50 italic tracking-[-0.02em] mb-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-              "I can slap 8 grants at once."
+            {/* Slogan on mobile only */}
+            <p className="lg:hidden text-[16px] font-extrabold text-foreground/40 italic tracking-[-0.02em] mb-8 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+              "I can slap 8 grants at once." <span className="text-[10px] not-italic font-bold text-primary/50 uppercase tracking-wider ml-1">— INK</span>
             </p>
 
             <div className="flex flex-wrap items-center gap-3 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
@@ -132,7 +138,7 @@ const PublicScan = () => {
               </button>
               <button
                 onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-5 py-3 text-[13px] font-semibold text-foreground/65 hover:text-foreground rounded-full border border-border hover:border-foreground/30 hover:bg-secondary/60 transition-all active:scale-[0.96]"
+                className="px-5 py-3 text-[13px] font-bold text-foreground bg-secondary hover:bg-secondary/80 rounded-full border border-border shadow-sm hover:shadow-md hover:border-foreground/20 transition-all active:scale-[0.96]"
               >
                 View Pricing
               </button>
