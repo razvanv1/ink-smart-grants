@@ -24,15 +24,33 @@ serve(async (req) => {
     const { data: { user }, error: authErr } = await anonClient.auth.getUser(authHeader.replace('Bearer ', ''));
     if (authErr || !user) throw new Error('Unauthorized');
 
-    // Get user's org
-    const { data: membership } = await supabase
+    // Get user's org — auto-create if missing
+    let { data: membership } = await supabase
       .from('organization_members')
       .select('organization_id')
       .eq('user_id', user.id)
       .limit(1)
       .maybeSingle();
 
-    if (!membership) throw new Error('No organization found. Complete onboarding first.');
+    if (!membership) {
+      // Auto-create org + membership so seed works without onboarding
+      const orgName = user.user_metadata?.full_name
+        ? `${user.user_metadata.full_name}'s Organization`
+        : 'My Organization';
+      const { data: newOrg, error: orgErr } = await supabase
+        .from('organizations')
+        .insert({ name: orgName, onboarding_complete: false })
+        .select('id')
+        .single();
+      if (orgErr) throw orgErr;
+
+      const { error: memErr } = await supabase
+        .from('organization_members')
+        .insert({ organization_id: newOrg.id, user_id: user.id, role: 'owner' });
+      if (memErr) throw memErr;
+
+      membership = { organization_id: newOrg.id };
+    }
 
     const orgId = membership.organization_id;
 
