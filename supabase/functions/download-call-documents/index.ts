@@ -115,19 +115,28 @@ serve(async (req) => {
         redirect: "follow",
       });
     } catch (fetchErr) {
-      const errMsg = fetchErr instanceof Error ? fetchErr.message : "Network error";
-      console.error("Fetch error:", errMsg);
+      const rawMsg = fetchErr instanceof Error ? fetchErr.message : "Network error";
+      console.error("Fetch error:", rawMsg);
 
-      // Update doc record with error
-      await upsertDocWithError(supabase, opportunityId, opp.call_name, opp.source_url, errMsg);
+      // Provide user-friendly message for common errors
+      let userMsg = rawMsg;
+      if (rawMsg.includes("UnknownIssuer") || rawMsg.includes("invalid peer certificate")) {
+        userMsg = `The source website (${new URL(opp.source_url).hostname}) has an invalid or untrusted SSL certificate. The document cannot be downloaded automatically. Please download it manually and upload it directly.`;
+      } else if (rawMsg.includes("dns error") || rawMsg.includes("getaddrinfo")) {
+        userMsg = `The source website (${new URL(opp.source_url).hostname}) could not be reached. Please check the URL and try again.`;
+      } else if (rawMsg.includes("timed out")) {
+        userMsg = `The source website timed out. Please try again later.`;
+      }
+
+      await upsertDocWithError(supabase, opportunityId, opp.call_name, opp.source_url, userMsg);
       await supabase
         .from("opportunities")
         .update({ docs_status: "not_downloaded" })
         .eq("id", opportunityId);
 
       return new Response(
-        JSON.stringify({ success: false, error: `Failed to fetch source: ${errMsg}` }),
-        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ success: false, error: userMsg }),
+        { status: 422, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
