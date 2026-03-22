@@ -192,7 +192,7 @@ const ScanPage = () => {
 
       {/* New Scan */}
       {activeTab === "New Scan" && (
-        <form onSubmit={handleScan} className="space-y-6 max-w-[600px]">
+        <form onSubmit={handleScan} className="space-y-6 max-w-[720px]">
           <div>
             <label className="text-[11px] font-semibold text-foreground tracking-wide uppercase block mb-2">
               What do you want to fund?
