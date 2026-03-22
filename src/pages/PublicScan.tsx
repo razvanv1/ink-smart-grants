@@ -92,8 +92,14 @@ const PublicScan = () => {
           />
         </div>
 
-        <div className="relative w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pt-20 sm:pt-28 lg:pt-32 pb-20 sm:pb-24 lg:pb-28">
-          <div className="max-w-[1880px] mx-auto">
+        <div className="relative w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pt-20 sm:pt-28 lg:pt-32 pb-24 sm:pb-28 lg:pb-36">
+          <div className="max-w-[1880px] mx-auto relative">
+            {/* Slogan — top right corner, branded with INK */}
+            <div className="absolute top-0 right-0 hidden lg:flex items-center gap-2 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
+              <span className="text-[11px] font-extrabold tracking-[-0.01em] text-foreground/35 italic">"I can slap 8 grants at once."</span>
+              <span className="text-[9px] font-bold text-primary/50 uppercase tracking-wider">— INK</span>
+            </div>
+
             <button
               onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-info/30 bg-info/[0.07] text-[11px] font-bold tracking-wide uppercase text-info hover:bg-info/[0.14] hover:border-info/50 active:scale-[0.96] transition-all mb-7 opacity-0 animate-fade-in-up"
@@ -118,9 +124,9 @@ const PublicScan = () => {
               A smart funding operations platform that monitors opportunities, selects the best grants, builds proposals faster with smart agents.
             </p>
 
-            {/* Slogan inline */}
-            <p className="text-[20px] sm:text-[24px] lg:text-[28px] font-extrabold text-foreground/50 italic tracking-[-0.02em] mb-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-              "I can slap 8 grants at once."
+            {/* Slogan on mobile only */}
+            <p className="lg:hidden text-[16px] font-extrabold text-foreground/40 italic tracking-[-0.02em] mb-8 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+              "I can slap 8 grants at once." <span className="text-[10px] not-italic font-bold text-primary/50 uppercase tracking-wider ml-1">— INK</span>
             </p>
 
             <div className="flex flex-wrap items-center gap-3 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
@@ -132,7 +138,7 @@ const PublicScan = () => {
               </button>
               <button
                 onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
-                className="px-5 py-3 text-[13px] font-semibold text-foreground/65 hover:text-foreground rounded-full border border-border hover:border-foreground/30 hover:bg-secondary/60 transition-all active:scale-[0.96]"
+                className="px-5 py-3 text-[13px] font-bold text-foreground bg-secondary hover:bg-secondary/80 rounded-full border border-border shadow-sm hover:shadow-md hover:border-foreground/20 transition-all active:scale-[0.96]"
               >
                 View Pricing
               </button>
@@ -142,14 +148,14 @@ const PublicScan = () => {
       </section>
 
       {/* ═══ HOW IT WORKS + SCAN FORM ═══ */}
-      <div className="w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pb-20">
+      <div className="w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pb-20 pt-8 sm:pt-12">
         <div className="max-w-[1880px] mx-auto">
           {/* ═══ HOW IT WORKS ═══ */}
           {!showResults && (
             <ScrollReveal id="how-it-works" delay={120} className="mb-16 sm:mb-20">
-              <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info text-center mb-2">How It Works</p>
-              <h2 className="text-[28px] sm:text-[34px] lg:text-[40px] font-extrabold text-foreground tracking-[-0.04em] text-center mb-3">Get matched in 3 simple steps</h2>
-              <p className="text-[15px] sm:text-[16px] text-foreground/65 text-center mb-10 max-w-[660px] mx-auto leading-relaxed">
+              <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info text-center mb-3">How It Works</p>
+              <h2 className="text-[32px] sm:text-[42px] lg:text-[50px] font-extrabold text-foreground tracking-[-0.04em] text-center mb-4 leading-[1.05]">Get matched in 3 simple steps</h2>
+              <p className="text-[15px] sm:text-[16px] text-foreground/65 text-center mb-12 max-w-[660px] mx-auto leading-relaxed">
                 Our AI scans 940+ live EU & national funding calls and matches them to your project profile. No expertise needed.
               </p>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -257,7 +263,7 @@ const PublicScan = () => {
             <div className="flex items-center justify-between opacity-0 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
               <div>
                 <p className="text-[10px] font-bold tracking-[0.15em] uppercase text-info mb-1">Scan Results</p>
-                <p className="text-[26px] font-extrabold text-foreground tracking-tight">{matches.length} calls matched</p>
+                <h2 className="text-[26px] font-extrabold text-foreground tracking-tight">{matches.length} calls matched</h2>
                 <p className="text-[13px] text-foreground/70 mt-0.5">for "{projectIntent}"</p>
               </div>
               <button onClick={() => { setShowResults(false); setMatches([]); }} className="text-[12px] font-bold text-foreground/80 hover:text-foreground transition-all px-4 py-2 rounded-full border border-border hover:border-foreground/30 hover:bg-secondary/60 active:scale-[0.96]">New Scan</button>
@@ -326,7 +332,7 @@ function HowItWorksStep({ step, title, description }: { step: number; title: str
   return (
     <div className="relative flex flex-col items-center text-center p-8 sm:p-9 rounded-[12px] border border-border bg-card hover:shadow-lg hover:shadow-info/[0.08] transition-all duration-300 group min-h-[240px] justify-center">
       <span className="text-[58px] sm:text-[64px] font-light leading-none mb-5 select-none text-primary" style={{ fontFamily: "'Georgia', 'Times New Roman', serif" }}>{step}</span>
-      <p className="text-[18px] font-bold text-foreground leading-snug mb-2">{title}</p>
+      <h3 className="text-[18px] font-bold text-foreground leading-snug mb-2">{title}</h3>
       <p className="text-[14px] text-foreground/65 leading-relaxed max-w-[360px]">{description}</p>
     </div>
   );

@@ -59,7 +59,7 @@ export function PricingSection() {
     <section id="pricing" className="py-24 sm:py-28">
       <ScrollReveal className="text-center mb-16" delay={80}>
         <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info mb-3">Pricing</p>
-        <h2 className="text-[34px] sm:text-[40px] font-extrabold text-foreground tracking-[-0.04em] leading-[1.08] mb-4">
+        <h2 className="text-[32px] sm:text-[42px] lg:text-[50px] font-extrabold text-foreground tracking-[-0.04em] leading-[1.05] mb-4">
           Simple pricing. No long-term contracts.
         </h2>
         <p className="text-[16px] text-foreground/75 max-w-[560px] mx-auto leading-relaxed">
@@ -86,7 +86,7 @@ export function PricingSection() {
             )}
 
             <div className="mb-6">
-              <p className="text-[13px] font-bold text-foreground mb-2">{plan.name}</p>
+              <h3 className="text-[15px] font-bold text-foreground mb-2">{plan.name}</h3>
               <div className="flex items-baseline gap-1.5">
                 <span className="text-[36px] font-extrabold text-foreground tracking-[-0.04em] leading-none">{plan.price}</span>
                 {plan.price !== "Custom" && (
