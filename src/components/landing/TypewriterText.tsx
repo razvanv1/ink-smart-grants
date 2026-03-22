@@ -36,10 +36,18 @@ export function TypewriterText({ phrases, className = "" }: TypewriterTextProps)
 
   const displayed = phrases[currentPhrase].slice(0, currentChar);
 
+  // Find the longest phrase to reserve stable width and prevent layout shifts
+  const longestPhrase = phrases.reduce((a, b) => (a.length > b.length ? a : b), "");
+
   return (
-    <span className={className}>
-      {displayed}
-      <span className="border-r-[3px] border-current text-current animate-typewriter-cursor ml-0.5">&nbsp;</span>
+    <span className={`${className} relative inline-block`}>
+      {/* Invisible longest phrase to reserve width */}
+      <span className="invisible whitespace-pre" aria-hidden="true">{longestPhrase}</span>
+      {/* Visible typewriter text overlaid */}
+      <span className="absolute left-0 top-0 whitespace-pre">
+        {displayed}
+        <span className="border-r-[3px] border-current text-current animate-typewriter-cursor ml-0.5">&nbsp;</span>
+      </span>
     </span>
   );
 }
