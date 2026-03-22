@@ -88,16 +88,16 @@ const PublicScan = () => {
           <img
             src={octopusImg}
             alt=""
-            className="absolute right-0 top-[50%] -translate-y-[46%] w-[90vw] max-w-[1100px] h-auto opacity-[0.16] sm:opacity-[0.18] lg:opacity-[0.22] select-none object-contain"
+            className="absolute right-[5%] top-[50%] -translate-y-[50%] w-[80vw] max-w-[900px] h-auto max-h-[90%] opacity-[0.16] sm:opacity-[0.18] lg:opacity-[0.22] select-none object-contain"
           />
         </div>
 
         <div className="relative w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pt-20 sm:pt-28 lg:pt-32 pb-24 sm:pb-28 lg:pb-36">
           <div className="max-w-[1880px] mx-auto relative">
             {/* Slogan — top right corner, branded with INK */}
-            <div className="absolute top-0 right-0 hidden lg:flex items-center gap-2 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
-              <span className="text-[11px] font-extrabold tracking-[-0.01em] text-foreground/35 italic">"I can slap 8 grants at once."</span>
-              <span className="text-[9px] font-bold text-primary/50 uppercase tracking-wider">— INK</span>
+            <div className="absolute top-0 right-0 hidden lg:flex items-center gap-3 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
+              <span className="text-[18px] xl:text-[22px] font-extrabold tracking-[-0.02em] text-foreground/40 italic">"I can slap 8 grants at once."</span>
+              <span className="text-[12px] font-bold text-primary/60 uppercase tracking-wider">— INK</span>
             </div>
 
             <button
@@ -153,8 +153,8 @@ const PublicScan = () => {
           {/* ═══ HOW IT WORKS ═══ */}
           {!showResults && (
             <ScrollReveal id="how-it-works" delay={120} className="mb-16 sm:mb-20">
-              <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-info text-center mb-3">How It Works</p>
-              <h2 className="text-[32px] sm:text-[42px] lg:text-[50px] font-extrabold text-foreground tracking-[-0.04em] text-center mb-4 leading-[1.05]">Get matched in 3 simple steps</h2>
+              <p className="text-[13px] sm:text-[14px] font-bold tracking-[0.18em] uppercase text-info text-center mb-4">How It Works</p>
+              <h2 className="text-[36px] sm:text-[48px] lg:text-[58px] xl:text-[64px] font-extrabold text-foreground tracking-[-0.04em] text-center mb-5 leading-[1.02]">Get matched in 3 simple steps</h2>
               <p className="text-[15px] sm:text-[16px] text-foreground/65 text-center mb-12 max-w-[660px] mx-auto leading-relaxed">
                 Our AI scans 940+ live EU & national funding calls and matches them to your project profile. No expertise needed.
               </p>
