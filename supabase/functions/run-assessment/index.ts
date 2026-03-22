@@ -327,9 +327,9 @@ serve(async (req) => {
       basedOnDocs,
     };
 
-    let result: AssessmentResult;
+    let execution: ExecutionResult;
     try {
-      result = await executeAssessment(ctx);
+      execution = await executeAssessment(ctx);
     } catch (execErr) {
       const errMsg = execErr instanceof Error ? execErr.message : "Unknown execution error";
       console.error("Assessment execution failed:", errMsg);
@@ -344,6 +344,9 @@ serve(async (req) => {
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    const { provider, result } = execution;
+    console.log(`[assessment] Completed via ${provider} for ${opportunityId}`);
 
     // ── Persist results ──
     const { error: upsertErr } = await supabaseAdmin
@@ -387,7 +390,7 @@ serve(async (req) => {
     }).eq("id", opportunityId);
 
     return new Response(
-      JSON.stringify({ status: "completed", opportunityId, basedOnDocs, judgment: result.judgment }),
+      JSON.stringify({ status: "completed", opportunityId, basedOnDocs, judgment: result.judgment, provider }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (e) {
