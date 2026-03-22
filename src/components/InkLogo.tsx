@@ -5,6 +5,7 @@ interface InkLogoProps {
   size?: number;
   className?: string;
   showText?: boolean;
+  showTagline?: boolean;
   textClassName?: string;
 }
 
