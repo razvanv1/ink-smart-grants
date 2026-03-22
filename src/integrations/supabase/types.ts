@@ -76,6 +76,36 @@ export type Database = {
           },
         ]
       }
+      notification_preferences: {
+        Row: {
+          agent_risk_alerts: boolean
+          created_at: string
+          deadline_reminders: boolean
+          id: string
+          updated_at: string
+          user_id: string
+          weekly_digest: boolean
+        }
+        Insert: {
+          agent_risk_alerts?: boolean
+          created_at?: string
+          deadline_reminders?: boolean
+          id?: string
+          updated_at?: string
+          user_id: string
+          weekly_digest?: boolean
+        }
+        Update: {
+          agent_risk_alerts?: boolean
+          created_at?: string
+          deadline_reminders?: boolean
+          id?: string
+          updated_at?: string
+          user_id?: string
+          weekly_digest?: boolean
+        }
+        Relationships: []
+      }
       organization_members: {
         Row: {
           created_at: string
