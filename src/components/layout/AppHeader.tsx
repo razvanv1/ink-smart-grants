@@ -13,8 +13,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function AppHeader() {
-  const { user, signOut } = useAuth();
-  const navigate = useNavigate();
+  const orgId = useOrganizationId();
+  const { data: orgName } = useQuery({
+    queryKey: ['org-name', orgId],
+    queryFn: async () => {
+      if (!orgId) return null;
+      const { data } = await supabase.from('organizations').select('name').eq('id', orgId).single();
+      return data?.name ?? null;
+    },
+    enabled: !!orgId,
+    staleTime: 1000 * 60 * 5,
+  });
 
   const initials = user?.email ? user.email.slice(0, 2).toUpperCase() : "??";
 
