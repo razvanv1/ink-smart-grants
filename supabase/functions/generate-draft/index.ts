@@ -41,7 +41,55 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const { opportunity, workflow, existingSections } = await req.json();
+    // Body size guard
+    const contentLength = parseInt(req.headers.get("content-length") || "0", 10);
+    if (contentLength > 50_000) {
+      return new Response(
+        JSON.stringify({ error: "Request body too large" }),
+        { status: 413, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const body = await req.json();
+    const { opportunity, workflow, existingSections } = body;
+
+    // Schema validation
+    if (!opportunity || typeof opportunity !== "object" || !workflow || typeof workflow !== "object") {
+      return new Response(
+        JSON.stringify({ error: "Missing required fields: opportunity, workflow" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Truncate helper to cap string lengths
+    const cap = (val: unknown, max: number): string => {
+      if (typeof val !== "string") return "";
+      return val.length > max ? val.slice(0, max) : val;
+    };
+
+    // Sanitize inputs with length limits
+    const safeOpp = {
+      callName: cap(opportunity.callName, 300),
+      programme: cap(opportunity.programme, 200),
+      thematicArea: cap(opportunity.thematicArea, 200),
+      fundingType: cap(opportunity.fundingType, 100),
+      fundingRange: cap(opportunity.fundingRange, 100),
+      geography: cap(opportunity.geography, 200),
+      summary: cap(opportunity.summary, 2000),
+      whyItFits: cap(opportunity.whyItFits, 1000),
+      partnerRequired: Boolean(opportunity.partnerRequired),
+      complexity: cap(opportunity.complexity, 50),
+    };
+
+    const safeWorkflow = {
+      name: cap(workflow.name, 300),
+      stage: cap(workflow.stage, 100),
+      deadline: cap(workflow.deadline, 30),
+    };
+
+    const safeSections = Array.isArray(existingSections)
+      ? existingSections.slice(0, 20).map((s: any) => ({ name: cap(s?.name, 200) }))
+      : [];
 
     const systemPrompt = `You are an expert grant writer and proposal architect. You help organizations build structured funding proposals.
 
