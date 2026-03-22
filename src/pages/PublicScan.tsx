@@ -265,7 +265,7 @@ const PublicScan = () => {
                 <p className="text-[26px] font-extrabold text-foreground tracking-tight">{matches.length} calls matched</p>
                 <p className="text-[13px] text-foreground/70 mt-0.5">for "{projectIntent}"</p>
               </div>
-              <button onClick={() => { setShowResults(false); setMatches([]); }} className="text-[11px] font-semibold text-foreground/75 hover:text-foreground transition-colors px-3 py-1.5 rounded-[3px] border border-border hover:border-foreground/30">New Scan</button>
+              <button onClick={() => { setShowResults(false); setMatches([]); }} className="text-[12px] font-bold text-foreground/80 hover:text-foreground transition-all px-4 py-2 rounded-full border border-border hover:border-foreground/30 hover:bg-secondary/60 active:scale-[0.96]">New Scan</button>
             </div>
 
             <div className="space-y-4">
