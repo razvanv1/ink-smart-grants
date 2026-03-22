@@ -46,7 +46,7 @@ serve(async (req) => {
 
       const { error: memErr } = await supabase
         .from('organization_members')
-        .insert({ organization_id: newOrg.id, user_id: user.id, role: 'owner' });
+        .insert({ organization_id: newOrg.id, user_id: user.id, role: 'admin' });
       if (memErr) throw memErr;
 
       membership = { organization_id: newOrg.id };

@@ -49,7 +49,7 @@ export default function Onboarding() {
       // 2. Add user as owner
       const { error: memErr } = await supabase
         .from("organization_members")
-        .insert({ organization_id: org.id, user_id: user.id, role: "owner" });
+        .insert({ organization_id: org.id, user_id: user.id, role: "admin" });
       if (memErr) throw memErr;
 
       // 3. Create funding profile
