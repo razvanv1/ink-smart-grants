@@ -91,6 +91,7 @@ const PublicScan = () => {
             alt=""
             width={900}
             height={674}
+            fetchPriority="high"
             className="absolute right-[5%] top-[50%] -translate-y-[50%] w-[80vw] max-w-[900px] h-auto max-h-[90%] opacity-[0.16] sm:opacity-[0.18] lg:opacity-[0.22] select-none object-contain"
           />
         </div>
