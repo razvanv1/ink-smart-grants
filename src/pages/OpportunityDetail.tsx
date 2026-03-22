@@ -3,8 +3,8 @@ import { useOpportunityDetail, useUpdateOpportunity, useAddNote, useUpdateAction
 import { useRunAssessment } from "@/hooks/useRunAssessment";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
-import { ArrowLeft, ArrowRight, FileText, Download, AlertTriangle, CheckCircle, Clock, XCircle, Loader2, ExternalLink, Play, RotateCcw } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, ArrowRight, FileText, Download, AlertTriangle, CheckCircle, Clock, XCircle, Loader2, ExternalLink, Play, RotateCcw, Upload } from "lucide-react";
+import { useState, useRef } from "react";
 import { toast } from "sonner";
 
 const tabs = ['Overview', 'Documents', 'Assessment', 'Action Plan', 'Notes'];
