@@ -287,6 +287,8 @@ export type Database = {
       }
       opportunities: {
         Row: {
+          assessment_run_error: string | null
+          assessment_run_status: string | null
           blockers: string[] | null
           call_name: string
           complexity: string | null
@@ -315,6 +317,8 @@ export type Database = {
           why_it_fits: string | null
         }
         Insert: {
+          assessment_run_error?: string | null
+          assessment_run_status?: string | null
           blockers?: string[] | null
           call_name: string
           complexity?: string | null
@@ -343,6 +347,8 @@ export type Database = {
           why_it_fits?: string | null
         }
         Update: {
+          assessment_run_error?: string | null
+          assessment_run_status?: string | null
           blockers?: string[] | null
           call_name?: string
           complexity?: string | null
