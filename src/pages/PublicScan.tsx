@@ -95,9 +95,9 @@ const PublicScan = () => {
         <div className="relative w-full px-6 sm:px-10 lg:px-20 xl:px-28 2xl:px-32 pt-20 sm:pt-28 lg:pt-32 pb-24 sm:pb-28 lg:pb-36">
           <div className="max-w-[1880px] mx-auto relative">
             {/* Slogan — top right corner, branded with INK */}
-            <div className="absolute top-0 right-0 hidden lg:flex items-center gap-2 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
-              <span className="text-[11px] font-extrabold tracking-[-0.01em] text-foreground/35 italic">"I can slap 8 grants at once."</span>
-              <span className="text-[9px] font-bold text-primary/50 uppercase tracking-wider">— INK</span>
+            <div className="absolute top-0 right-0 hidden lg:flex items-center gap-3 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
+              <span className="text-[18px] xl:text-[22px] font-extrabold tracking-[-0.02em] text-foreground/40 italic">"I can slap 8 grants at once."</span>
+              <span className="text-[12px] font-bold text-primary/60 uppercase tracking-wider">— INK</span>
             </div>
 
             <button
