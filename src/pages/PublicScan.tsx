@@ -8,6 +8,7 @@ import { TypewriterText } from "@/components/landing/TypewriterText";
 import { PricingSection } from "@/components/landing/PricingSection";
 
 import octopusImg from "@/assets/ink-octopus.webp";
+import octopusImgMd from "@/assets/ink-octopus-md.webp";
 import { ScrollReveal } from "@/components/shared/ScrollReveal";
 import { Footer } from "@/components/Footer";
 
