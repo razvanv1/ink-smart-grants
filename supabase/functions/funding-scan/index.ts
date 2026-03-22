@@ -37,46 +37,25 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const now = new Date();
-    const windowStart = new Date(now.getTime() - RATE_LIMIT_WINDOW_MS);
-
-    // Upsert: reset if window expired, otherwise increment
-    const { data: rlRow, error: rlError } = await supabaseAdmin
-      .from("rate_limits")
-      .upsert(
-        {
-          ip_address: clientIp,
-          endpoint: ENDPOINT_NAME,
-          request_count: 1,
-          window_start: now.toISOString(),
-        },
-        { onConflict: "ip_address,endpoint" }
-      )
-      .select("request_count, window_start")
-      .single();
-
-    if (!rlError && rlRow) {
-      const rowWindowStart = new Date(rlRow.window_start);
-      if (rowWindowStart < windowStart) {
-        // Window expired — reset
-        await supabaseAdmin
-          .from("rate_limits")
-          .update({ request_count: 1, window_start: now.toISOString() })
-          .eq("ip_address", clientIp)
-          .eq("endpoint", ENDPOINT_NAME);
-      } else if (rlRow.request_count > RATE_LIMIT_MAX) {
-        return new Response(
-          JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
-          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      } else {
-        // Increment
-        await supabaseAdmin
-          .from("rate_limits")
-          .update({ request_count: rlRow.request_count + 1 })
-          .eq("ip_address", clientIp)
-          .eq("endpoint", ENDPOINT_NAME);
+    // Atomic rate limit check via DB function
+    const { data: allowed, error: rlError } = await supabaseAdmin.rpc(
+      "check_rate_limit",
+      {
+        _ip: clientIp,
+        _endpoint: ENDPOINT_NAME,
+        _max_requests: RATE_LIMIT_MAX,
+        _window_interval: "1 hour",
       }
+    );
+
+    if (rlError) {
+      console.error("Rate limit check failed:", rlError);
+      // Fail open but log — don't block legitimate users on DB errors
+    } else if (allowed === false) {
+      return new Response(
+        JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
