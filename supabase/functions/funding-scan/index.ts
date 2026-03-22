@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -6,21 +7,9 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Simple in-memory rate limiter (per-IP, resets on cold start)
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_MAX = 10; // max requests per window
+const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-  entry.count++;
-  return entry.count > RATE_LIMIT_MAX;
-}
+const ENDPOINT_NAME = "funding-scan";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -28,21 +17,75 @@ serve(async (req) => {
   }
 
   try {
-    // Rate limit by IP
-    const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-                     req.headers.get("cf-connecting-ip") || "unknown";
-    if (isRateLimited(clientIp)) {
+    // Body size guard
+    const contentLength = parseInt(req.headers.get("content-length") || "0", 10);
+    if (contentLength > 50_000) {
       return new Response(
-        JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
-        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        JSON.stringify({ error: "Request body too large" }),
+        { status: 413, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    // Persistent rate limiting via database (service role)
+    const clientIp =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      req.headers.get("cf-connecting-ip") ||
+      "unknown";
+
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    const now = new Date();
+    const windowStart = new Date(now.getTime() - RATE_LIMIT_WINDOW_MS);
+
+    // Upsert: reset if window expired, otherwise increment
+    const { data: rlRow, error: rlError } = await supabaseAdmin
+      .from("rate_limits")
+      .upsert(
+        {
+          ip_address: clientIp,
+          endpoint: ENDPOINT_NAME,
+          request_count: 1,
+          window_start: now.toISOString(),
+        },
+        { onConflict: "ip_address,endpoint" }
+      )
+      .select("request_count, window_start")
+      .single();
+
+    if (!rlError && rlRow) {
+      const rowWindowStart = new Date(rlRow.window_start);
+      if (rowWindowStart < windowStart) {
+        // Window expired — reset
+        await supabaseAdmin
+          .from("rate_limits")
+          .update({ request_count: 1, window_start: now.toISOString() })
+          .eq("ip_address", clientIp)
+          .eq("endpoint", ENDPOINT_NAME);
+      } else if (rlRow.request_count > RATE_LIMIT_MAX) {
+        return new Response(
+          JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
+          { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      } else {
+        // Increment
+        await supabaseAdmin
+          .from("rate_limits")
+          .update({ request_count: rlRow.request_count + 1 })
+          .eq("ip_address", clientIp)
+          .eq("endpoint", ENDPOINT_NAME);
+      }
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const { projectIntent, organizationType, primaryDomain, filters } = await req.json();
+    const body = await req.json();
+    const { projectIntent, organizationType, primaryDomain, filters } = body;
 
     if (!projectIntent || !organizationType || !primaryDomain) {
       return new Response(
@@ -50,6 +93,21 @@ serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    // Truncate helper
+    const cap = (val: unknown, max: number): string => {
+      if (typeof val !== "string") return "";
+      return val.length > max ? val.slice(0, max) : val;
+    };
+
+    // Sanitize inputs with length limits
+    const safeProjectIntent = cap(projectIntent, 2000);
+    const safeOrgType = cap(organizationType, 200);
+    const safeDomain = cap(primaryDomain, 200);
+    const safeBudget = cap(filters?.budgetRange, 100);
+    const safeGeo = cap(filters?.geography, 200);
+    const safeStatus = cap(filters?.fundingStatus, 50);
+    const safeGrantType = cap(filters?.grantType, 100);
 
     const systemPrompt = `You are an expert EU funding advisor with deep knowledge of the EU Funding & Tenders Portal (https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/opportunities/calls-for-proposals).
 
@@ -73,13 +131,13 @@ CRITICAL MATCHING RULES:
 
 Return 8 matched calls ranked by fit score (highest first). Make the matching logic transparent. Explain WHY each call matches or doesn't fully match.`;
 
-    const userPrompt = `Project intent: "${projectIntent}"
-Organization type: ${organizationType}
-Primary domain: ${primaryDomain}
-${filters?.budgetRange ? `Budget range: ${filters.budgetRange}` : ""}
-${filters?.geography ? `Geography preference: ${filters.geography}` : ""}
-${filters?.fundingStatus ? `Funding status filter: ${filters.fundingStatus}` : "Status: Open (default)"}
-${filters?.grantType ? `Grant type filter: ${filters.grantType}` : ""}
+    const userPrompt = `Project intent: "${safeProjectIntent}"
+Organization type: ${safeOrgType}
+Primary domain: ${safeDomain}
+${safeBudget ? `Budget range: ${safeBudget}` : ""}
+${safeGeo ? `Geography preference: ${safeGeo}` : ""}
+${safeStatus ? `Funding status filter: ${safeStatus}` : "Status: Open (default)"}
+${safeGrantType ? `Grant type filter: ${safeGrantType}` : ""}
 
 Find the most relevant EU and national funding calls for this profile using the official EU Funding & Tenders Portal taxonomy. Return exactly 8 calls.`;
 
