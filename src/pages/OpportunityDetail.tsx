@@ -1,8 +1,8 @@
 import { useParams, Link } from "react-router-dom";
-import { useOpportunityDetail, useUpdateOpportunity, useAddNote, useUpdateActionItem, getLifecycleLabel } from "@/hooks/useOpportunities";
+import { useOpportunityDetail, useUpdateOpportunity, useAddNote, useUpdateActionItem, useDownloadDocuments } from "@/hooks/useOpportunities";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
-import { ArrowLeft, ArrowRight, FileText, Download, AlertTriangle, CheckCircle, Clock, XCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, FileText, Download, AlertTriangle, CheckCircle, Clock, XCircle, Loader2, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -14,6 +14,7 @@ const OpportunityDetail = () => {
   const updateOpp = useUpdateOpportunity();
   const addNote = useAddNote();
   const updateAction = useUpdateActionItem();
+  const downloadDocs = useDownloadDocuments();
   const [activeTab, setActiveTab] = useState('Overview');
   const [newNote, setNewNote] = useState('');
 
@@ -43,6 +44,16 @@ const OpportunityDetail = () => {
     updateOpp.mutate(
       { id: opp.id, updates: { priority } },
       { onSuccess: () => toast.success(`Priority set to ${priority}`) }
+    );
+  };
+
+  const handleDownloadDocs = () => {
+    downloadDocs.mutate(
+      { opportunityId: opp.id },
+      {
+        onSuccess: (res) => toast.success(res.message || 'Document ingestion started'),
+        onError: (err) => toast.error((err as Error).message || 'Failed to ingest documents'),
+      }
     );
   };
 
