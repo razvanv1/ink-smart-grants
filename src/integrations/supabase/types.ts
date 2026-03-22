@@ -14,6 +14,185 @@ export type Database = {
   }
   public: {
     Tables: {
+      call_action_items: {
+        Row: {
+          action: string
+          created_at: string
+          due_date: string | null
+          id: string
+          opportunity_id: string
+          owner: string | null
+          status: Database["public"]["Enums"]["action_item_status"] | null
+          updated_at: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          opportunity_id: string
+          owner?: string | null
+          status?: Database["public"]["Enums"]["action_item_status"] | null
+          updated_at?: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          due_date?: string | null
+          id?: string
+          opportunity_id?: string
+          owner?: string | null
+          status?: Database["public"]["Enums"]["action_item_status"] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_action_items_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      call_assessments: {
+        Row: {
+          assessed_at: string | null
+          based_on_docs: boolean | null
+          complexity_notes: string | null
+          created_at: string
+          effort_score: number | null
+          eligibility: Database["public"]["Enums"]["eligibility_status"] | null
+          eligibility_notes: string | null
+          fit_notes: string | null
+          fit_score: number | null
+          id: string
+          judgment: Database["public"]["Enums"]["call_judgment"] | null
+          opportunity_id: string
+          recommendation: string | null
+          risks: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          assessed_at?: string | null
+          based_on_docs?: boolean | null
+          complexity_notes?: string | null
+          created_at?: string
+          effort_score?: number | null
+          eligibility?: Database["public"]["Enums"]["eligibility_status"] | null
+          eligibility_notes?: string | null
+          fit_notes?: string | null
+          fit_score?: number | null
+          id?: string
+          judgment?: Database["public"]["Enums"]["call_judgment"] | null
+          opportunity_id: string
+          recommendation?: string | null
+          risks?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          assessed_at?: string | null
+          based_on_docs?: boolean | null
+          complexity_notes?: string | null
+          created_at?: string
+          effort_score?: number | null
+          eligibility?: Database["public"]["Enums"]["eligibility_status"] | null
+          eligibility_notes?: string | null
+          fit_notes?: string | null
+          fit_score?: number | null
+          id?: string
+          judgment?: Database["public"]["Enums"]["call_judgment"] | null
+          opportunity_id?: string
+          recommendation?: string | null
+          risks?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_assessments_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: true
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      call_documents: {
+        Row: {
+          created_at: string
+          doc_type: string
+          downloaded_at: string | null
+          id: string
+          name: string
+          opportunity_id: string
+          pages: number | null
+          parsed: boolean | null
+          url: string | null
+        }
+        Insert: {
+          created_at?: string
+          doc_type?: string
+          downloaded_at?: string | null
+          id?: string
+          name: string
+          opportunity_id: string
+          pages?: number | null
+          parsed?: boolean | null
+          url?: string | null
+        }
+        Update: {
+          created_at?: string
+          doc_type?: string
+          downloaded_at?: string | null
+          id?: string
+          name?: string
+          opportunity_id?: string
+          pages?: number | null
+          parsed?: boolean | null
+          url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_documents_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      call_notes: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          opportunity_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          opportunity_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          opportunity_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_notes_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       funding_profiles: {
         Row: {
           budget_range: string | null
@@ -106,6 +285,101 @@ export type Database = {
         }
         Relationships: []
       }
+      opportunities: {
+        Row: {
+          blockers: string[] | null
+          call_name: string
+          complexity: string | null
+          created_at: string
+          deadline: string | null
+          docs_status: Database["public"]["Enums"]["docs_status"] | null
+          effort_score: number | null
+          eligibility_text: string | null
+          fit_score: number | null
+          funding_range: string | null
+          funding_type: string | null
+          geography: string | null
+          id: string
+          lifecycle: Database["public"]["Enums"]["call_lifecycle"] | null
+          organization_id: string
+          partner_required: boolean | null
+          priority: Database["public"]["Enums"]["call_priority"] | null
+          programme: string
+          recommended_action: string | null
+          source_url: string | null
+          summary: string | null
+          thematic_area: string | null
+          updated_at: string
+          urgency: Database["public"]["Enums"]["urgency_level"] | null
+          why_difficult: string | null
+          why_it_fits: string | null
+        }
+        Insert: {
+          blockers?: string[] | null
+          call_name: string
+          complexity?: string | null
+          created_at?: string
+          deadline?: string | null
+          docs_status?: Database["public"]["Enums"]["docs_status"] | null
+          effort_score?: number | null
+          eligibility_text?: string | null
+          fit_score?: number | null
+          funding_range?: string | null
+          funding_type?: string | null
+          geography?: string | null
+          id?: string
+          lifecycle?: Database["public"]["Enums"]["call_lifecycle"] | null
+          organization_id: string
+          partner_required?: boolean | null
+          priority?: Database["public"]["Enums"]["call_priority"] | null
+          programme?: string
+          recommended_action?: string | null
+          source_url?: string | null
+          summary?: string | null
+          thematic_area?: string | null
+          updated_at?: string
+          urgency?: Database["public"]["Enums"]["urgency_level"] | null
+          why_difficult?: string | null
+          why_it_fits?: string | null
+        }
+        Update: {
+          blockers?: string[] | null
+          call_name?: string
+          complexity?: string | null
+          created_at?: string
+          deadline?: string | null
+          docs_status?: Database["public"]["Enums"]["docs_status"] | null
+          effort_score?: number | null
+          eligibility_text?: string | null
+          fit_score?: number | null
+          funding_range?: string | null
+          funding_type?: string | null
+          geography?: string | null
+          id?: string
+          lifecycle?: Database["public"]["Enums"]["call_lifecycle"] | null
+          organization_id?: string
+          partner_required?: boolean | null
+          priority?: Database["public"]["Enums"]["call_priority"] | null
+          programme?: string
+          recommended_action?: string | null
+          source_url?: string | null
+          summary?: string | null
+          thematic_area?: string | null
+          updated_at?: string
+          urgency?: Database["public"]["Enums"]["urgency_level"] | null
+          why_difficult?: string | null
+          why_it_fits?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunities_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organization_members: {
         Row: {
           created_at: string
@@ -174,6 +448,30 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -185,7 +483,36 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      action_item_status: "pending" | "done" | "blocked"
+      call_judgment: "go" | "watch" | "no_go"
+      call_lifecycle:
+        | "discovered"
+        | "saved"
+        | "docs_pending"
+        | "docs_ready"
+        | "assessment_pending"
+        | "assessed"
+        | "shortlisted"
+        | "rejected"
+        | "in_preparation"
+        | "awaiting_documents"
+        | "drafting"
+        | "under_review"
+        | "ready_to_submit"
+        | "submitted"
+        | "archived"
+      call_priority: "high" | "medium" | "low"
+      docs_status:
+        | "not_downloaded"
+        | "downloading"
+        | "docs_pending"
+        | "docs_ready"
+      eligibility_status:
+        | "eligible"
+        | "not_eligible"
+        | "uncertain"
+        | "needs_manual_review"
+      urgency_level: "low" | "medium" | "high" | "critical"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -312,6 +639,40 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      action_item_status: ["pending", "done", "blocked"],
+      call_judgment: ["go", "watch", "no_go"],
+      call_lifecycle: [
+        "discovered",
+        "saved",
+        "docs_pending",
+        "docs_ready",
+        "assessment_pending",
+        "assessed",
+        "shortlisted",
+        "rejected",
+        "in_preparation",
+        "awaiting_documents",
+        "drafting",
+        "under_review",
+        "ready_to_submit",
+        "submitted",
+        "archived",
+      ],
+      call_priority: ["high", "medium", "low"],
+      docs_status: [
+        "not_downloaded",
+        "downloading",
+        "docs_pending",
+        "docs_ready",
+      ],
+      eligibility_status: [
+        "eligible",
+        "not_eligible",
+        "uncertain",
+        "needs_manual_review",
+      ],
+      urgency_level: ["low", "medium", "high", "critical"],
+    },
   },
 } as const
