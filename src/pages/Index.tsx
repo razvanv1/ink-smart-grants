@@ -3,13 +3,35 @@ import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
 import { useOpportunities, useSavedCalls, getLifecycleLabel } from "@/hooks/useOpportunities";
 import { Link } from "react-router-dom";
-import { ArrowRight, AlertTriangle, FileText, Loader2 } from "lucide-react";
+import { ArrowRight, AlertTriangle, FileText, Loader2, Database } from "lucide-react";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Dashboard = () => {
   const { data: allOpps = [], isLoading: oppsLoading } = useOpportunities();
   const { data: saved = [], isLoading: savedLoading } = useSavedCalls();
+  const [seeding, setSeeding] = useState(false);
+  const qc = useQueryClient();
 
   const isLoading = oppsLoading || savedLoading;
+
+  const handleSeedData = async () => {
+    setSeeding(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('seed-demo-data');
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success(`Seeded ${data?.seeded?.opportunities ?? 0} opportunities with assessments, documents, and action items`);
+      qc.invalidateQueries({ queryKey: ['opportunities'] });
+      qc.invalidateQueries({ queryKey: ['saved-calls'] });
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to seed data');
+    } finally {
+      setSeeding(false);
+    }
+  };
 
   if (isLoading) {
     return (
