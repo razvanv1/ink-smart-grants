@@ -1,50 +1,78 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getTask, getTaskEvents, submitReview, retryTask, cancelTask } from "@/services/agentTaskService";
-import type { AgentTask, TaskEvent } from "@/types/agentTask";
+import type { AgentTask, TaskEvent, TaskStatus } from "@/types/agentTask";
 import { TASK_TYPE_LABELS } from "@/types/agentTask";
 import { TaskStatusBadge } from "@/components/agent/TaskStatusBadge";
 import { EventLog } from "@/components/agent/EventLog";
 import { ResultPanel } from "@/components/agent/ResultPanel";
 import { ScrollReveal } from "@/components/shared/ScrollReveal";
 import { toast } from "sonner";
-import { ArrowLeft, RotateCcw, XCircle, CheckCircle2, Edit3, Loader2 } from "lucide-react";
+import { ArrowLeft, RotateCcw, XCircle, CheckCircle2, Edit3, Loader2, AlertTriangle } from "lucide-react";
+
+const POLL_INTERVAL = 5_000;
+const ACTIVE_STATUSES: TaskStatus[] = ['queued', 'running', 'waiting_for_input'];
 
 export default function AgentTaskDetail() {
   const { taskId } = useParams<{ taskId: string }>();
   const navigate = useNavigate();
+
   const [task, setTask] = useState<AgentTask | null>(null);
   const [events, setEvents] = useState<TaskEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [reviewNotes, setReviewNotes] = useState("");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [confirmAction, setConfirmAction] = useState<string | null>(null);
 
-  const fetchData = async () => {
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const fetchData = useCallback(async (silent = false) => {
     if (!taskId) return;
+    if (!silent) { setLoading(true); setError(null); }
     try {
       const [t, e] = await Promise.all([getTask(taskId), getTaskEvents(taskId)]);
       setTask(t);
-      setEvents(e);
-    } catch {
-      toast.error("Task not found");
-      navigate("/agent-tasks");
+      setEvents(e ?? []);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Task not found";
+      setError(msg);
+      if (!silent) toast.error(msg);
     } finally {
       setLoading(false);
     }
-  };
+  }, [taskId]);
 
-  useEffect(() => { fetchData(); }, [taskId]);
+  // Initial load
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  // Polling — only while task is active
+  useEffect(() => {
+    if (pollRef.current) clearInterval(pollRef.current);
+    if (task && ACTIVE_STATUSES.includes(task.status)) {
+      pollRef.current = setInterval(() => fetchData(true), POLL_INTERVAL);
+    }
+    return () => { if (pollRef.current) clearInterval(pollRef.current); };
+  }, [task?.status, fetchData]);
+
+  // ── Action handlers with confirmation ─────────────────────────
 
   const handleReview = async (decision: 'approved' | 'needs_changes') => {
     if (!taskId) return;
+    // Confirm if notes are empty
+    if (!reviewNotes.trim() && confirmAction !== `review-${decision}`) {
+      setConfirmAction(`review-${decision}`);
+      return;
+    }
+    setConfirmAction(null);
     setActionLoading(decision);
     try {
       const updated = await submitReview(taskId, { decision, notes: reviewNotes || undefined });
       setTask(updated);
       setReviewNotes("");
-      toast.success(decision === 'approved' ? 'Approved — task resuming' : 'Changes requested — task revising');
-    } catch {
-      toast.error("Review failed");
+      toast.success(decision === 'approved' ? 'Approved — task resuming' : 'Changes requested');
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Review failed");
     } finally {
       setActionLoading(null);
     }
@@ -52,13 +80,15 @@ export default function AgentTaskDetail() {
 
   const handleRetry = async () => {
     if (!taskId) return;
+    if (confirmAction !== 'retry') { setConfirmAction('retry'); return; }
+    setConfirmAction(null);
     setActionLoading('retry');
     try {
       const updated = await retryTask(taskId);
       setTask(updated);
       toast.success("Task re-queued");
-    } catch {
-      toast.error("Retry failed");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Retry failed");
     } finally {
       setActionLoading(null);
     }
@@ -66,27 +96,64 @@ export default function AgentTaskDetail() {
 
   const handleCancel = async () => {
     if (!taskId) return;
+    if (confirmAction !== 'cancel') { setConfirmAction('cancel'); return; }
+    setConfirmAction(null);
     setActionLoading('cancel');
     try {
       const updated = await cancelTask(taskId);
       setTask(updated);
       toast.success("Task cancelled");
-    } catch {
-      toast.error("Cancel failed");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Cancel failed");
     } finally {
       setActionLoading(null);
     }
   };
 
+  // ── Loading state ─────────────────────────────────────────────
+
   if (loading) {
     return (
-      <div className="p-8 flex justify-center items-center min-h-[50vh]">
+      <div className="p-8 flex flex-col items-center justify-center min-h-[50vh] gap-3">
         <div className="h-5 w-5 border-2 border-info border-t-transparent rounded-full animate-spin" />
+        <p className="text-[12px] text-muted-foreground">Loading task…</p>
       </div>
     );
   }
 
-  if (!task) return null;
+  // ── Error state ───────────────────────────────────────────────
+
+  if (error || !task) {
+    return (
+      <div className="p-8 flex flex-col items-center justify-center min-h-[50vh] gap-4">
+        <div className="h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center">
+          <AlertTriangle className="h-5 w-5 text-destructive" />
+        </div>
+        <div className="text-center">
+          <p className="text-[14px] font-bold text-foreground mb-1">
+            {error || "Task not found"}
+          </p>
+          <p className="text-[12px] text-muted-foreground">
+            The task may have been deleted or the ID is invalid.
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => fetchData()}
+            className="px-4 py-2 bg-info text-info-foreground text-[12px] font-bold rounded-full ink-glow-info"
+          >
+            Try again
+          </button>
+          <button
+            onClick={() => navigate("/agent-tasks")}
+            className="px-4 py-2 bg-secondary text-secondary-foreground text-[12px] font-bold rounded-full border border-border"
+          >
+            Back to tasks
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const canReview = task.status === 'waiting_for_input';
   const canRetry = task.status === 'failed' || task.status === 'cancelled';
@@ -109,11 +176,15 @@ export default function AgentTaskDetail() {
             <div className="min-w-0">
               <div className="flex items-center gap-2 mb-1.5">
                 <TaskStatusBadge status={task.status} />
-                <span className="text-[11px] text-muted-foreground font-medium">{TASK_TYPE_LABELS[task.type]}</span>
+                <span className="text-[11px] text-muted-foreground font-medium">
+                  {TASK_TYPE_LABELS[task.type] ?? task.type}
+                </span>
               </div>
-              <h1 className="ink-page-title !text-[22px] sm:!text-[26px]">{task.title}</h1>
+              <h1 className="ink-page-title !text-[22px] sm:!text-[26px]">
+                {task.title || 'Untitled Task'}
+              </h1>
               <p className="text-[11px] text-muted-foreground mt-1.5">
-                Created {new Date(task.createdAt).toLocaleString()} · Run {task.runId}
+                Created {task.createdAt ? new Date(task.createdAt).toLocaleString() : '—'} · Run {task.runId ?? '—'}
               </p>
             </div>
 
@@ -125,13 +196,13 @@ export default function AgentTaskDetail() {
                   cx="18" cy="18" r="15.5" fill="none"
                   stroke={task.status === 'failed' ? 'hsl(var(--destructive))' : task.status === 'completed' ? 'hsl(var(--success))' : 'hsl(var(--info))'}
                   strokeWidth="2.5"
-                  strokeDasharray={`${task.progress * 0.974} 100`}
+                  strokeDasharray={`${(task.progress ?? 0) * 0.974} 100`}
                   strokeLinecap="round"
                   className="transition-all duration-700"
                 />
               </svg>
               <span className="absolute inset-0 flex items-center justify-center text-[13px] font-bold text-foreground tabular-nums">
-                {task.progress}%
+                {task.progress ?? 0}%
               </span>
             </div>
           </div>
@@ -143,7 +214,7 @@ export default function AgentTaskDetail() {
         <ScrollReveal delay={80}>
           <div className="ink-signal py-3">
             <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1">Current Step</p>
-            <p className="text-[14px] text-foreground font-medium">{task.currentStep}</p>
+            <p className="text-[14px] text-foreground font-medium break-words">{task.currentStep}</p>
           </div>
         </ScrollReveal>
       )}
@@ -153,7 +224,7 @@ export default function AgentTaskDetail() {
         <ScrollReveal delay={80}>
           <div className="bg-destructive/5 border border-destructive/20 rounded-lg p-4">
             <p className="text-[10px] font-bold uppercase tracking-wider text-destructive mb-1">Error</p>
-            <p className="text-[13px] text-foreground/80">{task.error}</p>
+            <p className="text-[13px] text-foreground/80 break-words whitespace-pre-wrap">{task.error}</p>
           </div>
         </ScrollReveal>
       )}
@@ -165,28 +236,31 @@ export default function AgentTaskDetail() {
             <p className="text-[12px] font-bold text-foreground">Human Review Required</p>
             <textarea
               value={reviewNotes}
-              onChange={e => setReviewNotes(e.target.value)}
+              onChange={e => { setReviewNotes(e.target.value); setConfirmAction(null); }}
               placeholder="Optional notes for the agent..."
               rows={2}
               className="w-full px-3 py-2.5 bg-background border border-border rounded-md text-[13px] text-foreground placeholder:text-foreground/40 focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all resize-none"
             />
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={() => handleReview('approved')}
                 disabled={actionLoading !== null}
-                className="ink-glow-info flex items-center gap-1.5 px-4 py-2 bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))] text-[12px] font-bold rounded-full shadow-md disabled:opacity-40"
+                className="flex items-center gap-1.5 px-4 py-2 bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))] text-[12px] font-bold rounded-full shadow-md disabled:opacity-40 active:scale-[0.96] transition-transform"
               >
                 {actionLoading === 'approved' ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
-                Approve
+                {confirmAction === 'review-approved' ? 'Confirm approve?' : 'Approve'}
               </button>
               <button
                 onClick={() => handleReview('needs_changes')}
                 disabled={actionLoading !== null}
-                className="flex items-center gap-1.5 px-4 py-2 bg-secondary text-secondary-foreground text-[12px] font-bold rounded-full border border-border hover:shadow-md transition-all disabled:opacity-40"
+                className="flex items-center gap-1.5 px-4 py-2 bg-secondary text-secondary-foreground text-[12px] font-bold rounded-full border border-border hover:shadow-md transition-all disabled:opacity-40 active:scale-[0.96]"
               >
                 {actionLoading === 'needs_changes' ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Edit3 className="h-3.5 w-3.5" />}
-                Request Changes
+                {confirmAction === 'review-needs_changes' ? 'Confirm?' : 'Request Changes'}
               </button>
+              {confirmAction?.startsWith('review-') && (
+                <span className="text-[11px] text-warning font-medium">No notes — click again to confirm</span>
+              )}
             </div>
           </div>
         </ScrollReveal>
@@ -194,26 +268,29 @@ export default function AgentTaskDetail() {
 
       {/* Actions bar */}
       {(canRetry || canCancel) && (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           {canRetry && (
             <button
               onClick={handleRetry}
               disabled={actionLoading !== null}
-              className="flex items-center gap-1.5 px-4 py-2 bg-info text-info-foreground text-[12px] font-bold rounded-full shadow-md ink-glow-info disabled:opacity-40"
+              className="flex items-center gap-1.5 px-4 py-2 bg-info text-info-foreground text-[12px] font-bold rounded-full shadow-md ink-glow-info disabled:opacity-40 active:scale-[0.96] transition-transform"
             >
               {actionLoading === 'retry' ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RotateCcw className="h-3.5 w-3.5" />}
-              Retry
+              {confirmAction === 'retry' ? 'Confirm retry?' : 'Retry'}
             </button>
           )}
           {canCancel && (
             <button
               onClick={handleCancel}
               disabled={actionLoading !== null}
-              className="flex items-center gap-1.5 px-4 py-2 bg-secondary text-secondary-foreground text-[12px] font-bold rounded-full border border-border hover:border-destructive/30 hover:text-destructive transition-all disabled:opacity-40"
+              className="flex items-center gap-1.5 px-4 py-2 bg-secondary text-secondary-foreground text-[12px] font-bold rounded-full border border-border hover:border-destructive/30 hover:text-destructive transition-all disabled:opacity-40 active:scale-[0.96]"
             >
               {actionLoading === 'cancel' ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <XCircle className="h-3.5 w-3.5" />}
-              Cancel
+              {confirmAction === 'cancel' ? 'Confirm cancel?' : 'Cancel'}
             </button>
+          )}
+          {confirmAction && !confirmAction.startsWith('review-') && (
+            <span className="text-[11px] text-warning font-medium">Click again to confirm</span>
           )}
         </div>
       )}
@@ -242,8 +319,8 @@ export default function AgentTaskDetail() {
       <ScrollReveal delay={200}>
         <div>
           <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-3">Task Input</p>
-          <pre className="bg-muted/50 border border-border rounded-lg p-4 text-[11px] text-foreground/70 overflow-x-auto font-mono leading-relaxed">
-            {JSON.stringify(task.input, null, 2)}
+          <pre className="bg-muted/50 border border-border rounded-lg p-4 text-[11px] text-foreground/70 overflow-x-auto font-mono leading-relaxed whitespace-pre-wrap break-words">
+            {JSON.stringify(task.input ?? {}, null, 2)}
           </pre>
         </div>
       </ScrollReveal>
