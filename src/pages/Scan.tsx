@@ -301,23 +301,25 @@ const ScanPage = () => {
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={isScanning}
-            className="w-full py-3.5 bg-foreground text-background text-[13px] font-bold tracking-wide rounded-sm hover:bg-foreground/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 active:scale-[0.98]"
-          >
-            {isScanning ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Scanning 940+ calls…
-              </>
-            ) : (
-              <>
-                <Search className="h-4 w-4" />
-                Scan Opportunities
-              </>
-            )}
-          </button>
+          <div className="flex justify-start pt-1">
+            <button
+              type="submit"
+              disabled={isScanning}
+              className="px-7 py-2.5 bg-info text-info-foreground text-[13px] font-bold rounded-full hover:bg-info/85 transition-all disabled:opacity-50 inline-flex items-center gap-2 active:scale-[0.96] shadow-md shadow-info/20 hover:shadow-lg hover:shadow-info/25"
+            >
+              {isScanning ? (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  Scanning…
+                </>
+              ) : (
+                <>
+                  <Search className="h-3.5 w-3.5" />
+                  Scan
+                </>
+              )}
+            </button>
+          </div>
 
           <p className="text-[11px] text-muted-foreground text-center">
             Real EU data · Results saved to your scan history
