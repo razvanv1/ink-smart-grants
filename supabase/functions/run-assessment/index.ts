@@ -215,7 +215,7 @@ Provide a thorough assessment.`;
     throw new Error("AI returned no structured output");
   }
 
-  return validateResult(JSON.parse(toolCall.function.arguments));
+  return { provider: "lovable_ai" as ExecutionProvider, result: validateResult(JSON.parse(toolCall.function.arguments)) };
 }
 
 function validateResult(raw: any): AssessmentResult {
