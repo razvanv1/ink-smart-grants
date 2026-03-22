@@ -14,6 +14,7 @@ const FUNDING_SOURCES = ["Horizon Europe", "Erasmus+", "Digital Europe", "ESF+",
 export default function Onboarding() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
