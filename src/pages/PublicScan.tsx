@@ -137,27 +137,29 @@ const PublicScan = () => {
           {/* ═══ HOW IT WORKS ═══ */}
           {!showResults && (
             <ScrollReveal id="how-it-works" delay={120} className="mb-16 sm:mb-20 relative">
-              {/* Octopus mascot — centered, covering all 3 cards */}
-              <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center" aria-hidden="true">
-                <img
-                  src={octopusImg}
-                  alt=""
-                  width={900}
-                  height={674}
-                  loading="lazy"
-                  decoding="async"
-                  className="w-[90vw] max-w-[1100px] h-auto opacity-[0.22] sm:opacity-[0.28] lg:opacity-[0.32] select-none object-contain"
-                />
-              </div>
-              <p className="relative text-[13px] sm:text-[14px] font-bold tracking-[0.18em] uppercase text-info text-center mb-4">How It Works</p>
-              <h2 className="relative text-[36px] sm:text-[48px] lg:text-[58px] xl:text-[64px] font-extrabold text-foreground tracking-[-0.04em] text-center mb-5 leading-[1.02]">Get matched in 3 simple steps</h2>
-              <p className="relative text-[15px] sm:text-[16px] text-foreground/65 text-center mb-12 max-w-[660px] mx-auto leading-relaxed">
+              <p className="text-[13px] sm:text-[14px] font-bold tracking-[0.18em] uppercase text-info text-center mb-4">How It Works</p>
+              <h2 className="text-[36px] sm:text-[48px] lg:text-[58px] xl:text-[64px] font-extrabold text-foreground tracking-[-0.04em] text-center mb-5 leading-[1.02]">Get matched in 3 simple steps</h2>
+              <p className="text-[15px] sm:text-[16px] text-foreground/65 text-center mb-12 max-w-[660px] mx-auto leading-relaxed">
                 Our AI scans 940+ live EU & national funding calls and matches them to your project profile. No expertise needed.
               </p>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
-                <ScrollReveal delay={180}><HowItWorksStep step={1} title="Describe your project" description="Tell us what you want to fund: a training program, research project, or innovation idea. One sentence is enough." /></ScrollReveal>
-                <ScrollReveal delay={260}><HowItWorksStep step={2} title="Get matched calls" description="Our AI instantly compares your profile against all active calls and ranks them by fit score, deadline & budget." /></ScrollReveal>
-                <ScrollReveal delay={340}><HowItWorksStep step={3} title="Start your application" description="Pick your best match and turn it into an active workflow with checklists, AI drafting, and deadline tracking." /></ScrollReveal>
+              <div className="relative">
+                {/* Octopus mascot — centered over the 3 cards only */}
+                <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center" aria-hidden="true">
+                  <img
+                    src={octopusImg}
+                    alt=""
+                    width={900}
+                    height={674}
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full max-w-[1100px] h-auto opacity-[0.22] sm:opacity-[0.28] lg:opacity-[0.32] select-none object-contain"
+                  />
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+                  <ScrollReveal delay={180}><HowItWorksStep step={1} title="Describe your project" description="Tell us what you want to fund: a training program, research project, or innovation idea. One sentence is enough." /></ScrollReveal>
+                  <ScrollReveal delay={260}><HowItWorksStep step={2} title="Get matched calls" description="Our AI instantly compares your profile against all active calls and ranks them by fit score, deadline & budget." /></ScrollReveal>
+                  <ScrollReveal delay={340}><HowItWorksStep step={3} title="Start your application" description="Pick your best match and turn it into an active workflow with checklists, AI drafting, and deadline tracking." /></ScrollReveal>
+                </div>
               </div>
             </ScrollReveal>
           )}
