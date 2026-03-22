@@ -1,9 +1,10 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { BrowserRouter, Route, Routes, Navigate, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { CommandPalette } from "@/components/CommandPalette";
 import Index from "./pages/Index";
@@ -28,10 +29,33 @@ import Contact from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
+function ProtectedRoute({ children, skipOrgCheck }: { children: React.ReactNode; skipOrgCheck?: boolean }) {
   const { user, loading } = useAuth();
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+  const location = useLocation();
+
+  const { data: orgId, isLoading: orgLoading } = useQuery({
+    queryKey: ['user-org-check', user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase
+        .from('organization_members')
+        .select('organization_id')
+        .eq('user_id', user.id)
+        .limit(1)
+        .maybeSingle();
+      return data?.organization_id ?? null;
+    },
+    enabled: !!user && !skipOrgCheck,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  if (loading || (!skipOrgCheck && orgLoading)) {
+    return <div className="min-h-screen flex items-center justify-center"><div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" /></div>;
+  }
   if (!user) return <Navigate to="/landing" replace />;
+  if (!skipOrgCheck && !orgId && location.pathname !== '/onboarding') {
+    return <Navigate to="/onboarding" replace />;
+  }
   return <>{children}</>;
 }
 
