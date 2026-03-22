@@ -71,7 +71,7 @@ function AppRoutes() {
       <Route path="/scan-public" element={user ? <Navigate to="/" replace /> : <PublicScan />} />
       <Route path="/landing" element={user ? <Navigate to="/" replace /> : <PublicScan />} />
       <Route path="/contact" element={<Contact />} />
-      <Route path="/onboarding" element={<ProtectedRoute><Onboarding /></ProtectedRoute>} />
+      <Route path="/onboarding" element={<ProtectedRoute skipOrgCheck><Onboarding /></ProtectedRoute>} />
       <Route
         path="/*"
         element={
