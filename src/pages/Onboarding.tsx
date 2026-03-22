@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,7 @@ const FUNDING_SOURCES = ["Horizon Europe", "Erasmus+", "Digital Europe", "ESF+",
 export default function Onboarding() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -62,6 +64,8 @@ export default function Onboarding() {
         });
       if (fpErr) throw fpErr;
 
+      queryClient.invalidateQueries({ queryKey: ['user-org-check'] });
+      queryClient.invalidateQueries({ queryKey: ['user-org'] });
       toast({ title: "Workspace ready" });
       navigate("/");
     } catch (err: any) {
