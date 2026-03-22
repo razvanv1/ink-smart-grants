@@ -3,13 +3,35 @@ import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
 import { useOpportunities, useSavedCalls, getLifecycleLabel } from "@/hooks/useOpportunities";
 import { Link } from "react-router-dom";
-import { ArrowRight, AlertTriangle, FileText, Loader2 } from "lucide-react";
+import { ArrowRight, AlertTriangle, FileText, Loader2, Database } from "lucide-react";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Dashboard = () => {
   const { data: allOpps = [], isLoading: oppsLoading } = useOpportunities();
   const { data: saved = [], isLoading: savedLoading } = useSavedCalls();
+  const [seeding, setSeeding] = useState(false);
+  const qc = useQueryClient();
 
   const isLoading = oppsLoading || savedLoading;
+
+  const handleSeedData = async () => {
+    setSeeding(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('seed-demo-data');
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      toast.success(`Seeded ${data?.seeded?.opportunities ?? 0} opportunities with assessments, documents, and action items`);
+      qc.invalidateQueries({ queryKey: ['opportunities'] });
+      qc.invalidateQueries({ queryKey: ['saved-calls'] });
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to seed data');
+    } finally {
+      setSeeding(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -58,6 +80,27 @@ const Dashboard = () => {
           <span className="text-[11px] text-muted-foreground">Live · Auto-refresh</span>
         </div>
       </div>
+
+      {/* Empty state with seed */}
+      {allOpps.length === 0 && (
+        <div className="py-16 text-center space-y-4 border border-border/60 rounded-sm">
+          <Database className="h-8 w-8 text-muted-foreground/30 mx-auto" />
+          <div>
+            <p className="text-[14px] text-foreground font-semibold">No data yet</p>
+            <p className="text-[12px] text-muted-foreground mt-1 max-w-md mx-auto">
+              Your database is empty. Load demo data to explore the platform, or wait for the scanning agent to discover real opportunities.
+            </p>
+          </div>
+          <button
+            onClick={handleSeedData}
+            disabled={seeding}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-foreground text-background text-[12px] font-bold tracking-wide rounded-sm hover:opacity-90 transition-opacity active:scale-[0.97] disabled:opacity-50"
+          >
+            {seeding ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Database className="h-3.5 w-3.5" />}
+            {seeding ? 'Seeding…' : 'Load Demo Data'}
+          </button>
+        </div>
+      )}
 
       {/* KPI Strip */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-x-8">
