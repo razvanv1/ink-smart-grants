@@ -327,6 +327,7 @@ const OpportunityDetail = () => {
             )}
           </div>
         )}
+        {activeTab === 'Assessment' && (
           <div className="space-y-8">
             {/* Run Assessment controls */}
             <div className="flex items-center justify-between">
