@@ -239,7 +239,7 @@ const PublicScan = () => {
                   </div>
                 )}
                 <div className="flex justify-center pt-2">
-                  <button type="submit" disabled={isScanning} className="px-8 py-3 bg-info text-info-foreground text-[13px] font-bold rounded-full hover:bg-info/85 transition-all disabled:opacity-50 inline-flex items-center gap-2 active:scale-[0.96] shadow-lg shadow-info/25 hover:shadow-xl hover:shadow-info/30">
+                  <button type="submit" disabled={isScanning} className="ink-glow-info px-8 py-3 bg-info text-info-foreground text-[13px] font-bold rounded-full disabled:opacity-50 inline-flex items-center gap-2 shadow-lg shadow-info/25">
                     {isScanning ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Scanning…</> : <><Search className="h-3.5 w-3.5" /> Scan Opportunities</>}
                   </button>
                 </div>
