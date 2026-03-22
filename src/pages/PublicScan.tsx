@@ -87,7 +87,7 @@ const PublicScan = () => {
             <div>
               <button
                 onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full border border-info/35 bg-info/[0.08] text-[11px] sm:text-[12px] font-bold tracking-wide uppercase text-info hover:bg-info/[0.15] active:scale-[0.97] transition-all mb-7 opacity-0 animate-fade-in-up"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-info/30 bg-info/[0.07] text-[11px] font-bold tracking-wide uppercase text-info hover:bg-info/[0.14] hover:border-info/50 active:scale-[0.96] transition-all mb-7 opacity-0 animate-fade-in-up"
                 style={{ animationDelay: "0.1s" }}
               >
                 Free Funding Scan · No Account Required
@@ -109,16 +109,16 @@ const PublicScan = () => {
                 A funding operations platform that monitors opportunities, decides what's worth pursuing, builds applications faster and pushes execution all the way to submission.
               </p>
 
-              <div className="flex flex-wrap items-center gap-4 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
+              <div className="flex flex-wrap items-center gap-3 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
                 <button
                   onClick={() => document.getElementById('scan-form')?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
-                  className="px-9 py-4.5 bg-foreground text-background text-[16px] font-bold rounded-[4px] hover:bg-foreground/90 active:scale-[0.97] transition-all shadow-sm"
+                  className="px-7 py-3 bg-info text-info-foreground text-[14px] font-bold rounded-full hover:bg-info/85 active:scale-[0.96] transition-all shadow-lg shadow-info/25 hover:shadow-xl hover:shadow-info/30"
                 >
                   Start Scanning
                 </button>
                 <button
                   onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="px-8 py-4 text-[15px] font-semibold text-foreground/75 hover:text-foreground transition-colors"
+                  className="px-5 py-3 text-[13px] font-semibold text-foreground/65 hover:text-foreground rounded-full border border-border hover:border-foreground/30 hover:bg-secondary/60 transition-all active:scale-[0.96]"
                 >
                   View Pricing
                 </button>
@@ -200,7 +200,7 @@ const PublicScan = () => {
                     </select>
                   </div>
                 </div>
-                <button type="button" onClick={() => setShowAdvanced(!showAdvanced)} className="w-full flex items-center justify-center gap-2 py-3.5 rounded-[6px] border border-dashed border-info/40 bg-info/[0.04] text-[13px] font-bold text-info hover:bg-info/[0.08] hover:border-info/60 transition-all active:scale-[0.98]">
+                <button type="button" onClick={() => setShowAdvanced(!showAdvanced)} className="w-full flex items-center justify-center gap-2 py-3 rounded-full border border-dashed border-info/35 bg-info/[0.04] text-[12px] font-bold text-info hover:bg-info/[0.1] hover:border-info/55 transition-all active:scale-[0.97]">
                   {showAdvanced ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
                   {showAdvanced ? "Hide Advanced Filters" : "Show Advanced Filters (Grant Type, Status, Budget, Geography)"}
                 </button>
@@ -236,8 +236,8 @@ const PublicScan = () => {
                     </div>
                   </div>
                 )}
-                <button type="submit" disabled={isScanning} className="w-full py-4.5 bg-info text-info-foreground text-[16px] font-bold tracking-wide rounded-[6px] hover:bg-info/90 transition-all disabled:opacity-50 flex items-center justify-center gap-2.5 active:scale-[0.97] shadow-lg shadow-info/25">
-                  {isScanning ? <><Loader2 className="h-4.5 w-4.5 animate-spin" /> Scanning 940+ calls…</> : <><Search className="h-4.5 w-4.5" /> Scan Opportunities</>}
+                <button type="submit" disabled={isScanning} className="w-full py-3.5 bg-info text-info-foreground text-[15px] font-bold tracking-wide rounded-full hover:bg-info/85 transition-all disabled:opacity-50 flex items-center justify-center gap-2.5 active:scale-[0.96] shadow-lg shadow-info/25 hover:shadow-xl hover:shadow-info/30">
+                  {isScanning ? <><Loader2 className="h-4 w-4 animate-spin" /> Scanning 940+ calls…</> : <><Search className="h-4 w-4" /> Scan Opportunities</>}
                 </button>
                 <p className="text-[12px] text-foreground/50 text-center">Free · No account required · Real EU data</p>
               </form>
@@ -265,7 +265,7 @@ const PublicScan = () => {
                 <p className="text-[26px] font-extrabold text-foreground tracking-tight">{matches.length} calls matched</p>
                 <p className="text-[13px] text-foreground/70 mt-0.5">for "{projectIntent}"</p>
               </div>
-              <button onClick={() => { setShowResults(false); setMatches([]); }} className="text-[11px] font-semibold text-foreground/75 hover:text-foreground transition-colors px-3 py-1.5 rounded-[3px] border border-border hover:border-foreground/30">New Scan</button>
+              <button onClick={() => { setShowResults(false); setMatches([]); }} className="text-[12px] font-bold text-foreground/80 hover:text-foreground transition-all px-4 py-2 rounded-full border border-border hover:border-foreground/30 hover:bg-secondary/60 active:scale-[0.96]">New Scan</button>
             </div>
 
             <div className="space-y-4">
@@ -305,8 +305,8 @@ const PublicScan = () => {
                   </p>
                   <div className="flex gap-3 max-w-[440px] mx-auto">
                     <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Your email address" className="flex-1 px-4 py-3.5 bg-background border border-border rounded-[4px] text-[14px] text-foreground placeholder:text-foreground/45 focus:outline-none focus:border-info/60 focus:ring-2 focus:ring-info/15 transition-all" />
-                    <button onClick={handleUnlock} className="px-7 py-3.5 bg-info text-info-foreground text-[13px] font-bold tracking-wide rounded-[4px] hover:bg-info/90 transition-all flex items-center gap-2.5 active:scale-[0.97] whitespace-nowrap shadow-md shadow-info/20">
-                      Unlock Platform <ArrowRight className="h-4 w-4" />
+                    <button onClick={handleUnlock} className="px-6 py-3 bg-info text-info-foreground text-[13px] font-bold tracking-wide rounded-full hover:bg-info/85 transition-all flex items-center gap-2 active:scale-[0.96] whitespace-nowrap shadow-lg shadow-info/25 hover:shadow-xl hover:shadow-info/30">
+                      Unlock Platform <ArrowRight className="h-3.5 w-3.5" />
                     </button>
                   </div>
                   <p className="text-[11px] text-foreground/60 mt-5">Free 14-day trial · No credit card required</p>

@@ -110,10 +110,10 @@ export function PricingSection() {
 
             <button
               onClick={() => navigate(plan.name === "Enterprise" ? "/contact" : "/auth")}
-              className={`w-full py-3 text-[13px] font-bold tracking-wide rounded-[3px] flex items-center justify-center gap-2 active:scale-[0.97] transition-all mt-auto ${
+              className={`w-full py-3 text-[13px] font-bold tracking-wide rounded-full flex items-center justify-center gap-2 active:scale-[0.96] transition-all mt-auto ${
                 plan.popular
-                  ? "bg-info text-info-foreground hover:bg-info/90 shadow-sm shadow-info/20"
-                  : "bg-foreground text-background hover:bg-foreground/90"
+                  ? "bg-info text-info-foreground hover:bg-info/85 shadow-lg shadow-info/25 hover:shadow-xl hover:shadow-info/30"
+                  : "bg-foreground text-background hover:bg-foreground/85 shadow-sm"
               }`}
             >
               {plan.cta}
