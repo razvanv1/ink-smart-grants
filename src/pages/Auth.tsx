@@ -94,8 +94,8 @@ export default function Auth() {
           {mode === "forgot"
             ? "Enter your email to receive a reset link."
             : mode === "signup"
-            ? "Start managing your funding operations."
-            : "Welcome back to your funding workspace."}
+            ? "A smart funding operations platform that monitors opportunities, selects the best grants, builds proposals faster with smart agents."
+            : "Welcome back to INK Smart Grants."}
         </p>
 
         {mode !== "forgot" && (

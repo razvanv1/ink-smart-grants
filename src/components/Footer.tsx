@@ -18,7 +18,7 @@ export function Footer({ variant = "landing" }: FooterProps) {
             <div className="col-span-2 sm:col-span-1">
               <InkLogo size={24} className="mb-3" />
               <p className="text-[11px] text-foreground/60 leading-relaxed max-w-[200px]">
-                Agentic funding operations platform. Monitor, match, build, submit.
+                A smart funding operations platform that monitors opportunities, selects the best grants, builds proposals faster with smart agents.
               </p>
             </div>
 

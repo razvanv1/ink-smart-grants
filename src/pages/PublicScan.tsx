@@ -106,7 +106,7 @@ const PublicScan = () => {
               </h1>
 
               <p className="text-[17px] sm:text-[19px] lg:text-[21px] text-foreground/70 leading-[1.7] max-w-[760px] mb-10 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.35s" }}>
-                A funding operations platform that monitors opportunities, decides what's worth pursuing, builds applications faster and pushes execution all the way to submission.
+                A smart funding operations platform that monitors opportunities, selects the best grants, builds proposals faster with smart agents.
               </p>
 
               <div className="flex flex-wrap items-center gap-3 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
