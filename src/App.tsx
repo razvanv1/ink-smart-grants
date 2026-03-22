@@ -15,6 +15,8 @@ import WorkflowDetail from "./pages/WorkflowDetail";
 import Pipeline from "./pages/Pipeline";
 import KnowledgeVault from "./pages/KnowledgeVault";
 import AgentActivity from "./pages/AgentActivity";
+import AgentTasks from "./pages/AgentTasks";
+import AgentTaskDetail from "./pages/AgentTaskDetail";
 import FundingProfile from "./pages/FundingProfile";
 import SettingsPage from "./pages/Settings";
 import Auth from "./pages/Auth";
@@ -62,6 +64,8 @@ function AppRoutes() {
                 <Route path="/pipeline" element={<Pipeline />} />
                 <Route path="/knowledge-vault" element={<KnowledgeVault />} />
                 <Route path="/agent-activity" element={<AgentActivity />} />
+                <Route path="/agent-tasks" element={<AgentTasks />} />
+                <Route path="/agent-tasks/:taskId" element={<AgentTaskDetail />} />
                 <Route path="/funding-profile" element={<FundingProfile />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="*" element={<NotFound />} />
