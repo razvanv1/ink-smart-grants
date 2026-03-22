@@ -18,10 +18,11 @@ const OpportunityDetail = () => {
   const addNote = useAddNote();
   const updateAction = useUpdateActionItem();
   const downloadDocs = useDownloadDocuments();
+  const uploadDoc = useUploadDocument();
   const runAssessment = useRunAssessment();
   const [activeTab, setActiveTab] = useState('Overview');
   const [newNote, setNewNote] = useState('');
-
+  const fileInputRef = useRef<HTMLInputElement>(null);
   if (isLoading) {
     return (
       <div className="p-8 max-w-[1060px] mx-auto flex items-center justify-center min-h-[400px]">
