@@ -112,10 +112,6 @@ const PublicScan = () => {
               A smart funding operations platform that monitors opportunities, selects the best grants, builds proposals faster with smart agents.
             </p>
 
-            {/* Slogan on mobile only */}
-            <p className="lg:hidden text-[16px] font-extrabold text-foreground/40 italic tracking-[-0.02em] mb-8 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-              "I can slap 8 grants at once." <span className="text-[10px] not-italic font-bold text-primary/50 uppercase tracking-wider ml-1">— INK</span>
-            </p>
 
             <div className="flex flex-wrap items-center gap-3 opacity-0 animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
               <button
