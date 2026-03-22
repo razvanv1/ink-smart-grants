@@ -310,10 +310,45 @@ function guessExtension(contentType: string, url: string): string {
   if (contentType.includes("zip")) return ".zip";
   if (contentType.includes("msword") || contentType.includes("wordprocessingml")) return ".docx";
 
-  // Try from URL
   const urlPath = new URL(url).pathname;
   const urlExt = urlPath.match(/\.(pdf|html|xml|docx|doc|zip|xlsx)$/i);
   if (urlExt) return `.${urlExt[1].toLowerCase()}`;
 
   return ".bin";
+}
+
+/** SSRF protection: block private IPs, loopback, metadata endpoints, and non-http schemes */
+function isUrlSafe(urlString: string): boolean {
+  try {
+    const url = new URL(urlString);
+
+    // Only allow http/https
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      return false;
+    }
+
+    const hostname = url.hostname.toLowerCase();
+
+    // Block localhost variants
+    if (hostname === "localhost" || hostname === "[::1]") return false;
+
+    // Block private/reserved IPv4 ranges
+    const ipv4Match = hostname.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+    if (ipv4Match) {
+      const [, a, b] = ipv4Match.map(Number);
+      if (a === 127) return false;                    // 127.0.0.0/8
+      if (a === 10) return false;                     // 10.0.0.0/8
+      if (a === 172 && b >= 16 && b <= 31) return false; // 172.16.0.0/12
+      if (a === 192 && b === 168) return false;       // 192.168.0.0/16
+      if (a === 169 && b === 254) return false;       // 169.254.0.0/16 (link-local / cloud metadata)
+      if (a === 0) return false;                      // 0.0.0.0/8
+    }
+
+    // Block common cloud metadata hostnames
+    if (hostname === "metadata.google.internal") return false;
+
+    return true;
+  } catch {
+    return false;
+  }
 }
