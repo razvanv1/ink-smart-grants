@@ -2,6 +2,7 @@ import { MetricCard } from "@/components/shared/MetricCard";
 import { StatusChip } from "@/components/shared/StatusChip";
 import { ScoreBadge, UrgencyIndicator } from "@/components/shared/ScoreBadge";
 import { useOpportunities, useSavedCalls, getLifecycleLabel } from "@/hooks/useOpportunities";
+import { useOrganizationId } from "@/hooks/useOrganizationId";
 import { Link } from "react-router-dom";
 import { ArrowRight, AlertTriangle, FileText, Loader2, Database } from "lucide-react";
 import { useState } from "react";
@@ -12,22 +13,57 @@ import { useQueryClient } from "@tanstack/react-query";
 const Dashboard = () => {
   const { data: allOpps = [], isLoading: oppsLoading } = useOpportunities();
   const { data: saved = [], isLoading: savedLoading } = useSavedCalls();
+  const orgId = useOrganizationId();
   const [seeding, setSeeding] = useState(false);
   const qc = useQueryClient();
 
   const isLoading = oppsLoading || savedLoading;
 
+  const getSeedErrorMessage = async (err: unknown): Promise<string> => {
+    const maybeErr = err as { context?: Response; message?: string };
+
+    if (maybeErr?.context) {
+      try {
+        const payload = await maybeErr.context.json();
+        if (payload?.error && typeof payload.error === 'string') {
+          return payload.error;
+        }
+      } catch {
+        // ignore JSON parse failures
+      }
+    }
+
+    if (err instanceof Error && err.message) return err.message;
+    if (typeof maybeErr?.message === 'string' && maybeErr.message) return maybeErr.message;
+    return 'Failed to seed data';
+  };
+
   const handleSeedData = async () => {
     setSeeding(true);
     try {
+      if (!orgId) {
+        toast.info('No organization found yet — creating one automatically before seeding.');
+      }
+
       const { data, error } = await supabase.functions.invoke('seed-demo-data');
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
-      toast.success(`Seeded ${data?.seeded?.opportunities ?? 0} opportunities with assessments, documents, and action items`);
+
+      if (data?.message === 'Data already exists') {
+        toast.success(`Demo data already loaded (${data?.count ?? 0} records)`);
+      } else {
+        toast.success(`Seeded ${data?.seeded?.opportunities ?? 0} opportunities with assessments, documents, and action items`);
+      }
+
+      qc.invalidateQueries({ queryKey: ['user-org'] });
+      qc.invalidateQueries({ queryKey: ['org-name'] });
       qc.invalidateQueries({ queryKey: ['opportunities'] });
       qc.invalidateQueries({ queryKey: ['saved-calls'] });
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to seed data');
+      qc.invalidateQueries({ queryKey: ['opportunity'] });
+      qc.invalidateQueries({ queryKey: ['funding-profile'] });
+      qc.invalidateQueries({ queryKey: ['org-detail'] });
+    } catch (err: unknown) {
+      toast.error(await getSeedErrorMessage(err));
     } finally {
       setSeeding(false);
     }
