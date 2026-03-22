@@ -137,7 +137,7 @@ const PublicScan = () => {
           {/* ═══ HOW IT WORKS ═══ */}
           {!showResults && (
             <ScrollReveal id="how-it-works" delay={120} className="mb-16 sm:mb-20 relative">
-              {/* Octopus mascot — visible, layered above cards */}
+              {/* Octopus mascot — centered, covering all 3 cards */}
               <div className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center" aria-hidden="true">
                 <img
                   src={octopusImg}
@@ -146,13 +146,8 @@ const PublicScan = () => {
                   height={674}
                   loading="lazy"
                   decoding="async"
-                  className="absolute right-[2%] lg:right-[5%] top-[50%] -translate-y-[50%] w-[70vw] max-w-[750px] h-auto max-h-[95%] opacity-[0.25] sm:opacity-[0.30] lg:opacity-[0.35] select-none object-contain"
+                  className="w-[90vw] max-w-[1100px] h-auto opacity-[0.22] sm:opacity-[0.28] lg:opacity-[0.32] select-none object-contain"
                 />
-              </div>
-              {/* Slogan — positioned near octopus */}
-              <div className="absolute z-10 pointer-events-none bottom-4 right-4 sm:bottom-6 sm:right-8 lg:bottom-8 lg:right-12 flex items-center gap-2" aria-hidden="true">
-                <span className="text-[14px] sm:text-[16px] lg:text-[20px] font-extrabold tracking-[-0.02em] text-foreground/50 italic">"I can slap 8 grants at once."</span>
-                <span className="text-[10px] sm:text-[11px] font-bold text-primary/60 uppercase tracking-wider">— INK</span>
               </div>
               <p className="relative text-[13px] sm:text-[14px] font-bold tracking-[0.18em] uppercase text-info text-center mb-4">How It Works</p>
               <h2 className="relative text-[36px] sm:text-[48px] lg:text-[58px] xl:text-[64px] font-extrabold text-foreground tracking-[-0.04em] text-center mb-5 leading-[1.02]">Get matched in 3 simple steps</h2>
