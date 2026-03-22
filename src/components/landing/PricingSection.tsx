@@ -108,17 +108,19 @@ export function PricingSection() {
               ))}
             </ul>
 
-            <button
-              onClick={() => navigate(plan.name === "Enterprise" ? "/contact" : "/auth")}
-              className={`w-full py-3 text-[13px] font-bold tracking-wide rounded-full flex items-center justify-center gap-2 active:scale-[0.96] transition-all mt-auto ${
-                plan.popular
-                  ? "bg-info text-info-foreground hover:bg-info/85 shadow-lg shadow-info/25 hover:shadow-xl hover:shadow-info/30"
-                  : "bg-foreground text-background hover:bg-foreground/85 shadow-sm"
-              }`}
-            >
-              {plan.cta}
-              <ArrowRight className="h-3.5 w-3.5" />
-            </button>
+            <div className="flex justify-center mt-auto">
+              <button
+                onClick={() => navigate(plan.name === "Enterprise" ? "/contact" : "/auth")}
+                className={`px-6 py-2.5 text-[12px] font-bold rounded-full inline-flex items-center gap-1.5 active:scale-[0.96] transition-all ${
+                  plan.popular
+                    ? "bg-info text-info-foreground hover:bg-info/85 shadow-md shadow-info/25 hover:shadow-lg hover:shadow-info/30"
+                    : "bg-foreground text-background hover:bg-foreground/85 shadow-sm"
+                }`}
+              >
+                {plan.cta}
+                <ArrowRight className="h-3 w-3" />
+              </button>
+            </div>
           </div>
           </ScrollReveal>
         ))}

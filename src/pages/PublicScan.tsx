@@ -200,10 +200,12 @@ const PublicScan = () => {
                     </select>
                   </div>
                 </div>
-                <button type="button" onClick={() => setShowAdvanced(!showAdvanced)} className="w-full flex items-center justify-center gap-2 py-3 rounded-full border border-dashed border-info/35 bg-info/[0.04] text-[12px] font-bold text-info hover:bg-info/[0.1] hover:border-info/55 transition-all active:scale-[0.97]">
-                  {showAdvanced ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
-                  {showAdvanced ? "Hide Advanced Filters" : "Show Advanced Filters (Grant Type, Status, Budget, Geography)"}
-                </button>
+                <div className="flex justify-center">
+                  <button type="button" onClick={() => setShowAdvanced(!showAdvanced)} className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full border border-dashed border-info/35 bg-info/[0.04] text-[11px] font-bold text-info hover:bg-info/[0.1] hover:border-info/55 transition-all active:scale-[0.97]">
+                    {showAdvanced ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                    {showAdvanced ? "Hide Filters" : "Advanced Filters"}
+                  </button>
+                </div>
                 {showAdvanced && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
                     <div>
