@@ -1,5 +1,17 @@
 // ── Enums (match these exactly across all pages) ──────────────────
 
+export type CallLifecycle = 
+  | 'discovered' | 'saved' | 'docs_pending' | 'docs_ready'
+  | 'assessment_pending' | 'assessed' | 'shortlisted' | 'rejected'
+  | 'in_preparation' | 'awaiting_documents' | 'drafting'
+  | 'under_review' | 'ready_to_submit' | 'submitted' | 'archived';
+
+export type EligibilityStatus = 'eligible' | 'not_eligible' | 'uncertain' | 'needs_manual_review';
+export type Priority = 'high' | 'medium' | 'low';
+export type Judgment = 'go' | 'watch' | 'no_go';
+export type DocsStatus = 'not_downloaded' | 'downloading' | 'docs_pending' | 'docs_ready';
+
+// Keep legacy types for backward compat
 export type OpportunityStatus = 'new' | 'watchlist' | 'shortlisted' | 'active-workflow' | 'ignored' | 'rejected';
 export type WorkflowStage = 'Created' | 'Scoping' | 'Drafting' | 'Inputs Pending' | 'Review' | 'Compliance Check' | 'Ready to Submit' | 'Submitted';
 export type WorkflowStatus = 'active' | 'paused' | 'completed' | 'at-risk';
@@ -11,6 +23,13 @@ export type AssetType = 'past-application' | 'project-description' | 'report' | 
 
 export const workflowStages: WorkflowStage[] = [
   'Created', 'Scoping', 'Drafting', 'Inputs Pending', 'Review', 'Compliance Check', 'Ready to Submit', 'Submitted',
+];
+
+export const callLifecycleStages: CallLifecycle[] = [
+  'discovered', 'saved', 'docs_pending', 'docs_ready',
+  'assessment_pending', 'assessed', 'shortlisted',
+  'in_preparation', 'awaiting_documents', 'drafting',
+  'under_review', 'ready_to_submit', 'submitted', 'archived',
 ];
 
 export const pipelineStages = [
@@ -75,6 +94,44 @@ export const fundingProfile: FundingProfile = {
   updatedAt: '2026-03-15',
 };
 
+// ── Official Documents ────────────────────────────────────────────
+
+export interface OfficialDocument {
+  id: string;
+  name: string;
+  type: 'guide' | 'annex' | 'faq' | 'corrigendum' | 'template' | 'evaluation_criteria';
+  url?: string;
+  downloadedAt?: string;
+  parsed: boolean;
+  pages?: number;
+}
+
+// ── Assessment ────────────────────────────────────────────────────
+
+export interface Assessment {
+  eligibility: EligibilityStatus;
+  eligibilityNotes: string;
+  fitScore: number;
+  fitNotes: string;
+  effortScore: number;
+  complexityNotes: string;
+  risks: string[];
+  recommendation: string;
+  judgment: Judgment;
+  assessedAt: string;
+  basedOnDocs: boolean;
+}
+
+// ── Action Item ───────────────────────────────────────────────────
+
+export interface ActionItem {
+  id: string;
+  action: string;
+  owner?: string;
+  dueDate?: string;
+  status: 'pending' | 'done' | 'blocked';
+}
+
 // ── Funding Calls / Opportunities ─────────────────────────────────
 
 export interface Opportunity {
@@ -100,6 +157,16 @@ export interface Opportunity {
   whyItFits: string;
   whyDifficult: string;
   createdAt: string;
+  // ── New PRD fields ──
+  lifecycle: CallLifecycle;
+  docsStatus: DocsStatus;
+  priority: Priority;
+  assessment: Assessment | null;
+  officialDocs: OfficialDocument[];
+  actionPlan: ActionItem[];
+  notes: string[];
+  blockers: string[];
+  lastUpdated: string;
 }
 
 export const opportunities: Opportunity[] = [
@@ -127,6 +194,35 @@ export const opportunities: Opportunity[] = [
     partnerRequired: true,
     complexity: 'high',
     createdAt: '2026-03-10',
+    lifecycle: 'shortlisted',
+    docsStatus: 'docs_ready',
+    priority: 'high',
+    assessment: {
+      eligibility: 'eligible',
+      eligibilityNotes: 'Organization type (non-profit) and location (Greece, EU member state) match requirements.',
+      fitScore: 92,
+      fitNotes: 'Direct thematic match with core expertise in workforce development and digital skills.',
+      effortScore: 68,
+      complexityNotes: '5-country consortium, high budget justification, 8-week prep window.',
+      risks: ['Tight preparation window', 'AI tooling budget scrutiny', 'Need 5-country consortium'],
+      recommendation: 'Go now. Strong fit, manageable complexity, deadline acceptable. Consortium network covers partner requirements.',
+      judgment: 'go',
+      assessedAt: '2026-03-15',
+      basedOnDocs: true,
+    },
+    officialDocs: [
+      { id: 'doc-1a', name: 'Call document & conditions', type: 'guide', downloadedAt: '2026-03-11', parsed: true, pages: 28 },
+      { id: 'doc-1b', name: 'Evaluation criteria', type: 'evaluation_criteria', downloadedAt: '2026-03-11', parsed: true, pages: 6 },
+      { id: 'doc-1c', name: 'Proposal template Part B', type: 'template', downloadedAt: '2026-03-11', parsed: true, pages: 45 },
+    ],
+    actionPlan: [
+      { id: 'ap-1a', action: 'Identify consortium partners (min 5 countries)', status: 'pending', owner: 'Elena P.', dueDate: '2026-03-30' },
+      { id: 'ap-1b', action: 'Draft project objectives and methodology', status: 'pending', owner: 'Nikos T.', dueDate: '2026-04-10' },
+      { id: 'ap-1c', action: 'Prepare budget framework', status: 'pending', owner: 'Maria K.', dueDate: '2026-04-15' },
+    ],
+    notes: ['Top priority for Q2. Aligns with strategic goal of AI literacy leadership.'],
+    blockers: [],
+    lastUpdated: '2026-03-21',
   },
   // ── opp-2: Active workflow → wf-2 (Scoping) ────────────────────
   {
@@ -147,13 +243,41 @@ export const opportunities: Opportunity[] = [
     fundingType: 'Cooperation Partnership',
     summary: 'Cooperation partnerships for innovation in education and training with emphasis on digital transformation, green skills integration, and learner-centred design across programme countries.',
     whyItFits: 'Strongest programme match. Previous successful KA2 project (2024) provides direct track record. Can reuse 60%+ of narrative from prior application (ka-1). Low effort for high probability.',
-    whyDifficult: 'Competitive call , ~800 submissions for 120 funded projects. Need to clearly differentiate approach from prior KA2.',
+    whyDifficult: 'Competitive call, ~800 submissions for 120 funded projects. Need to clearly differentiate approach from prior KA2.',
     eligibility: 'Any organization in programme countries',
     partnerRequired: true,
     complexity: 'medium',
     createdAt: '2026-03-08',
+    lifecycle: 'in_preparation',
+    docsStatus: 'docs_ready',
+    priority: 'high',
+    assessment: {
+      eligibility: 'eligible',
+      eligibilityNotes: 'Organization eligible as any entity in programme countries.',
+      fitScore: 87,
+      fitNotes: 'Strongest programme match. Previous KA2 provides direct track record.',
+      effortScore: 45,
+      complexityNotes: 'Medium complexity. Can reuse 60% of prior narrative.',
+      risks: ['Highly competitive (~800 for 120 slots)', 'Must differentiate from prior KA2'],
+      recommendation: 'Go now. High probability of success given track record and low effort. Reuse prior narrative.',
+      judgment: 'go',
+      assessedAt: '2026-03-12',
+      basedOnDocs: true,
+    },
+    officialDocs: [
+      { id: 'doc-2a', name: 'Programme guide 2026', type: 'guide', downloadedAt: '2026-03-09', parsed: true, pages: 120 },
+      { id: 'doc-2b', name: 'Application form template', type: 'template', downloadedAt: '2026-03-09', parsed: true, pages: 32 },
+    ],
+    actionPlan: [
+      { id: 'ap-2a', action: 'Finalize consortium composition', status: 'pending', owner: 'Nikos T.', dueDate: '2026-04-05' },
+      { id: 'ap-2b', action: 'Draft project objectives', status: 'pending', owner: 'Nikos T.', dueDate: '2026-04-15' },
+      { id: 'ap-2c', action: 'Review reusable sections from ka-1', status: 'pending', owner: 'Elena P.', dueDate: '2026-04-10' },
+    ],
+    notes: ['Reuse narrative from KA2 2024 application. Strong fit.'],
+    blockers: [],
+    lastUpdated: '2026-03-19',
   },
-  // ── opp-3: Active workflow → wf-1 (Drafting, at-risk) ──────────
+  // ── opp-3: Drafting, at-risk ──────────
   {
     id: 'opp-3',
     organizationId: 'org-1',
@@ -172,11 +296,41 @@ export const opportunities: Opportunity[] = [
     fundingType: 'Grant',
     summary: 'Deployment of advanced digital skills training targeting SMEs and public sector in underserved regions. Co-financing required. Focus on scalable delivery infrastructure.',
     whyItFits: 'Established training delivery infrastructure. Strong regional networks for SME engagement. Fits national priority alignment in Greece.',
-    whyDifficult: '50% co-financing requirement. Deployment-focused , less room for research. Deadline in 19 days with 2 unresolved blockers.',
+    whyDifficult: '50% co-financing requirement. Deployment-focused, less room for research. Deadline in 19 days with 2 unresolved blockers.',
     eligibility: 'Legal entities in EU member states',
     partnerRequired: false,
     complexity: 'high',
     createdAt: '2026-02-20',
+    lifecycle: 'drafting',
+    docsStatus: 'docs_ready',
+    priority: 'high',
+    assessment: {
+      eligibility: 'eligible',
+      eligibilityNotes: 'Legal entity in EU member state. Meets requirements.',
+      fitScore: 78,
+      fitNotes: 'Good fit with training infrastructure. Regional SME networks are strong.',
+      effortScore: 72,
+      complexityNotes: 'High effort. 50% co-financing, deployment focus, tight deadline.',
+      risks: ['Co-financing source unconfirmed', 'Deadline in 19 days', '2 unresolved blockers'],
+      recommendation: 'Go with caution. Strong fit but co-financing and deadline are critical risks. Resolve blockers immediately.',
+      judgment: 'go',
+      assessedAt: '2026-03-01',
+      basedOnDocs: true,
+    },
+    officialDocs: [
+      { id: 'doc-3a', name: 'Call document', type: 'guide', downloadedAt: '2026-02-21', parsed: true, pages: 18 },
+      { id: 'doc-3b', name: 'Budget template', type: 'template', downloadedAt: '2026-02-21', parsed: true, pages: 8 },
+      { id: 'doc-3c', name: 'FAQ v2', type: 'faq', downloadedAt: '2026-03-10', parsed: true, pages: 4 },
+    ],
+    actionPlan: [
+      { id: 'ap-3a', action: 'Confirm co-financing source', status: 'blocked', owner: 'Maria K.', dueDate: '2026-03-25' },
+      { id: 'ap-3b', action: 'Complete budget annex', status: 'pending', owner: 'Maria K.', dueDate: '2026-03-28' },
+      { id: 'ap-3c', action: 'Finalize impact section', status: 'pending', owner: 'Elena P.', dueDate: '2026-03-26' },
+      { id: 'ap-3d', action: 'Upload signed legal entity form', status: 'blocked', owner: 'Maria K.', dueDate: '2026-04-01' },
+    ],
+    notes: ['Co-financing letter overdue. Legal rep on leave until Mar 27.'],
+    blockers: ['Municipal co-funding letter not received', 'Legal representative on leave until Mar 27'],
+    lastUpdated: '2026-03-20',
   },
   // ── opp-4: Watchlist, low urgency ───────────────────────────────
   {
@@ -202,6 +356,30 @@ export const opportunities: Opportunity[] = [
     partnerRequired: false,
     complexity: 'low',
     createdAt: '2026-03-01',
+    lifecycle: 'saved',
+    docsStatus: 'docs_pending',
+    priority: 'low',
+    assessment: {
+      eligibility: 'uncertain',
+      eligibilityNotes: 'Likely eligible but official guide not yet parsed. Awaiting document download.',
+      fitScore: 84,
+      fitNotes: 'Good thematic fit. Low effort single-applicant call.',
+      effortScore: 38,
+      complexityNotes: 'Low complexity. Single applicant, national scope.',
+      risks: ['National procurement rules', 'Greek-language requirement', 'Assessment based on summary only'],
+      recommendation: 'Watch. Good fit but assessment uncertain — official documents not yet downloaded.',
+      judgment: 'watch',
+      assessedAt: '2026-03-05',
+      basedOnDocs: false,
+    },
+    officialDocs: [],
+    actionPlan: [
+      { id: 'ap-4a', action: 'Download official call documents', status: 'pending' },
+      { id: 'ap-4b', action: 'Parse eligibility criteria from guide', status: 'pending' },
+    ],
+    notes: ['Monitoring. Will reassess after official documents are available.'],
+    blockers: ['Official documents not yet downloaded'],
+    lastUpdated: '2026-03-05',
   },
   // ── opp-5: New, needs more info ─────────────────────────────────
   {
@@ -222,11 +400,22 @@ export const opportunities: Opportunity[] = [
     fundingType: 'Action Grant',
     summary: 'Projects promoting civic participation and democratic engagement through innovative methods and digital tools. Focus on youth engagement and media literacy.',
     whyItFits: 'Partial alignment through community engagement work. Could expand civic education portfolio. Media literacy angle connects to digital skills expertise.',
-    whyDifficult: 'Not core domain , would require new partnerships. No prior CERV track record. Selection Orchestrator flagged capacity constraint.',
+    whyDifficult: 'Not core domain, would require new partnerships. No prior CERV track record. Selection Orchestrator flagged capacity constraint.',
     eligibility: 'Non-profit organizations in EU',
     partnerRequired: true,
     complexity: 'medium',
     createdAt: '2026-03-18',
+    lifecycle: 'discovered',
+    docsStatus: 'not_downloaded',
+    priority: 'medium',
+    assessment: null,
+    officialDocs: [],
+    actionPlan: [
+      { id: 'ap-5a', action: 'Review call and decide if worth pursuing', status: 'pending' },
+    ],
+    notes: [],
+    blockers: [],
+    lastUpdated: '2026-03-18',
   },
   // ── opp-6: Ignored, poor fit ────────────────────────────────────
   {
@@ -252,6 +441,27 @@ export const opportunities: Opportunity[] = [
     partnerRequired: true,
     complexity: 'high',
     createdAt: '2026-03-05',
+    lifecycle: 'rejected',
+    docsStatus: 'not_downloaded',
+    priority: 'low',
+    assessment: {
+      eligibility: 'not_eligible',
+      eligibilityNotes: 'Requires manufacturing capacity. Organization is non-profit focused on training.',
+      fitScore: 42,
+      fitNotes: 'No meaningful overlap with organizational expertise.',
+      effortScore: 88,
+      complexityNotes: 'Massive budget, industrial partners needed. Far outside scope.',
+      risks: ['Not eligible', 'Outside domain', 'Budget far beyond range'],
+      recommendation: 'No-go. Applicant type does not meet eligibility criteria.',
+      judgment: 'no_go',
+      assessedAt: '2026-03-06',
+      basedOnDocs: false,
+    },
+    officialDocs: [],
+    actionPlan: [],
+    notes: ['Auto-rejected. Outside domain and eligibility.'],
+    blockers: [],
+    lastUpdated: '2026-03-06',
   },
   // ── opp-7: New, recently discovered ─────────────────────────────
   {
@@ -277,8 +487,20 @@ export const opportunities: Opportunity[] = [
     partnerRequired: true,
     complexity: 'medium',
     createdAt: '2026-03-19',
+    lifecycle: 'discovered',
+    docsStatus: 'not_downloaded',
+    priority: 'medium',
+    assessment: null,
+    officialDocs: [],
+    actionPlan: [
+      { id: 'ap-7a', action: 'Download and review call documents', status: 'pending' },
+      { id: 'ap-7b', action: 'Assess eligibility based on official guide', status: 'pending' },
+    ],
+    notes: [],
+    blockers: [],
+    lastUpdated: '2026-03-19',
   },
-  // ── opp-8: Rejected, weak alignment ─────────────────────────────
+  // ── opp-8: Rejected ─────────────────────────────────────────────
   {
     id: 'opp-8',
     organizationId: 'org-1',
@@ -302,8 +524,29 @@ export const opportunities: Opportunity[] = [
     partnerRequired: true,
     complexity: 'high',
     createdAt: '2026-02-28',
+    lifecycle: 'rejected',
+    docsStatus: 'not_downloaded',
+    priority: 'low',
+    assessment: {
+      eligibility: 'uncertain',
+      eligibilityNotes: 'Technically eligible but domain mismatch makes it impractical.',
+      fitScore: 35,
+      fitNotes: 'Minimal alignment. Environmental governance is outside expertise.',
+      effortScore: 65,
+      complexityNotes: 'High complexity in an unfamiliar domain.',
+      risks: ['No domain expertise', 'No environmental track record'],
+      recommendation: 'No-go. Domain mismatch. No credible track record for environmental governance.',
+      judgment: 'no_go',
+      assessedAt: '2026-03-02',
+      basedOnDocs: false,
+    },
+    officialDocs: [],
+    actionPlan: [],
+    notes: ['Rejected. Outside domain expertise.'],
+    blockers: [],
+    lastUpdated: '2026-03-02',
   },
-  // ── opp-9: Active workflow → wf-4 (Review stage) ────────────────
+  // ── opp-9: Under review ────────────────
   {
     id: 'opp-9',
     organizationId: 'org-1',
@@ -327,8 +570,35 @@ export const opportunities: Opportunity[] = [
     partnerRequired: true,
     complexity: 'low',
     createdAt: '2026-01-15',
+    lifecycle: 'under_review',
+    docsStatus: 'docs_ready',
+    priority: 'high',
+    assessment: {
+      eligibility: 'eligible',
+      eligibilityNotes: 'Fully eligible. Prior successful Erasmus+ track record.',
+      fitScore: 91,
+      fitNotes: 'Near-perfect match. Reuses prior KA2 and green skills project.',
+      effortScore: 40,
+      complexityNotes: 'Low. Consortium confirmed, narrative largely reusable.',
+      risks: ['Dissemination plan needs minor update for new Portuguese partner'],
+      recommendation: 'Go now. Near-perfect match, low effort, high probability. Minor update needed.',
+      judgment: 'go',
+      assessedAt: '2026-02-01',
+      basedOnDocs: true,
+    },
+    officialDocs: [
+      { id: 'doc-9a', name: 'Programme guide 2025', type: 'guide', downloadedAt: '2026-01-16', parsed: true, pages: 115 },
+      { id: 'doc-9b', name: 'Application form', type: 'template', downloadedAt: '2026-01-16', parsed: true, pages: 28 },
+    ],
+    actionPlan: [
+      { id: 'ap-9a', action: 'Update dissemination plan for Portuguese partner', status: 'pending', owner: 'Elena P.', dueDate: '2026-04-05' },
+      { id: 'ap-9b', action: 'Final proofread of all sections', status: 'pending', owner: 'Nikos T.', dueDate: '2026-04-08' },
+    ],
+    notes: ['Consortium confirmed. Minor dissemination update only.'],
+    blockers: [],
+    lastUpdated: '2026-03-20',
   },
-  // ── opp-10: Active workflow → wf-5 (Ready to Submit) ────────────
+  // ── opp-10: Ready to Submit ────────────
   {
     id: 'opp-10',
     organizationId: 'org-1',
@@ -352,8 +622,35 @@ export const opportunities: Opportunity[] = [
     partnerRequired: false,
     complexity: 'low',
     createdAt: '2026-01-20',
+    lifecycle: 'ready_to_submit',
+    docsStatus: 'docs_ready',
+    priority: 'high',
+    assessment: {
+      eligibility: 'eligible',
+      eligibilityNotes: 'Fully eligible. Registered training organization in Greece.',
+      fitScore: 88,
+      fitNotes: 'Perfect national fit. Single-applicant, comfortable budget range.',
+      effortScore: 32,
+      complexityNotes: 'Low. All sections complete. Pending signature only.',
+      risks: ['Deadline in 7 days', 'Pending director signature'],
+      recommendation: 'Submit now. All sections complete, reviewed, and ready. Only pending director signature.',
+      judgment: 'go',
+      assessedAt: '2026-03-10',
+      basedOnDocs: true,
+    },
+    officialDocs: [
+      { id: 'doc-10a', name: 'Call for proposals (GR)', type: 'guide', downloadedAt: '2026-01-21', parsed: true, pages: 22 },
+      { id: 'doc-10b', name: 'Application form', type: 'template', downloadedAt: '2026-01-21', parsed: true, pages: 16 },
+    ],
+    actionPlan: [
+      { id: 'ap-10a', action: 'Obtain director signature', status: 'pending', owner: 'Maria K.', dueDate: '2026-03-26' },
+      { id: 'ap-10b', action: 'Upload final PDF to national portal', status: 'pending', owner: 'Nikos T.', dueDate: '2026-03-27' },
+    ],
+    notes: ['All complete. Awaiting signature.'],
+    blockers: ['Director signature pending'],
+    lastUpdated: '2026-03-21',
   },
-  // ── opp-11: Active workflow → wf-6 (Submitted) ──────────────────
+  // ── opp-11: Submitted ──────────────────
   {
     id: 'opp-11',
     organizationId: 'org-1',
@@ -377,8 +674,33 @@ export const opportunities: Opportunity[] = [
     partnerRequired: false,
     complexity: 'low',
     createdAt: '2025-12-10',
+    lifecycle: 'submitted',
+    docsStatus: 'docs_ready',
+    priority: 'medium',
+    assessment: {
+      eligibility: 'eligible',
+      eligibilityNotes: 'Accredited training organization. Fully eligible.',
+      fitScore: 82,
+      fitNotes: 'Strong fit. Prior ESF+ experience provides track record.',
+      effortScore: 35,
+      complexityNotes: 'Low. Application submitted successfully.',
+      risks: [],
+      recommendation: 'Submitted. Awaiting evaluation results expected May 2026.',
+      judgment: 'go',
+      assessedAt: '2026-02-15',
+      basedOnDocs: true,
+    },
+    officialDocs: [
+      { id: 'doc-11a', name: 'Call document (GR)', type: 'guide', downloadedAt: '2025-12-11', parsed: true, pages: 20 },
+    ],
+    actionPlan: [
+      { id: 'ap-11a', action: 'Monitor evaluation results', status: 'pending', dueDate: '2026-05-15' },
+    ],
+    notes: ['Submitted Feb 27. Evaluation expected May 2026.'],
+    blockers: [],
+    lastUpdated: '2026-02-27',
   },
-  // ── opp-12: Shortlisted, new ────────────────────────────────────
+  // ── opp-12: Shortlisted ────────────────────────────────────────
   {
     id: 'opp-12',
     organizationId: 'org-1',
@@ -397,11 +719,37 @@ export const opportunities: Opportunity[] = [
     fundingType: 'Grant',
     summary: 'Deployment of AI testing and experimentation facilities for SMEs, with focus on workforce readiness assessment tools.',
     whyItFits: 'AI literacy expertise + SME network. Could position org as testing facility partner. Builds on workforce readiness assessment methodology.',
-    whyDifficult: 'Requires technical infrastructure partner. 50% co-financing. New territory , no prior Digital Europe deployment experience.',
+    whyDifficult: 'Requires technical infrastructure partner. 50% co-financing. New territory, no prior Digital Europe deployment experience.',
     eligibility: 'Consortia including at least one SME hub',
     partnerRequired: true,
     complexity: 'high',
     createdAt: '2026-03-20',
+    lifecycle: 'docs_pending',
+    docsStatus: 'docs_pending',
+    priority: 'medium',
+    assessment: {
+      eligibility: 'uncertain',
+      eligibilityNotes: 'Requires SME hub in consortium. Eligibility depends on partner identification.',
+      fitScore: 76,
+      fitNotes: 'Good alignment with AI literacy and SME network expertise.',
+      effortScore: 60,
+      complexityNotes: 'High. Infrastructure partner needed, 50% co-financing.',
+      risks: ['No prior Digital Europe deployment experience', 'Infrastructure partner needed', 'Assessment uncertain — docs not fully parsed'],
+      recommendation: 'Watch. Strategic fit is good, but consortium readiness is weak. Reassess after official docs review.',
+      judgment: 'watch',
+      assessedAt: '2026-03-21',
+      basedOnDocs: false,
+    },
+    officialDocs: [
+      { id: 'doc-12a', name: 'Call document (draft)', type: 'guide', parsed: false },
+    ],
+    actionPlan: [
+      { id: 'ap-12a', action: 'Download and parse official guide', status: 'pending' },
+      { id: 'ap-12b', action: 'Identify potential infrastructure partner', status: 'pending' },
+    ],
+    notes: ['Newly shortlisted. Docs not yet parsed.'],
+    blockers: ['Official documents not fully parsed'],
+    lastUpdated: '2026-03-21',
   },
 ];
 
@@ -425,7 +773,6 @@ export interface Workflow {
 }
 
 export const workflows: Workflow[] = [
-  // wf-1: Drafting, at-risk → opp-3 (DIGITAL-2026-SKILLS-04, deadline Apr 8)
   {
     id: 'wf-1',
     organizationId: 'org-1',
@@ -442,7 +789,6 @@ export const workflows: Workflow[] = [
     createdAt: '2026-02-25',
     updatedAt: '2026-03-20',
   },
-  // wf-2: Scoping → opp-2 (Erasmus+ PI, deadline Jun 22)
   {
     id: 'wf-2',
     organizationId: 'org-1',
@@ -459,7 +805,6 @@ export const workflows: Workflow[] = [
     createdAt: '2026-03-12',
     updatedAt: '2026-03-19',
   },
-  // wf-3: Inputs Pending → opp-1 (Horizon Europe AI Literacy, deadline May 15)
   {
     id: 'wf-3',
     organizationId: 'org-1',
@@ -476,7 +821,6 @@ export const workflows: Workflow[] = [
     createdAt: '2026-03-10',
     updatedAt: '2026-03-21',
   },
-  // wf-4: Review → opp-9 (Erasmus+ PCOOP Skills, deadline Apr 15)
   {
     id: 'wf-4',
     organizationId: 'org-1',
@@ -493,7 +837,6 @@ export const workflows: Workflow[] = [
     createdAt: '2026-01-20',
     updatedAt: '2026-03-20',
   },
-  // wf-5: Ready to Submit → opp-10 (National Greek Innovation, deadline Mar 28)
   {
     id: 'wf-5',
     organizationId: 'org-1',
@@ -510,7 +853,6 @@ export const workflows: Workflow[] = [
     createdAt: '2026-02-01',
     updatedAt: '2026-03-21',
   },
-  // wf-6: Submitted → opp-11 (ESF+ Upskilling, deadline Feb 28 , past)
   {
     id: 'wf-6',
     organizationId: 'org-1',
@@ -523,7 +865,7 @@ export const workflows: Workflow[] = [
     readinessScore: 100,
     blockers: 0,
     status: 'completed',
-    nextMilestone: 'Awaiting evaluation , results expected May 2026',
+    nextMilestone: 'Awaiting evaluation, results expected May 2026',
     createdAt: '2025-12-15',
     updatedAt: '2026-02-27',
   },
@@ -545,36 +887,25 @@ export interface Task {
 }
 
 export const tasks: Task[] = [
-  // ── wf-1: Drafting (at-risk) , DIGITAL-2026-SKILLS-04 ──────────
   { id: 't-1', workflowId: 'wf-1', title: 'Confirm co-financing source (50% requirement)', owner: 'Maria K.', dueDate: '2026-03-25', status: 'blocked', dependency: 'Awaiting municipal co-funding letter', createdAt: '2026-03-01' },
   { id: 't-2', workflowId: 'wf-1', title: 'Complete budget annex with personnel cost breakdown', owner: 'Maria K.', dueDate: '2026-03-28', status: 'in-progress', createdAt: '2026-03-08' },
   { id: 't-3', workflowId: 'wf-1', title: 'Finalize impact section using ka-2 methodology', owner: 'Elena P.', dueDate: '2026-03-26', status: 'in-progress', createdAt: '2026-03-10' },
   { id: 't-4', workflowId: 'wf-1', title: 'Draft work package timeline (24-month deployment)', owner: 'Nikos T.', dueDate: '2026-03-30', status: 'todo', createdAt: '2026-03-15' },
   { id: 't-5', workflowId: 'wf-1', title: 'Upload signed legal entity form', owner: 'Maria K.', dueDate: '2026-04-01', status: 'waiting', dependency: 'Legal representative on leave until Mar 27', createdAt: '2026-03-05' },
-
-  // ── wf-2: Scoping , Erasmus+ Innovation Partnership ─────────────
   { id: 't-6', workflowId: 'wf-2', title: 'Map potential consortium partners (min. 3 countries)', owner: 'Nikos T.', dueDate: '2026-04-05', status: 'in-progress', createdAt: '2026-03-12' },
   { id: 't-7', workflowId: 'wf-2', title: 'Draft project objectives differentiating from prior KA2', owner: 'Nikos T.', dueDate: '2026-04-15', status: 'todo', createdAt: '2026-03-12' },
   { id: 't-8', workflowId: 'wf-2', title: 'Review reusable narrative sections from ka-1', owner: 'Elena P.', dueDate: '2026-04-10', status: 'todo', createdAt: '2026-03-14' },
-
-  // ── wf-3: Inputs Pending , Horizon AI Literacy Consortium ───────
   { id: 't-9', workflowId: 'wf-3', title: 'Collect signed mandate letter from TU Berlin', owner: 'Elena P.', dueDate: '2026-04-01', status: 'waiting', dependency: 'Partner requested 10-day review period', createdAt: '2026-03-15' },
   { id: 't-10', workflowId: 'wf-3', title: 'Collect signed mandate letter from Univ. of Ljubljana', owner: 'Elena P.', dueDate: '2026-04-01', status: 'waiting', dependency: 'Sent Mar 18, no response yet', createdAt: '2026-03-15' },
-  { id: 't-11', workflowId: 'wf-3', title: 'Collect signed mandate letter from CEDEFOP liaison', owner: 'Elena P.', dueDate: '2026-04-05', status: 'blocked', dependency: 'Contact person changed , new signatory unknown', createdAt: '2026-03-15' },
+  { id: 't-11', workflowId: 'wf-3', title: 'Collect signed mandate letter from CEDEFOP liaison', owner: 'Elena P.', dueDate: '2026-04-05', status: 'blocked', dependency: 'Contact person changed, new signatory unknown', createdAt: '2026-03-15' },
   { id: 't-12', workflowId: 'wf-3', title: 'Finalize AI literacy curriculum framework outline', owner: 'Nikos T.', dueDate: '2026-04-10', status: 'in-progress', createdAt: '2026-03-18' },
   { id: 't-13', workflowId: 'wf-3', title: 'Add impact KPIs aligned with Cluster 4 indicators', owner: 'Maria K.', dueDate: '2026-04-12', status: 'todo', createdAt: '2026-03-20' },
-
-  // ── wf-4: Review , Erasmus+ Digital Education VET ───────────────
   { id: 't-14', workflowId: 'wf-4', title: 'Update dissemination plan for Portuguese partner', owner: 'Elena P.', dueDate: '2026-04-05', status: 'in-progress', createdAt: '2026-03-18' },
   { id: 't-15', workflowId: 'wf-4', title: 'Final proofread of all narrative sections', owner: 'Nikos T.', dueDate: '2026-04-08', status: 'todo', createdAt: '2026-03-19' },
   { id: 't-16', workflowId: 'wf-4', title: 'Validate budget coherence against work packages', owner: 'Maria K.', dueDate: '2026-04-06', status: 'done', createdAt: '2026-03-15' },
-
-  // ── wf-5: Ready to Submit , Greek Innovation Skills ─────────────
   { id: 't-17', workflowId: 'wf-5', title: 'Obtain director signature on application form', owner: 'Maria K.', dueDate: '2026-03-26', status: 'in-progress', createdAt: '2026-03-20' },
   { id: 't-18', workflowId: 'wf-5', title: 'Upload final PDF to national portal', owner: 'Nikos T.', dueDate: '2026-03-27', status: 'todo', dependency: 'Pending director signature', createdAt: '2026-03-20' },
   { id: 't-19', workflowId: 'wf-5', title: 'Verify all annexes attached and correctly numbered', owner: 'Maria K.', dueDate: '2026-03-25', status: 'done', createdAt: '2026-03-18' },
-
-  // ── wf-6: Submitted , ESF+ Public Sector Upskilling ─────────────
   { id: 't-20', workflowId: 'wf-6', title: 'Submit application via ESF+ portal', owner: 'Nikos T.', dueDate: '2026-02-27', status: 'done', createdAt: '2026-02-20' },
   { id: 't-21', workflowId: 'wf-6', title: 'Archive all supporting documents', owner: 'Maria K.', dueDate: '2026-02-28', status: 'done', createdAt: '2026-02-27' },
 ];
@@ -596,102 +927,14 @@ export interface KnowledgeAsset {
 }
 
 export const knowledgeAssets: KnowledgeAsset[] = [
-  {
-    id: 'ka-1',
-    organizationId: 'org-1',
-    title: 'KA2 Digital Skills for Educators , Full Application',
-    type: 'past-application',
-    source: 'Erasmus+ 2024',
-    tags: ['digital skills', 'education', 'KA2', 'partnership', 'Erasmus+'],
-    reusePotential: 'high',
-    createdAt: '2025-11-14',
-    summary: 'Successful application for 3-country partnership on digital competence frameworks for K-12 educators. Score: 88/100. Reused in wf-2 (scoping) and wf-4 (review).',
-    uploadedBy: 'Elena P.',
-  },
-  {
-    id: 'ka-2',
-    organizationId: 'org-1',
-    title: 'Workforce Transition Impact Report 2024',
-    type: 'report',
-    source: 'Internal',
-    tags: ['workforce', 'impact', 'metrics', 'annual', 'KPIs'],
-    reusePotential: 'high',
-    createdAt: '2025-03-20',
-    summary: 'Annual impact report: 1,200+ beneficiaries across 4 programmes. Contains validated KPIs and assessment methodology. Used in wf-1 impact section drafting and wf-6 ESF+ submission.',
-    uploadedBy: 'Maria K.',
-  },
-  {
-    id: 'ka-3',
-    organizationId: 'org-1',
-    title: 'Budget Template , Horizon Europe RIA',
-    type: 'budget-template',
-    source: 'Internal',
-    tags: ['budget', 'Horizon Europe', 'RIA', 'template', 'personnel costs'],
-    reusePotential: 'high',
-    createdAt: '2025-08-05',
-    summary: 'Pre-configured budget template for Horizon Europe RIA with personnel cost model, subcontracting limits, and equipment depreciation. Applied in wf-3 budget preparation.',
-    uploadedBy: 'Maria K.',
-  },
-  {
-    id: 'ka-4',
-    organizationId: 'org-1',
-    title: 'Organization Capability Statement',
-    type: 'organization-doc',
-    source: 'Internal',
-    tags: ['capability', 'organization', 'profile', 'track record'],
-    reusePotential: 'high',
-    createdAt: '2025-06-12',
-    summary: 'Comprehensive capability statement covering expertise, past projects (6 funded), infrastructure, and 14-partner network. Reused across all active workflows as applicant description.',
-    uploadedBy: 'Elena P.',
-  },
-  {
-    id: 'ka-5',
-    organizationId: 'org-1',
-    title: 'Green Skills Curriculum Design , Project Description',
-    type: 'project-description',
-    source: 'ESF+ 2025',
-    tags: ['green skills', 'curriculum', 'project design', 'VET'],
-    reusePotential: 'medium',
-    createdAt: '2025-09-28',
-    summary: 'Project description for green skills curriculum targeting manufacturing workers. Methodology section reused in wf-4 (Erasmus+ VET) and relevant for opp-4 (ESF+ watchlist).',
-    uploadedBy: 'Nikos T.',
-  },
-  {
-    id: 'ka-6',
-    organizationId: 'org-1',
-    title: 'Risk Mitigation Framework , Reusable Section',
-    type: 'proposal-fragment',
-    source: 'Horizon Europe 2024',
-    tags: ['risk', 'mitigation', 'reusable', 'framework', 'evaluation criteria'],
-    reusePotential: 'high',
-    createdAt: '2025-07-18',
-    summary: 'Validated risk assessment section used in 3 successful applications. Evidence-based structure adaptable to any EU-funded project. Applied in wf-1 and wf-3.',
-    uploadedBy: 'Elena P.',
-  },
-  {
-    id: 'ka-7',
-    organizationId: 'org-1',
-    title: 'Dissemination & Exploitation Plan Template',
-    type: 'proposal-fragment',
-    source: 'Internal',
-    tags: ['dissemination', 'exploitation', 'template', 'communication'],
-    reusePotential: 'high',
-    createdAt: '2025-10-05',
-    summary: 'Modular dissemination plan with channel matrix, stakeholder mapping, and open access strategy. Currently being adapted in wf-4 for Portuguese partner addition.',
-    uploadedBy: 'Elena P.',
-  },
-  {
-    id: 'ka-8',
-    organizationId: 'org-1',
-    title: 'ESF+ Public Sector Upskilling , Submitted Application',
-    type: 'past-application',
-    source: 'ESF+ 2025',
-    tags: ['ESF+', 'public sector', 'digital skills', 'Greece', 'submitted'],
-    reusePotential: 'medium',
-    createdAt: '2026-02-28',
-    summary: 'Completed application submitted Feb 2026. Contains tested methodology for public sector digital training. Awaiting evaluation. Useful reference for opp-4.',
-    uploadedBy: 'Nikos T.',
-  },
+  { id: 'ka-1', organizationId: 'org-1', title: 'KA2 Digital Skills for Educators – Full Application', type: 'past-application', source: 'Erasmus+ 2024', tags: ['digital skills', 'education', 'KA2', 'partnership', 'Erasmus+'], reusePotential: 'high', createdAt: '2025-11-14', summary: 'Successful application for 3-country partnership on digital competence frameworks for K-12 educators. Score: 88/100.', uploadedBy: 'Elena P.' },
+  { id: 'ka-2', organizationId: 'org-1', title: 'Workforce Transition Impact Report 2024', type: 'report', source: 'Internal', tags: ['workforce', 'impact', 'metrics', 'annual', 'KPIs'], reusePotential: 'high', createdAt: '2025-03-20', summary: 'Annual impact report: 1,200+ beneficiaries across 4 programmes. Contains validated KPIs and assessment methodology.', uploadedBy: 'Maria K.' },
+  { id: 'ka-3', organizationId: 'org-1', title: 'Budget Template – Horizon Europe RIA', type: 'budget-template', source: 'Internal', tags: ['budget', 'Horizon Europe', 'RIA', 'template'], reusePotential: 'high', createdAt: '2025-08-05', summary: 'Pre-configured budget template for Horizon Europe RIA with personnel cost model.', uploadedBy: 'Maria K.' },
+  { id: 'ka-4', organizationId: 'org-1', title: 'Organization Capability Statement', type: 'organization-doc', source: 'Internal', tags: ['capability', 'organization', 'profile'], reusePotential: 'high', createdAt: '2025-06-12', summary: 'Comprehensive capability statement covering expertise, past projects (6 funded), and 14-partner network.', uploadedBy: 'Elena P.' },
+  { id: 'ka-5', organizationId: 'org-1', title: 'Green Skills Curriculum Design – Project Description', type: 'project-description', source: 'ESF+ 2025', tags: ['green skills', 'curriculum', 'VET'], reusePotential: 'medium', createdAt: '2025-09-28', summary: 'Project description for green skills curriculum targeting manufacturing workers.', uploadedBy: 'Nikos T.' },
+  { id: 'ka-6', organizationId: 'org-1', title: 'Risk Mitigation Framework – Reusable Section', type: 'proposal-fragment', source: 'Horizon Europe 2024', tags: ['risk', 'mitigation', 'reusable'], reusePotential: 'high', createdAt: '2025-07-18', summary: 'Validated risk assessment section used in 3 successful applications.', uploadedBy: 'Elena P.' },
+  { id: 'ka-7', organizationId: 'org-1', title: 'Dissemination & Exploitation Plan Template', type: 'proposal-fragment', source: 'Internal', tags: ['dissemination', 'exploitation', 'template'], reusePotential: 'high', createdAt: '2025-10-05', summary: 'Modular dissemination plan with channel matrix and stakeholder mapping.', uploadedBy: 'Elena P.' },
+  { id: 'ka-8', organizationId: 'org-1', title: 'ESF+ Public Sector Upskilling – Submitted Application', type: 'past-application', source: 'ESF+ 2025', tags: ['ESF+', 'public sector', 'digital skills'], reusePotential: 'medium', createdAt: '2026-02-28', summary: 'Completed application submitted Feb 2026. Awaiting evaluation.', uploadedBy: 'Nikos T.' },
 ];
 
 // ── Agent Activity Events ─────────────────────────────────────────
@@ -710,58 +953,69 @@ export interface AgentEvent {
 }
 
 export const agentEvents: AgentEvent[] = [
-  // Recent (today / hours ago)
   { id: 'ae-1', organizationId: 'org-1', workflowId: 'wf-5', opportunityId: 'opp-10', agent: 'Compliance', eventType: 'ready', title: 'Submission checklist passed', detail: 'Greek Innovation Skills Grant: all annexes verified, budget coherence confirmed, application form complete. Ready for director signature.', timestamp: '1 hour ago', severity: 'info' },
-  { id: 'ae-2', organizationId: 'org-1', workflowId: 'wf-1', opportunityId: 'opp-3', agent: 'Coordinator', eventType: 'overdue', title: 'Co-financing confirmation overdue', detail: 'Municipal co-funding letter for DIGITAL-2026-SKILLS-04 was due Mar 25. Deadline risk increasing , 14 days until submission.', timestamp: '2 hours ago', severity: 'critical' },
-  { id: 'ae-3', organizationId: 'org-1', opportunityId: 'opp-12', agent: 'Scout', eventType: 'discovered', title: 'New call: AI Testing & Experimentation', detail: 'DIGITAL-2026-DEPLOY-AI-06 published today. Matches AI literacy + SME network profile. Scored 76% fit. Added to shortlist for review.', timestamp: '3 hours ago', severity: 'info' },
-  { id: 'ae-4', organizationId: 'org-1', workflowId: 'wf-3', agent: 'Coordinator', eventType: 'blocked', title: 'Partner contact issue escalated', detail: 'CEDEFOP mandate letter blocked , contact person changed. New signatory identification required before wf-3 can proceed to drafting.', timestamp: '4 hours ago', severity: 'risk' },
-  { id: 'ae-5', organizationId: 'org-1', workflowId: 'wf-1', opportunityId: 'opp-3', agent: 'Writer', eventType: 'drafted', title: 'Impact section generated', detail: 'Generated impact narrative for DIGITAL-2026-SKILLS-04 using ka-2 workforce methodology and ka-6 risk framework. 3 knowledge assets referenced.', timestamp: '5 hours ago', severity: 'info' },
-
-  // Yesterday
-  { id: 'ae-6', organizationId: 'org-1', workflowId: 'wf-4', opportunityId: 'opp-9', agent: 'Compliance', eventType: 'flagged', title: 'Dissemination plan update needed', detail: 'Erasmus+ VET application: dissemination plan references 4 partners but consortium now has 5. Portuguese partner INOVA+ must be added before compliance review passes.', timestamp: '1 day ago', severity: 'attention' },
-  { id: 'ae-7', organizationId: 'org-1', opportunityId: 'opp-7', agent: 'Selection', eventType: 'prioritized', title: 'Fit assessment complete', detail: 'HORIZON-WIDERA-2026-ACCESS-02 scored 73% fit. Widening country location is strong advantage. Recommended for review but flagged capacity constraint , currently 4 active workflows.', timestamp: '1 day ago', severity: 'attention' },
-  { id: 'ae-8', organizationId: 'org-1', agent: 'Copilot', eventType: 'reviewed', title: 'Weekly operations summary', detail: 'Pipeline: 6 active workflows (2 at risk). wf-5 ready to submit in 7 days. wf-1 has critical deadline risk. Team capacity at 90% , recommend deferring new workflow starts until after Apr 8.', timestamp: '1 day ago', severity: 'info' },
-  { id: 'ae-9', organizationId: 'org-1', agent: 'Scout', eventType: 'discovered', title: 'Source scan complete', detail: 'Scanned 14 funding portals. 2 new relevant calls identified (HORIZON-WIDERA-2026-ACCESS-02, DIGITAL-2026-DEPLOY-AI-06). 4 monitored calls unchanged.', timestamp: '1 day ago', severity: 'info' },
-  { id: 'ae-10', organizationId: 'org-1', agent: 'Selection', eventType: 'flagged', title: 'Capacity constraint active', detail: 'Current team capacity supports max 3–4 concurrent workflows. Currently at 4 active + 1 ready to submit. Recommend pausing new workflow creation until wf-5 is submitted and wf-1 resolves blockers.', timestamp: '1 day ago', severity: 'attention' },
-
-  // 2–3 days ago
-  { id: 'ae-11', organizationId: 'org-1', workflowId: 'wf-2', opportunityId: 'opp-2', agent: 'Writer', eventType: 'ready', title: 'Knowledge asset matched', detail: 'Found 89% content overlap between ka-1 (KA2 Digital Skills) and Erasmus+ Innovation Partnership scope. Narrative reuse recommended for objectives and methodology sections.', timestamp: '2 days ago', severity: 'info' },
-  { id: 'ae-12', organizationId: 'org-1', workflowId: 'wf-3', opportunityId: 'opp-1', agent: 'Compliance', eventType: 'reviewed', title: 'Eligibility verified', detail: 'Organization meets all eligibility criteria for HORIZON-CL4-2026-HUMAN-01-03. Non-profit status confirmed, widening country bonus applicable, min 5-country consortium rule noted.', timestamp: '2 days ago', severity: 'info' },
-  { id: 'ae-13', organizationId: 'org-1', workflowId: 'wf-4', agent: 'Writer', eventType: 'drafted', title: 'Full draft structure generated', detail: 'Erasmus+ VET draft complete: 8 sections generated using ka-1, ka-5, and ka-7. 82% readiness score. Only dissemination plan needs partner update.', timestamp: '3 days ago', severity: 'info' },
-  { id: 'ae-14', organizationId: 'org-1', workflowId: 'wf-5', agent: 'Compliance', eventType: 'reviewed', title: 'Pre-submission compliance passed', detail: 'Greek Innovation Skills application: all 6 compliance criteria met. Budget within limits. Narrative under page count. No eligibility issues detected.', timestamp: '3 days ago', severity: 'info' },
+  { id: 'ae-2', organizationId: 'org-1', workflowId: 'wf-1', opportunityId: 'opp-3', agent: 'Coordinator', eventType: 'overdue', title: 'Co-financing confirmation overdue', detail: 'Municipal co-funding letter for DIGITAL-2026-SKILLS-04 was due Mar 25. Deadline risk increasing.', timestamp: '2 hours ago', severity: 'critical' },
+  { id: 'ae-3', organizationId: 'org-1', opportunityId: 'opp-12', agent: 'Scout', eventType: 'discovered', title: 'New call: AI Testing & Experimentation', detail: 'DIGITAL-2026-DEPLOY-AI-06 published today. Matches AI literacy + SME network profile. Scored 76% fit.', timestamp: '3 hours ago', severity: 'info' },
+  { id: 'ae-4', organizationId: 'org-1', workflowId: 'wf-3', agent: 'Coordinator', eventType: 'blocked', title: 'Partner contact issue escalated', detail: 'CEDEFOP mandate letter blocked – contact person changed. New signatory identification required.', timestamp: '4 hours ago', severity: 'risk' },
+  { id: 'ae-5', organizationId: 'org-1', workflowId: 'wf-1', opportunityId: 'opp-3', agent: 'Writer', eventType: 'drafted', title: 'Impact section generated', detail: 'Generated impact narrative for DIGITAL-2026-SKILLS-04 using ka-2 workforce methodology.', timestamp: '5 hours ago', severity: 'info' },
+  { id: 'ae-6', organizationId: 'org-1', workflowId: 'wf-4', opportunityId: 'opp-9', agent: 'Compliance', eventType: 'flagged', title: 'Dissemination plan update needed', detail: 'Erasmus+ VET application: dissemination plan references 4 partners but consortium now has 5.', timestamp: '1 day ago', severity: 'attention' },
+  { id: 'ae-7', organizationId: 'org-1', opportunityId: 'opp-7', agent: 'Selection', eventType: 'prioritized', title: 'Fit assessment complete', detail: 'HORIZON-WIDERA-2026-ACCESS-02 scored 73% fit. Widening country location is strong advantage.', timestamp: '1 day ago', severity: 'attention' },
+  { id: 'ae-8', organizationId: 'org-1', agent: 'Copilot', eventType: 'reviewed', title: 'Weekly operations summary', detail: 'Pipeline: 6 active workflows (2 at risk). wf-5 ready to submit in 7 days. Team capacity at 90%.', timestamp: '1 day ago', severity: 'info' },
+  { id: 'ae-9', organizationId: 'org-1', agent: 'Scout', eventType: 'discovered', title: 'Source scan complete', detail: 'Scanned 14 funding portals. 2 new relevant calls identified.', timestamp: '1 day ago', severity: 'info' },
+  { id: 'ae-10', organizationId: 'org-1', workflowId: 'wf-6', agent: 'Copilot', eventType: 'reviewed', title: 'Submission confirmed', detail: 'ESF+ application submitted successfully. Confirmation number received. Evaluation expected May 2026.', timestamp: '3 weeks ago', severity: 'info' },
 ];
 
-// ── Helpers ───────────────────────────────────────────────────────
+// ── Helper functions ──────────────────────────────────────────────
 
-export function getOpportunitiesByStage(stage: string): Opportunity[] {
-  const stageMap: Record<string, OpportunityStatus[]> = {
-    'Identified': ['new'],
-    'Watchlist': ['watchlist'],
-    'Shortlisted': ['shortlisted'],
-    'Active': ['active-workflow'],
-    'In Review': [],
-    'Ready to Submit': [],
-    'Submitted': [],
+/** Pipeline stage mapping from lifecycle */
+export function getLifecycleStageLabel(lifecycle: CallLifecycle): string {
+  const map: Record<CallLifecycle, string> = {
+    discovered: 'Discovered',
+    saved: 'Saved',
+    docs_pending: 'Docs Pending',
+    docs_ready: 'Docs Ready',
+    assessment_pending: 'Assessment Pending',
+    assessed: 'Assessed',
+    shortlisted: 'Shortlisted',
+    rejected: 'Rejected',
+    in_preparation: 'In Preparation',
+    awaiting_documents: 'Awaiting Documents',
+    drafting: 'Drafting',
+    under_review: 'Under Review',
+    ready_to_submit: 'Ready to Submit',
+    submitted: 'Submitted',
+    archived: 'Archived',
   };
+  return map[lifecycle] || lifecycle;
+}
 
-  // For workflow-linked stages, cross-reference workflows
-  if (stage === 'In Review') {
-    const reviewWfOppIds = workflows.filter(w => w.stage === 'Review' || w.stage === 'Compliance Check').map(w => w.opportunityId);
-    return opportunities.filter(o => reviewWfOppIds.includes(o.id));
-  }
-  if (stage === 'Ready to Submit') {
-    const readyWfOppIds = workflows.filter(w => w.stage === 'Ready to Submit').map(w => w.opportunityId);
-    return opportunities.filter(o => readyWfOppIds.includes(o.id));
-  }
-  if (stage === 'Submitted') {
-    const submittedWfOppIds = workflows.filter(w => w.stage === 'Submitted').map(w => w.opportunityId);
-    return opportunities.filter(o => submittedWfOppIds.includes(o.id));
-  }
-  if (stage === 'Active') {
-    const otherLinkedStages: WorkflowStage[] = ['Review', 'Compliance Check', 'Ready to Submit', 'Submitted'];
-    const otherOppIds = workflows.filter(w => otherLinkedStages.includes(w.stage)).map(w => w.opportunityId);
-    return opportunities.filter(o => o.status === 'active-workflow' && !otherOppIds.includes(o.id));
-  }
+/** Map opportunity to pipeline column */
+export function getOpportunitiesByStage(stage: typeof pipelineStages[number]): Opportunity[] {
+  const stageMap: Record<typeof pipelineStages[number], CallLifecycle[]> = {
+    'Identified': ['discovered'],
+    'Watchlist': ['saved', 'docs_pending'],
+    'Shortlisted': ['docs_ready', 'assessment_pending', 'assessed', 'shortlisted'],
+    'Active': ['in_preparation', 'awaiting_documents', 'drafting'],
+    'In Review': ['under_review'],
+    'Ready to Submit': ['ready_to_submit'],
+    'Submitted': ['submitted'],
+  };
+  const lifecycles = stageMap[stage] || [];
+  return opportunities.filter(o => lifecycles.includes(o.lifecycle));
+}
 
-  return opportunities.filter(o => stageMap[stage]?.includes(o.status));
+/** Get saved calls (everything except discovered and rejected) */
+export function getSavedCalls(): Opportunity[] {
+  return opportunities.filter(o =>
+    o.lifecycle !== 'discovered' && o.lifecycle !== 'rejected' && o.lifecycle !== 'archived'
+  );
+}
+
+/** Get calls needing attention */
+export function getCallsNeedingAction(): Opportunity[] {
+  return opportunities.filter(o =>
+    o.blockers.length > 0 ||
+    o.docsStatus === 'docs_pending' ||
+    o.docsStatus === 'not_downloaded' && o.lifecycle !== 'rejected' && o.lifecycle !== 'discovered'
+  );
 }
