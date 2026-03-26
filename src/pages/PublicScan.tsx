@@ -149,10 +149,10 @@ const PublicScan = () => {
                   <img
                     src={octopusImgMd}
                     srcSet={`${octopusImgMd} 640w, ${octopusImg} 900w`}
-                    sizes="(max-width: 768px) 100vw, 900px"
+                    sizes="(max-width: 640px) 100vw, 640px"
                     alt=""
-                    width={900}
-                    height={674}
+                    width={640}
+                    height={479}
                     loading="eager"
                     fetchPriority="high"
                     decoding="async"
